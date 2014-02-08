@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml;
-using System.Xml.Linq;
 
 public class Build : MonoBehaviour {
 
@@ -22,10 +19,40 @@ public class Build : MonoBehaviour {
 		buildings = Resources.LoadAll("Buildings");
 
 		//Load the building instances
-		StreamReader reader = new StreamReader("Buildings.xml");
-		XDocument doc = XDocument.Load("Buildings.xml");
+		LoadItem("Rock(Clone)");
+		LoadItem("Wall(Clone)");
+		LoadItem("Floor(Clone)");
+	}
 
-		Debug.Log(doc.FirstNode);
+	void LoadItem(string name)
+	{
+		Debug.Log("Looking for " + name + "...");
+		int i = 0;
+		while (PlayerPrefs.HasKey(name + i))
+		{
+			string s = PlayerPrefs.GetString(name + i++);
+			Debug.Log("Found " + s);
+			string[] floats = s.Split(' ');
+
+			Vector3 position = new Vector3(float.Parse(floats[0]), float.Parse(floats[1]), float.Parse(floats[2]));
+			Quaternion rotation = new Quaternion(float.Parse(floats[3]), float.Parse(floats[4]), float.Parse(floats[5]), float.Parse(floats[6]));
+
+			Object resource = null;
+			foreach (Object o in buildings)
+			{
+				GameObject go = o as GameObject;
+				if (go.name + "(Clone)" == name)
+					resource = o;
+			}
+
+			if (resource != null)
+			{
+				Debug.Log("Instantiating " + name);
+				GameObject building = Instantiate(resource) as GameObject;
+				building.transform.position = position;
+				building.transform.rotation = rotation;
+			}
+		}
 	}
 
 	int ScrollBuildings(int delta)
@@ -47,6 +74,8 @@ public class Build : MonoBehaviour {
 		wall.transform.localPosition = new Vector3(0f, 2.0f, 3.0f);
 		wall.transform.localRotation = Quaternion.Euler(0, 90, 0);
 		wall.collider.enabled = false;
+		if (wall.rigidbody)
+			wall.rigidbody.isKinematic = true;
 
 		hasItem = true;
 		hasBuilding = true;
@@ -54,15 +83,29 @@ public class Build : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Saves an item to file.
+	/// Saves an item to PlayerPrefs so that it is loaded the next time the game is started.
 	/// </summary>
 	/// <param name="item"></param>
-	void StoreItem(GameObject item)
+	void StoreItem(GameObject item, int index)
 	{
-		FileStream fs = File.OpenWrite("Buildings.xml");
-		StreamWriter writer = new StreamWriter(fs);
-		writer.Write(new XElement("Buildings", new XElement("Building", item.ToString())));
-		writer.Close();
+		Vector3 p = item.transform.position;
+		Quaternion r = item.transform.rotation;
+		string itemString = string.Format("{0} {1} {2} {3} {4} {5} {6}", p.x, p.y, p.z, r.x, r.y, r.z, r.w);
+		string key = item.name + "" + index;
+		Debug.Log(key + ":" + itemString);
+		PlayerPrefs.SetString(key, itemString);
+	}
+
+	void StoreAllItems()
+	{
+		GameObject[] o = GameObject.FindGameObjectsWithTag("Ore");
+		GameObject[] b = GameObject.FindGameObjectsWithTag("Building");
+
+		for (int i = 0; i < o.Length; i++)
+			StoreItem(o[i], i);
+
+		for (int i = 0; i < b.Length; i++)
+			StoreItem(b[i], i);
 	}
 
 	void PlaceItem()
@@ -73,7 +116,8 @@ public class Build : MonoBehaviour {
 		itemHeld.collider.enabled = true;
 
 		//Save the item to file
-		StoreItem(itemHeld);
+		//StoreItem(itemHeld);
+		StoreAllItems();
 
 		hasItem = false;
 		hasBuilding = false;
