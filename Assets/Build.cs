@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml;
+using System.Xml.Linq;
 
 public class Build : MonoBehaviour {
 
@@ -15,7 +18,14 @@ public class Build : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		//Load the building prefabs
 		buildings = Resources.LoadAll("Buildings");
+
+		//Load the building instances
+		StreamReader reader = new StreamReader("Buildings.xml");
+		XDocument doc = XDocument.Load("Buildings.xml");
+
+		Debug.Log(doc.FirstNode);
 	}
 
 	int ScrollBuildings(int delta)
@@ -43,6 +53,33 @@ public class Build : MonoBehaviour {
 		itemHeld = wall;
 	}
 
+	/// <summary>
+	/// Saves an item to file.
+	/// </summary>
+	/// <param name="item"></param>
+	void StoreItem(GameObject item)
+	{
+		FileStream fs = File.OpenWrite("Buildings.xml");
+		StreamWriter writer = new StreamWriter(fs);
+		writer.Write(new XElement("Buildings", new XElement("Building", item.ToString())));
+		writer.Close();
+	}
+
+	void PlaceItem()
+	{
+		itemHeld.transform.parent = null;
+		if (itemHeld.rigidbody)
+			itemHeld.rigidbody.isKinematic = false;
+		itemHeld.collider.enabled = true;
+
+		//Save the item to file
+		StoreItem(itemHeld);
+
+		hasItem = false;
+		hasBuilding = false;
+		itemHeld = null;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if (hasItem)
@@ -51,13 +88,7 @@ public class Build : MonoBehaviour {
 			if (Input.GetButtonDown("Fire1"))
 			{
 				//Drop the item
-				itemHeld.transform.parent = null;
-				if (itemHeld.rigidbody)
-					itemHeld.rigidbody.isKinematic = false;
-				itemHeld.collider.enabled = true;
-				hasItem = false;
-				hasBuilding = false;
-				itemHeld = null;
+				PlaceItem();
 			}
 			else if (hasBuilding && Input.GetButtonDown("Fire2"))
 			{
