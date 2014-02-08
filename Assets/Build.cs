@@ -19,9 +19,9 @@ public class Build : MonoBehaviour {
 		buildings = Resources.LoadAll("Buildings");
 
 		//Load the building instances
-		LoadItem("Rock(Clone)");
-		LoadItem("Wall(Clone)");
-		LoadItem("Floor(Clone)");
+		LoadItem("Rock");
+		LoadItem("Wall");
+		LoadItem("Floor");
 	}
 
 	void LoadItem(string name)
@@ -41,7 +41,7 @@ public class Build : MonoBehaviour {
 			foreach (Object o in buildings)
 			{
 				GameObject go = o as GameObject;
-				if (go.name + "(Clone)" == name)
+				if (go.name == name)
 					resource = o;
 			}
 
@@ -51,19 +51,18 @@ public class Build : MonoBehaviour {
 				GameObject building = Instantiate(resource) as GameObject;
 				building.transform.position = position;
 				building.transform.rotation = rotation;
+				building.name = name;
 			}
 		}
 	}
 
 	int ScrollBuildings(int delta)
 	{
-		Debug.Log("Delta " + delta);
 		int index = buildingIndex + delta;
 		if (index >= buildings.Length)
 			index = index % buildings.Length;
 		else if (index < 0)
 			index = buildings.Length - (-index) % buildings.Length;
-		Debug.Log("Output " + index);
 		return index;
 	}
 
@@ -74,6 +73,7 @@ public class Build : MonoBehaviour {
 		wall.transform.localPosition = new Vector3(0f, 2.0f, 3.0f);
 		wall.transform.localRotation = Quaternion.Euler(0, 90, 0);
 		wall.collider.enabled = false;
+		wall.name = buildings[buildingIndex].name;
 		if (wall.rigidbody)
 			wall.rigidbody.isKinematic = true;
 
@@ -86,26 +86,37 @@ public class Build : MonoBehaviour {
 	/// Saves an item to PlayerPrefs so that it is loaded the next time the game is started.
 	/// </summary>
 	/// <param name="item"></param>
-	void StoreItem(GameObject item, int index)
+	void StoreItem(GameObject item, string key)
 	{
 		Vector3 p = item.transform.position;
 		Quaternion r = item.transform.rotation;
 		string itemString = string.Format("{0} {1} {2} {3} {4} {5} {6}", p.x, p.y, p.z, r.x, r.y, r.z, r.w);
-		string key = item.name + "" + index;
 		Debug.Log(key + ":" + itemString);
 		PlayerPrefs.SetString(key, itemString);
 	}
 
-	void StoreAllItems()
+	void StoreObjectsWithTag(string tag)
 	{
-		GameObject[] o = GameObject.FindGameObjectsWithTag("Ore");
-		GameObject[] b = GameObject.FindGameObjectsWithTag("Building");
+		GameObject[] o = GameObject.FindGameObjectsWithTag(tag);
+
+		Dictionary<string, int> indices = new Dictionary<string, int>();
 
 		for (int i = 0; i < o.Length; i++)
-			StoreItem(o[i], i);
+		{
+			int index = 0;
+			if (indices.ContainsKey(o[i].name))
+				index = indices[o[i].name];
+			
+			indices[o[i].name] = index+1;
 
-		for (int i = 0; i < b.Length; i++)
-			StoreItem(b[i], i);
+			StoreItem(o[i], o[i].name + index);
+		}
+	}
+
+	void StoreAllItems()
+	{
+		StoreObjectsWithTag("Ore");
+		StoreObjectsWithTag("Building");
 	}
 
 	void PlaceItem()
@@ -164,8 +175,6 @@ public class Build : MonoBehaviour {
 				{
 					GameObject item = hit.transform.gameObject;
 
-					Debug.Log("Hit " + item.name);
-
 					item.transform.parent = transform;
 					item.transform.localPosition = new Vector3(0f, 1.0f, 3.0f);
 					if (item.rigidbody)
@@ -174,8 +183,6 @@ public class Build : MonoBehaviour {
 					hasItem = true;
 					itemHeld = item;
 				}
-				else
-					Debug.Log("Miss");
 			}
 			else if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
 			{
@@ -187,6 +194,14 @@ public class Build : MonoBehaviour {
 			}
 			else if (Input.GetKeyDown(KeyCode.R))
 			{
+				GameObject[] gos = GameObject.FindGameObjectsWithTag("Ore");
+				foreach (GameObject go in gos)
+					Destroy(go);
+
+				gos = GameObject.FindGameObjectsWithTag("Building");
+				foreach (GameObject go in gos)
+					Destroy(go);
+
 				PlayerPrefs.DeleteAll();
 			}
 		}
