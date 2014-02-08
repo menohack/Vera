@@ -36,6 +36,7 @@ public class Build : MonoBehaviour {
 		wall.transform.parent = transform;
 		wall.transform.localPosition = new Vector3(0f, 2.0f, 3.0f);
 		wall.transform.localRotation = Quaternion.Euler(0, 90, 0);
+		wall.collider.enabled = false;
 
 		hasItem = true;
 		hasBuilding = true;
@@ -53,6 +54,7 @@ public class Build : MonoBehaviour {
 				itemHeld.transform.parent = null;
 				if (itemHeld.rigidbody)
 					itemHeld.rigidbody.isKinematic = false;
+				itemHeld.collider.enabled = true;
 				hasItem = false;
 				hasBuilding = false;
 				itemHeld = null;
@@ -81,9 +83,9 @@ public class Build : MonoBehaviour {
 			if (Input.GetButtonDown("Fire1"))
 			{
 				RaycastHit hit;
-				int layerMask = 1 << LayerMask.NameToLayer("Ore") | 1 << LayerMask.NameToLayer("Building");
+				int layerMask = 1 << LayerMask.NameToLayer("Environment");
 
-				if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, layerMask))
+				if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, layerMask) && (hit.transform.tag == "Ore" || hit.transform.tag == "Building"))
 				{
 					GameObject item = hit.transform.gameObject;
 
