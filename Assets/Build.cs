@@ -185,6 +185,10 @@ public class Build : MonoBehaviour {
 			{
 				GameObject go = Instantiate(buildObject, transform.position + transform.forward * 5.0f, transform.rotation) as GameObject;
 			}
+			else if (Input.GetKeyDown(KeyCode.R))
+			{
+				PlayerPrefs.DeleteAll();
+			}
 		}
 		
 	}
