@@ -21,8 +21,8 @@ public class TerrainGenerator : MonoBehaviour {
 	{
 		SeedGenerator();
 
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 3; j++)
+		for (int i = -1; i < 2; i++)
+			for (int j = -1; j < 2; j++)
 				GenerateTerrainBlock(i, j);
 	}
 
@@ -47,9 +47,9 @@ public class TerrainGenerator : MonoBehaviour {
 	{
 		int xShift = xIndex + NUM_MAX_BLOCKS / 2;
 		int yShift = yIndex + NUM_MAX_BLOCKS / 2;
-		if (xIndex < 0 || yIndex < 0)
+		if (xShift < 0 || yShift < 0)
 			throw new UnityException("Error: Terrain indices must be positive");
-		if (xIndex > NUM_MAX_BLOCKS || yIndex > NUM_MAX_BLOCKS)
+		if (xShift > NUM_MAX_BLOCKS || yShift > NUM_MAX_BLOCKS)
 			throw new UnityException("Error: Too many terrain blocks");
 		int resolution = terrainPrefab.terrainData.heightmapResolution;
 		float[,] heights = new float[resolution, resolution];
@@ -59,7 +59,7 @@ public class TerrainGenerator : MonoBehaviour {
 			{
 				int x = xShift * resolution + i;
 				int y = yShift * resolution + j;
-				heights[i, j] = 0.1f * SimplexNoise.Noise.Generate(x / 100.0f, y / 100.0f) + 0.5f;
+				heights[i, j] = 0.1f * (SimplexNoise.Noise.Generate(x / 100.0f, y / 100.0f) + 0.5f);
 			}
 		}
 
@@ -68,6 +68,10 @@ public class TerrainGenerator : MonoBehaviour {
 		//terrain.terrainData.heightmapResolution = resolution;
 		terrain.terrainData.SetHeights(0, 0, heights);
 		terrain.transform.position += new Vector3(yIndex * blockSize, 0.0f, xIndex * blockSize);
+		terrain.gameObject.AddComponent<TerrainCollider>();
+		TerrainCollider collider = terrain.gameObject.collider as TerrainCollider;
+		collider.terrainData = terrain.terrainData;
+		
 
 		PlaceTrees(terrain, 1000);
 
