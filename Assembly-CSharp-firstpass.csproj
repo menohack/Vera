@@ -5,11 +5,11 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{1AE31DE1-64E1-4FED-0A4E-5C29DF7318B4}</ProjectGuid>
+	<ProjectGuid>{E1ADB8B2-4268-1EFE-B8F7-A886CDDE45EA}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
-	<AssemblyName>Assembly-CSharp</AssemblyName>
+	<AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
 	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
 	<FileAlignment>512</FileAlignment>
 	<BaseDirectory>Assets</BaseDirectory>
@@ -46,24 +46,11 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Build.cs" />
-     <Compile Include="Assets\Demo\Assets\AnimationController.cs" />
-     <Compile Include="Assets\Demo\Assets\CloseCameraFade.cs" />
-     <Compile Include="Assets\Demo\Assets\Label\Label.cs" />
-     <Compile Include="Assets\Demo\Assets\SetupVerification.cs" />
-     <Compile Include="Assets\Perlin.cs" />
-     <Compile Include="Assets\Player.cs" />
-     <Compile Include="Assets\TerrainGenerator.cs" />
-     <Compile Include="Assets\ThirdPersonCamera.cs" />
-     <Compile Include="Assets\ThirdPersonController.cs" />
+     <Compile Include="Assets\Standard Assets\Water (Basic)\Sources\Scripts\WaterSimple.cs" />
      <None Include="Assets\Demo\Shaders\NewShader.shader" />
      <None Include="Assets\Demo\READ ME FIRST.txt" />
      <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
      <None Include="Assets\Standard Assets\Water (Basic)\Sources\Shaders\FX-Water Simple.shader" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{E1ADB8B2-4268-1EFE-B8F7-A886CDDE45EA}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
