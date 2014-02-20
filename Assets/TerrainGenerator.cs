@@ -53,14 +53,11 @@ public class TerrainGenerator : MonoBehaviour {
 			throw new UnityException("Error: Too many terrain blocks");
 		int resolution = terrainPrefab.terrainData.heightmapResolution;
 		float[,] heights = new float[resolution, resolution];
-		for (int i = 0; i < heights.GetLength(0); i++)
+
+		for (int i = 0; i < 10; i++)
 		{
-			for (int j = 0; j < heights.GetLength(1); j++)
-			{
-				int x = xShift * resolution + i;
-				int y = yShift * resolution + j;
-				heights[i, j] = 0.1f * (SimplexNoise.Noise.Generate(x / 100.0f, y / 100.0f) + 0.5f);
-			}
+			float f = Mathf.Pow(2.0f, i);
+			PerlinIteration(heights, 1 / (100.0f / f), 1 / (100.0f / f), xShift, yShift, 1.0f / f);
 		}
 
 		Terrain terrain = Instantiate(terrainPrefab) as Terrain;
@@ -76,6 +73,19 @@ public class TerrainGenerator : MonoBehaviour {
 		PlaceTrees(terrain, 1000);
 
 		return terrain;
+	}
+
+	void PerlinIteration(float[,] heights, float xScale, float yScale, int xShift, int yShift, float intensity)
+	{
+		for (int i = 0; i < heights.GetLength(0); i++)
+		{
+			for (int j = 0; j < heights.GetLength(1); j++)
+			{
+				int x = xShift * heights.GetLength(0) + i;
+				int y = yShift * heights.GetLength(1) + j;
+				heights[i, j] += intensity * 0.1f * (SimplexNoise.Noise.Generate(x * xScale, y * yScale) + 0.5f);
+			}
+		}
 	}
 
 	/// <summary>
