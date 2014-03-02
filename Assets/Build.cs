@@ -138,7 +138,7 @@ public class Build : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.G))
-			Debug.Log(Networking.GetMap());
+			Networking.Instance.GetMap();
 
 		if (hasItem)
 		{

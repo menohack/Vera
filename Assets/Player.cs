@@ -20,7 +20,7 @@ public class Player : MonoBehaviour {
 		GUILayout.BeginArea(new Rect(0, Screen.height / 2, 200, 20));
 		GUILayout.BeginHorizontal();
 		if (GUILayout.Button("Connect to server"))
-			Debug.Log(Networking.GetMap());
+			Debug.Log(Networking.Instance.GetMap());
 		GUILayout.EndHorizontal();
 		GUILayout.EndArea();
 	}
