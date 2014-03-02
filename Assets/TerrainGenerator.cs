@@ -2,6 +2,7 @@
 using System.Collections;
 
 
+
 public class TerrainGenerator : MonoBehaviour {
 
 	public Terrain terrainPrefab;
@@ -65,7 +66,7 @@ public class TerrainGenerator : MonoBehaviour {
 		//terrain.terrainData.heightmapResolution = resolution;
 		terrain.terrainData.SetHeights(0, 0, heights);
 		terrain.transform.position += new Vector3(yIndex * blockSize, 0.0f, xIndex * blockSize);
-		terrain.gameObject.AddComponent<TerrainCollider>();
+		//terrain.gameObject.AddComponent<TerrainCollider>();
 		TerrainCollider collider = terrain.gameObject.collider as TerrainCollider;
 		collider.terrainData = terrain.terrainData;
 		

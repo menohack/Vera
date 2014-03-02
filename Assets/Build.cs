@@ -26,12 +26,12 @@ public class Build : MonoBehaviour {
 
 	void LoadItem(string name)
 	{
-		Debug.Log("Looking for " + name + "...");
+		//Debug.Log("Looking for " + name + "...");
 		int i = 0;
 		while (PlayerPrefs.HasKey(name + i))
 		{
 			string s = PlayerPrefs.GetString(name + i++);
-			Debug.Log("Found " + s);
+			//Debug.Log("Found " + s);
 			string[] floats = s.Split(' ');
 
 			Vector3 position = new Vector3(float.Parse(floats[0]), float.Parse(floats[1]), float.Parse(floats[2]));
@@ -47,7 +47,7 @@ public class Build : MonoBehaviour {
 
 			if (resource != null)
 			{
-				Debug.Log("Instantiating " + name);
+				//Debug.Log("Instantiating " + name);
 				GameObject building = Instantiate(resource) as GameObject;
 				building.transform.position = position;
 				building.transform.rotation = rotation;
@@ -137,6 +137,9 @@ public class Build : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKeyDown(KeyCode.G))
+			Debug.Log(Networking.GetMap());
+
 		if (hasItem)
 		{
 			float scroll = Input.GetAxis("Mouse ScrollWheel");
