@@ -1,11 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-
+using System;
+using System.Runtime.Serialization;
+using System.Collections.Generic;
 
 public class TerrainGenerator : MonoBehaviour {
 
 	public Terrain terrainPrefab;
+
+	public Terrain oreTile;
+	public Terrain treesTile;
+	public Terrain waterTile;
+	public Terrain landTile;
 
 	/// <summary>
 	/// The size of the terrain block in game units.
@@ -20,11 +26,46 @@ public class TerrainGenerator : MonoBehaviour {
 	
 	void Start ()
 	{
+		Networking.Instance.GetMap();
+		/* Random terrain
 		SeedGenerator();
 
 		for (int i = -1; i < 2; i++)
 			for (int j = -1; j < 2; j++)
 				GenerateTerrainBlock(i, j);
+		 */
+	}
+
+	public class Tuple<T1, T2>
+	{
+		public T1 First { get; private set; }
+		public T2 Second { get; private set; }
+		internal Tuple(T1 first, T2 second)
+		{
+			First = first;
+			Second = second;
+		}
+	}
+
+	public static class Tuple
+	{
+		public static Tuple<T1, T2> New<T1, T2>(T1 first, T2 second)
+		{
+			var tuple = new Tuple<T1, T2>(first, second);
+			return tuple;
+		}
+	}
+
+	public enum TerrainType
+	{
+		Ore, Trees, Water, Fertile
+	}
+
+	[DataContract(Name = "Ballz")]
+	public class GameData
+	{
+		[DataMember(Name = "Derp")]
+		public Dictionary<TerrainType, Tuple<int, int>> terrain = new Dictionary<TerrainType, Tuple<int, int>>();
 	}
 
 	/// <summary>
@@ -106,7 +147,7 @@ public class TerrainGenerator : MonoBehaviour {
 
 		for (int i = 0; i < count; i++)
 		{
-			tree.position = new Vector3(Random.value, 0.0f, Random.value);
+			tree.position = new Vector3(UnityEngine.Random.value, 0.0f, UnityEngine.Random.value);
 			terrain.AddTreeInstance(tree);
 		}
 	}
