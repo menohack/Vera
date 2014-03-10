@@ -72,7 +72,7 @@ public class Build : MonoBehaviour {
 		wall.transform.parent = transform;
 		wall.transform.localPosition = new Vector3(0f, 2.0f, 3.0f);
 		wall.transform.localRotation = Quaternion.Euler(0, 90, 0);
-		wall.collider.enabled = false;
+		//wall.collider.enabled = false;
 		wall.name = buildings[buildingIndex].name;
 		if (wall.rigidbody)
 			wall.rigidbody.isKinematic = true;
@@ -91,7 +91,7 @@ public class Build : MonoBehaviour {
 		Vector3 p = item.transform.position;
 		Quaternion r = item.transform.rotation;
 		string itemString = string.Format("{0} {1} {2} {3} {4} {5} {6}", p.x, p.y, p.z, r.x, r.y, r.z, r.w);
-		Debug.Log(key + ":" + itemString);
+		//Debug.Log(key + ":" + itemString);
 		PlayerPrefs.SetString(key, itemString);
 	}
 
@@ -121,18 +121,22 @@ public class Build : MonoBehaviour {
 
 	void PlaceItem()
 	{
-		itemHeld.transform.parent = null;
-		if (itemHeld.rigidbody)
-			itemHeld.rigidbody.isKinematic = false;
-		itemHeld.collider.enabled = true;
+		Item itemScript = itemHeld.GetComponent<Item>();
+		if (itemScript && itemScript.Place())
+		{
+			itemHeld.transform.parent = null;
+			if (itemHeld.rigidbody)
+				itemHeld.rigidbody.isKinematic = false;
+			itemHeld.collider.enabled = true;
 
-		//Save the item to file
-		//StoreItem(itemHeld);
-		StoreAllItems();
+			//Save the item to file
+			//StoreItem(itemHeld);
+			StoreAllItems();
 
-		hasItem = false;
-		hasBuilding = false;
-		itemHeld = null;
+			hasItem = false;
+			hasBuilding = false;
+			itemHeld = null;
+		}
 	}
 
 	// Update is called once per frame
