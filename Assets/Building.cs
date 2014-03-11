@@ -3,6 +3,22 @@ using System.Collections;
 
 public abstract class Building : Item {
 
+
+	private float health = 100f;
+
+	public void Damage(float dmg)
+	{
+		health -= dmg;
+	}
+
+	public bool IsAlive()
+	{
+		if (health <= 0)
+			return false;
+		else
+			return true;
+	}
+
 	/// <summary>
 	/// The starting material of the item.
 	/// </summary>
@@ -43,7 +59,11 @@ public abstract class Building : Item {
 	/// <summary>
 	/// Changes the color of the object.
 	/// </summary>
-	protected new void Update () {
+	protected new void Update ()
+	{
+		if (!IsAlive())
+			Destroy(this);
+
 		//If the item has not been placed make it transparent and either red or green
 		if (!placed)
 		{

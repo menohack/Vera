@@ -21,7 +21,7 @@ public class Build : MonoBehaviour {
 		//Load the building instances
 		LoadItem("Rock");
 		LoadItem("Wall");
-		LoadItem("Floor");
+		//LoadItem("Floor");
 	}
 
 	void LoadItem(string name)
@@ -121,7 +121,7 @@ public class Build : MonoBehaviour {
 
 	void PlaceItem()
 	{
-		Building itemScript = itemHeld.GetComponent<Building>();
+		Item itemScript = itemHeld.GetComponent<Item>();
 		if (itemScript && itemScript.Place())
 		{
 			itemHeld.transform.parent = null;
@@ -178,17 +178,30 @@ public class Build : MonoBehaviour {
 				RaycastHit hit;
 				int layerMask = 1 << LayerMask.NameToLayer("Environment");
 
-				if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, layerMask) && (hit.transform.tag == "Ore"))
+
+				//TODO: destructible (buildings) and attackable (NPC/other player) tags?
+				if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, layerMask))
 				{
-					GameObject item = hit.transform.gameObject;
+					if (hit.transform.tag == "Building")
+					{
+						GameObject item = hit.transform.gameObject;
 
-					item.transform.parent = transform;
-					item.transform.localPosition = new Vector3(0f, 1.0f, 3.0f);
-					if (item.rigidbody)
-						item.rigidbody.isKinematic = true;
+						Building hp = item.GetComponent<Building>();
+						if (hp != null)
+							hp.Damage(25);
+					}
+					else if (hit.transform.tag == "Ore")
+					{
+						GameObject item = hit.transform.gameObject;
 
-					hasItem = true;
-					itemHeld = item;
+						item.transform.parent = transform;
+						item.transform.localPosition = new Vector3(0f, 1.0f, 3.0f);
+						if (item.rigidbody)
+							item.rigidbody.isKinematic = true;
+
+						hasItem = true;
+						itemHeld = item;
+					}
 				}
 			}
 			else if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
