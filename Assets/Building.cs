@@ -20,11 +20,6 @@ public abstract class Building : Item {
 	}
 
 	/// <summary>
-	/// The starting material of the item.
-	/// </summary>
-	Material originalMaterial;
-
-	/// <summary>
 	/// Counts the number of intersections with the environment. Zero means no intersection.
 	/// </summary>
 	protected int overlapCount = 0;
@@ -45,13 +40,35 @@ public abstract class Building : Item {
 	/// The minimum distance two buildings that are not connected may be.
 	/// </summary>
 	public float minBuildingDistance = 10.0f;
-	
+
+	/// <summary>
+	/// The original material of the wall.
+	/// </summary>
+	Material originalMaterial;
+
+	/// <summary>
+	/// The colors used for shading an unbuild building.
+	/// </summary>
+	Color red, green;
+
 	/// <summary>
 	/// Initialization.
 	/// </summary>
-	protected new void Start () {
+	protected void Start () {
 		originalMaterial = renderer.material;
 		layerMask = LayerMask.NameToLayer("Environment");
+
+		renderer.material = new Material(renderer.material);
+		red = renderer.material.color;
+		red *= new Color(0.9f, 0.9f, 0.9f);
+		red += 0.9f * Color.red;
+		red.a = 0.8f;
+
+		green = renderer.material.color;
+		green *= new Color(0.9f, 0.9f, 0.9f);
+		green += 0.9f * Color.green;
+		green.a = 0.8f;
+		
 	}
 
 	public abstract void Attach();
@@ -59,7 +76,7 @@ public abstract class Building : Item {
 	/// <summary>
 	/// Changes the color of the object.
 	/// </summary>
-	protected new void Update ()
+	protected void Update ()
 	{
 		if (!IsAlive())
 			Destroy(this);
@@ -68,16 +85,11 @@ public abstract class Building : Item {
 		if (!placed)
 		{
 			Attach();
-			renderer.material = new Material(originalMaterial);
-			Color color = renderer.material.color;
-			color *= new Color(0.9f, 0.9f, 0.9f);
-			
+
 			if (CanPlace())
-				color += 0.9f * Color.green;
+				renderer.material.color = green;
 			else
-				color += 0.9f * Color.red;
-			color.a = 0.8f;
-			renderer.material.color = color;
+				renderer.material.color = red;
 		}
 	}
 

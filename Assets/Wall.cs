@@ -3,53 +3,128 @@ using System.Collections;
 
 public class Wall : Building
 {
+	/// <summary>
+	/// The minimum distance for a wall to be considered for attaching.
+	/// </summary>
 	public float minAttachDistance = 5.0f;
 
+	/// <summary>
+	/// The wall attached to the right.
+	/// </summary>
 	Wall right = null;
+
+	/// <summary>
+	/// The wall attached to the left.
+	/// </summary>
 	Wall left = null;
 
+	/// <summary>
+	/// The previous parent of the wall. Generally the player carrying it.
+	/// </summary>
 	Transform oldParent = null;
 
+	/// <summary>
+	/// A data structure that stores a position, rotation, and whether it is to the left or right
+	/// of a given wall.
+	/// </summary>
+	public struct AttachPoint
+	{
+		public Vector3 position;
+		public Quaternion rotation;
+		public bool left;
+	}
+
+	/// <summary>
+	/// Computes the possible positions that a wall may attach to another wall.
+	/// </summary>
+	/// <param name="w">The wall to which we are attempting to attach.</param>
+	/// <returns>An array of potential positions.</returns>
+	AttachPoint[] GetAttachPositions(Wall w)
+	{
+		AttachPoint[] attachPositions;
+
+		if (w.left != null && w.right != null)
+		{
+			attachPositions = new AttachPoint[0];
+			return attachPositions;
+		}
+		else if (w.left == null && w.right == null)
+		{
+			attachPositions = new AttachPoint[2];
+			attachPositions[1].position = w.transform.position - w.transform.forward * 4.0f;
+			attachPositions[1].rotation = w.transform.rotation;
+			attachPositions[1].left = true;
+			attachPositions[0].position = w.transform.position + w.transform.forward * 4.0f;
+			attachPositions[0].rotation = w.transform.rotation;
+			attachPositions[0].left = false;
+			return attachPositions;
+		}
+		else if (w.right == null)
+		{
+			attachPositions = new AttachPoint[1];
+			attachPositions[0].position = w.transform.position + w.transform.forward * 4.0f;
+			attachPositions[0].rotation = w.transform.rotation;
+			attachPositions[0].left = false;
+			return attachPositions;
+		}
+		else
+		{
+			attachPositions = new AttachPoint[1];
+			attachPositions[0].position = w.transform.position - w.transform.forward * 4.0f;
+			attachPositions[0].rotation = w.transform.rotation;
+			attachPositions[0].left = true;
+			return attachPositions;
+		}
+	}
+
+	/// <summary>
+	/// Attempts to attach a wall to another wall.
+	/// </summary>
 	public override void Attach()
 	{
 		float min = minAttachDistance;
-		Wall other = null;
-		Vector3 newPosition = transform.position;
+		AttachPoint? result = null;
+		Wall parent = null;
 
-		foreach (Wall g in GameObject.FindObjectsOfType<Wall>())
+		foreach (Wall w in GameObject.FindObjectsOfType<Wall>())
 		{
-			Vector3[] attachPositions = new Vector3[2];
-			attachPositions[0] = g.transform.position + g.transform.forward * 4.0f;
-			attachPositions[1] = g.transform.position - g.transform.forward * 4.0f;
-
-			if (g == this)
+			if (w == this)
 				continue;
-			foreach (Vector3 attachPosition in attachPositions)
+
+			AttachPoint[] attachPositions = GetAttachPositions(w);
+
+			foreach (AttachPoint attachPoint in attachPositions)
 			{
-				float distance = Vector3.Distance(attachPosition, transform.position);
+				float distance = Vector3.Distance(attachPoint.position, transform.position);
 				if (distance < min)
 				{
 					min = distance;
-					other = g;
-					newPosition = attachPosition;
+					result = attachPoint;
+					parent = w;
 				}
 			}
 		}
 
-		if (other != null)
+		if (result != null)
 		{
 			attached = true;
-			transform.position = newPosition;
-			transform.rotation = other.transform.rotation;
-			other.right = this;
+			transform.position = result.Value.position;
+			transform.rotation = result.Value.rotation;
+
+			if (result.Value.left)
+				parent.left = this;
+			else
+				parent.right = this;
+
 			oldParent = transform.parent;
 			transform.parent = null;
 			Debug.Log("Parent set to null");
 		}
 		else if (oldParent != null)
 		{
-			transform.parent = oldParent;
-			Debug.Log("Parent reset");
+			attached = false;
+			//transform.parent = oldParent;
+			Debug.Log("Parent reset, result is null: " + (result!=null));
 		}
 	}
 }

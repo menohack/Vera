@@ -9,20 +9,6 @@ public abstract class Item : MonoBehaviour
 	bool placed = false;
 
 	/// <summary>
-	/// Initialization.
-	/// </summary>
-	protected void Start()
-	{
-	}
-
-	/// <summary>
-	/// Changes the color of the object.
-	/// </summary>
-	protected void Update()
-	{
-	}
-
-	/// <summary>
 	/// Attempts to place the object.
 	/// <returns>True if the object was placed.</returns>
 	/// </summary>
