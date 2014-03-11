@@ -8,6 +8,7 @@ public abstract class Building : Item {
 
 	public void Damage(float dmg)
 	{
+		Debug.Log("Health: " + health);
 		health -= dmg;
 	}
 
@@ -79,7 +80,7 @@ public abstract class Building : Item {
 	protected void Update ()
 	{
 		if (!IsAlive())
-			Destroy(this);
+			Destroy(gameObject);
 
 		//If the item has not been placed make it transparent and either red or green
 		if (!placed)
