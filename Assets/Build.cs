@@ -121,7 +121,7 @@ public class Build : MonoBehaviour {
 
 	void PlaceItem()
 	{
-		Item itemScript = itemHeld.GetComponent<Item>();
+		Building itemScript = itemHeld.GetComponent<Building>();
 		if (itemScript && itemScript.Place())
 		{
 			itemHeld.transform.parent = null;
@@ -178,7 +178,7 @@ public class Build : MonoBehaviour {
 				RaycastHit hit;
 				int layerMask = 1 << LayerMask.NameToLayer("Environment");
 
-				if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, layerMask) && (hit.transform.tag == "Ore" || hit.transform.tag == "Building"))
+				if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, layerMask) && (hit.transform.tag == "Ore"))
 				{
 					GameObject item = hit.transform.gameObject;
 
@@ -194,10 +194,6 @@ public class Build : MonoBehaviour {
 			else if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
 			{
 				EquipBuilding();
-			}
-			else if (Input.GetAxis("Build") == 1.0f)
-			{
-				GameObject go = Instantiate(buildObject, transform.position + transform.forward * 5.0f, transform.rotation) as GameObject;
 			}
 			else if (Input.GetKeyDown(KeyCode.R))
 			{
