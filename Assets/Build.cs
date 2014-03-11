@@ -178,18 +178,30 @@ public class Build : MonoBehaviour {
 				RaycastHit hit;
 				int layerMask = 1 << LayerMask.NameToLayer("Environment");
 
+				//TODO: destructible (buildings) and attackable (NPC/other player) tags?
 				if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, layerMask) && (hit.transform.tag == "Ore" || hit.transform.tag == "Building"))
 				{
 					GameObject item = hit.transform.gameObject;
 
-					item.transform.parent = transform;
-					item.transform.localPosition = new Vector3(0f, 1.0f, 3.0f);
-					if (item.rigidbody)
-						item.rigidbody.isKinematic = true;
-
-					hasItem = true;
-					itemHeld = item;
+					BuildingHealth hp = item.GetComponent<BuildingHealth>();
+					hp.Damage(25);
+					if (!hp.IsAlive())
+					{
+						Destroy(item);
+					}
 				}
+//				if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, layerMask) && (hit.transform.tag == "Ore" || hit.transform.tag == "Building"))
+//				{
+//					GameObject item = hit.transform.gameObject;
+//
+//					item.transform.parent = transform;
+//					item.transform.localPosition = new Vector3(0f, 1.0f, 3.0f);
+//					if (item.rigidbody)
+//						item.rigidbody.isKinematic = true;
+//
+//					hasItem = true;
+//					itemHeld = item;
+//				}
 			}
 			else if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
 			{
