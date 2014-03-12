@@ -1,8 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Temp\Compiled-Normal-Bumped.shader">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Wall.cs">
     <Files>
-      <File FileName="Temp\Compiled-Normal-Bumped.shader" Line="32" Column="23" />
+      <File FileName="Assets/Wall.cs" Line="80" Column="3" />
+      <File FileName="Assets/Build.cs" Line="142" Column="1" />
+      <File FileName="Assets/Item.cs" Line="41" Column="28" />
+      <File FileName="Assets/Building.cs" Line="25" Column="14" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

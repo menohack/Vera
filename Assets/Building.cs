@@ -22,7 +22,7 @@ public abstract class Building : Item {
 			Wall wscript = gameObject.GetComponent<Wall>();
 			if (wscript)
 			{
-				wscript.destroyUpdate();
+				wscript.DestroyUpdate();
 			}
 			Destroy(gameObject);
 			return false;

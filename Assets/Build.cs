@@ -80,7 +80,7 @@ public class Build : MonoBehaviour {
 		GameObject wall = Instantiate(buildings[buildingIndex]) as GameObject;
 		Item i = wall.GetComponent<Item>();
 		if (i != null)
-			i.SetFloatPoint(transform, new Vector3(0f, 2.0f, 3.0f), Quaternion.Euler(0, 90, 0));
+			i.SetFloatPoint(transform, new Vector3(0f, 0f, 3.0f), Quaternion.Euler(0, 90, 0));
 		wall.name = buildings[buildingIndex].name;
 		if (wall.rigidbody)
 			wall.rigidbody.isKinematic = true;
@@ -139,7 +139,7 @@ public class Build : MonoBehaviour {
 			Wall wallScript = itemHeld.GetComponent<Wall>();
 			if (wallScript)
 			{
-				wallScript.setWall();
+				wallScript.SetWall();
 			}
 			//Save the item to file
 			//StoreItem(itemHeld);
