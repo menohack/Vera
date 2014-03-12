@@ -18,7 +18,6 @@ public abstract class Item : MonoBehaviour
 		//This should never be null. This is absurd.
 		if (floatPoint == null)
 			floatPoint = new GameObject("FloatPoint");
-		Debug.Log(parent);
 		floatPoint.transform.parent = parent;
 		floatPoint.transform.localPosition = position;
 		floatPoint.transform.localRotation = rotation;

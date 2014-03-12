@@ -88,15 +88,13 @@ public class Wall : Building
 		foreach (Wall w in GameObject.FindObjectsOfType<Wall>())
 		{
 			if (w == this)
-			{
 				continue;
-			}
 
 			AttachPoint[] attachPositions = GetAttachPositions(w);
 			//Debug.Log("AttachPoints: " + attachPositions.Length);
 			foreach (AttachPoint attachPoint in attachPositions)
 			{
-				float distance = Vector3.Distance(attachPoint.position, transform.position);
+				float distance = Vector3.Distance(attachPoint.position, floatPoint.transform.position);
 				Debug.Log(distance);
 				if (distance < min)
 				{
@@ -124,9 +122,9 @@ public class Wall : Building
 			attached = true;
 
 			transform.parent = null;
-			Destroy(floatPoint);
+			floatPoint.transform.parent = null;
 
-			Debug.Log("Setting position and rotation to " + result.Value.position + " and " + result.Value.rotation);
+			//Debug.Log("Setting position and rotation to " + result.Value.position + " and " + result.Value.rotation);
 			transform.position = result.Value.position;
 			transform.rotation = result.Value.rotation;
 
@@ -142,9 +140,13 @@ public class Wall : Building
 		else
 		{
 			attached = false;
-			transform.localPosition = new Vector3(0f, 2.0f, 3.0f);
-			transform.localRotation = Quaternion.Euler(0, 90, 0);
-			//Debug.Log("Parent reset, result is null: " + (result!=null));
+			floatPoint.transform.parent = GameObject.FindGameObjectWithTag("Player").transform;
+			transform.parent = floatPoint.transform;
+			transform.localPosition = Vector3.zero;
+			transform.localRotation = Quaternion.identity;
+			//transform.localPosition = new Vector3(0f, 2.0f, 3.0f);
+			//transform.localRotation = Quaternion.Euler(0, 90.0f, 0);
+			//Debug.Log("Parent set");
 			return false;
 		}
 	}
