@@ -25,6 +25,12 @@ public class Wall : Building
 	/// </summary>
 	public struct AttachPoint
 	{
+		public AttachPoint(Vector3 position, Quaternion rotation, bool left)
+		{
+			this.position = position;
+			this.rotation = rotation;
+			this.left = left;
+		}
 		public Vector3 position;
 		public Quaternion rotation;
 		public bool left;
@@ -37,38 +43,39 @@ public class Wall : Building
 	/// <returns>An array of potential positions.</returns>
 	AttachPoint[] GetAttachPositions(Wall w)
 	{
-		AttachPoint[] attachPositions;
+		AttachPoint leftCenter = new AttachPoint(w.transform.position - w.transform.forward * 4.0f, w.transform.rotation, true);
+		AttachPoint leftUp = new AttachPoint(w.transform.position - w.transform.forward * 4.0f + w.transform.up * 1.0f, w.transform.rotation, true);
+		AttachPoint leftDown = new AttachPoint(w.transform.position - w.transform.forward * 4.0f - w.transform.up * 1.0f, w.transform.rotation, true);
 
+		AttachPoint rightCenter = new AttachPoint(w.transform.position + w.transform.forward * 4.0f, w.transform.rotation, false);
+		AttachPoint rightUp = new AttachPoint(w.transform.position + w.transform.forward * 4.0f + w.transform.up * 1.0f, w.transform.rotation, false);
+		AttachPoint rightDown = new AttachPoint(w.transform.position + w.transform.forward * 4.0f - w.transform.up * 1.0f, w.transform.rotation, false);
+
+		//Both positions are filled
 		if (w.left != null && w.right != null)
 		{
-			attachPositions = new AttachPoint[0];
+			AttachPoint[] attachPositions = new AttachPoint[0];
 			return attachPositions;
 		}
+
+		//Both positions are empty
 		else if (w.left == null && w.right == null)
 		{
-			attachPositions = new AttachPoint[2];
-			attachPositions[1].position = w.transform.position - w.transform.forward * 4.0f;
-			attachPositions[1].rotation = w.transform.rotation;
-			attachPositions[1].left = true;
-			attachPositions[0].position = w.transform.position + w.transform.forward * 4.0f;
-			attachPositions[0].rotation = w.transform.rotation;
-			attachPositions[0].left = false;
+			AttachPoint[] attachPositions = { leftCenter, leftUp, leftDown, rightCenter, rightUp, rightDown };
 			return attachPositions;
 		}
+
+		//The right position is open
 		else if (w.right == null)
 		{
-			attachPositions = new AttachPoint[1];
-			attachPositions[0].position = w.transform.position + w.transform.forward * 4.0f;
-			attachPositions[0].rotation = w.transform.rotation;
-			attachPositions[0].left = false;
+			AttachPoint[] attachPositions = { rightCenter, rightUp, rightDown };
 			return attachPositions;
 		}
+
+		//The left position is open
 		else
 		{
-			attachPositions = new AttachPoint[1];
-			attachPositions[0].position = w.transform.position - w.transform.forward * 4.0f;
-			attachPositions[0].rotation = w.transform.rotation;
-			attachPositions[0].left = true;
+			AttachPoint[] attachPositions = { leftCenter, leftUp, leftDown };
 			return attachPositions;
 		}
 	}
@@ -91,14 +98,11 @@ public class Wall : Building
 				continue;
 
 			AttachPoint[] attachPositions = GetAttachPositions(w);
-			//Debug.Log("AttachPoints: " + attachPositions.Length);
 			foreach (AttachPoint attachPoint in attachPositions)
 			{
 				float distance = Vector3.Distance(attachPoint.position, floatPoint.transform.position);
-				Debug.Log(distance);
 				if (distance < min)
 				{
-					Debug.Log("Found one");
 					min = distance;
 					result = attachPoint;
 					parent = w;
@@ -116,38 +120,31 @@ public class Wall : Building
 		Wall parent = null;
 		AttachPoint? result = GetClosestAttachPoint(out parent);
 
-
-		if (result != null)
+		if (result == null)
+		{
+			attached = false;
+			transform.parent = floatPoint.transform;
+			transform.localPosition = Vector3.zero;
+			transform.localRotation = Quaternion.identity;
+			return false;
+		}
+		else
 		{
 			attached = true;
-
 			transform.parent = null;
-			floatPoint.transform.parent = null;
-
-			//Debug.Log("Setting position and rotation to " + result.Value.position + " and " + result.Value.rotation);
 			transform.position = result.Value.position;
 			transform.rotation = result.Value.rotation;
 
+			//We need to keep track of who is attached to the left or right so that multiple
+			//walls don't overlap. This is the piece of code that gave me so much trouble.
+			//Still not sure why.
+			/*
 			if (result.Value.left)
 				parent.left = this;
 			else
 				parent.right = this;
-
-
-			//Debug.Log("Parent set to null");
+			*/
 			return true;
-		}
-		else
-		{
-			attached = false;
-			floatPoint.transform.parent = GameObject.FindGameObjectWithTag("Player").transform;
-			transform.parent = floatPoint.transform;
-			transform.localPosition = Vector3.zero;
-			transform.localRotation = Quaternion.identity;
-			//transform.localPosition = new Vector3(0f, 2.0f, 3.0f);
-			//transform.localRotation = Quaternion.Euler(0, 90.0f, 0);
-			//Debug.Log("Parent set");
-			return false;
 		}
 	}
 }
