@@ -139,7 +139,7 @@ public class Build : MonoBehaviour {
 			Wall wallScript = itemHeld.GetComponent<Wall>();
 			if (wallScript)
 			{
-				bool ws = wallScript.setWall();
+				wallScript.setWall();
 			}
 			//Save the item to file
 			//StoreItem(itemHeld);
@@ -201,6 +201,7 @@ public class Build : MonoBehaviour {
 						Building hp = item.GetComponent<Building>();
 						if (hp != null)
 							hp.Damage(25);
+							hp.IsAlive();
 					}
 					else if (hit.transform.tag == "Ore")
 					{

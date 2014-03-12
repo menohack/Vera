@@ -11,12 +11,22 @@ public abstract class Building : Item {
 	public void Damage(float dmg)
 	{
 		health -= dmg;
+//		Debug.Log ("Damage: " + dmg);
+//		Debug.Log ("MyHealth: " + health);
 	}
 
 	public bool IsAlive()
 	{
 		if (health <= 0)
+		{
+			Wall wscript = gameObject.GetComponent<Wall>();
+			if (wscript)
+			{
+				wscript.destroyUpdate();
+			}
+			Destroy(gameObject);
 			return false;
+		}
 		else
 			return true;
 	}
@@ -83,13 +93,10 @@ public abstract class Building : Item {
 	public abstract bool GhostAttach();
 	
 	/// <summary>
-	/// Changes the color of the object.
+	/// Changes the color of the object & Destroys the object when health <= 0
 	/// </summary>
 	protected void Update ()
 	{
-		if (!IsAlive())
-			Destroy(gameObject);
-
 		//If the item has not been placed make it transparent and either red or green
 		if (!placed)
 		{

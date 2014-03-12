@@ -102,7 +102,7 @@ public class Wall : Building
 			{
 				float distance = Vector3.Distance(attachPoint.position, floatPoint.transform.position);
 				//checks within distance and if not already filled
-				if ((distance < min) && (!(w.left != null && w.right != null)))
+				if (distance < min)
 				{
 					min = distance;
 					result = attachPoint;
@@ -139,6 +139,7 @@ public class Wall : Building
 			return true;
 		}
 	}
+
 	/// <summary>
 	/// Attempts to set the wall to a parent. (This is called in Build.cs in PlaceItem()
 	/// </summary>
@@ -163,6 +164,14 @@ public class Wall : Building
 		}
 		else
 			return false;
+	}
+
+	public void destroyUpdate()
+	{
+		if (this.right != null)
+			this.right.left = null;
+		if (this.left != null)
+			this.left.right = null;
 	}
 
 }
