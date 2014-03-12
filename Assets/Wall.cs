@@ -18,10 +18,6 @@ public class Wall : Building
 	/// </summary>
 	Wall left = null;
 
-	/// <summary>
-	/// The previous parent of the wall. Generally the player carrying it.
-	/// </summary>
-	Transform oldParent = null;
 
 	/// <summary>
 	/// A data structure that stores a position, rotation, and whether it is to the left or right
@@ -78,36 +74,59 @@ public class Wall : Building
 	}
 
 	/// <summary>
-	/// Attempts to attach a wall to another wall.
+	/// Finds the closest attach point to the position of the wall. I.E. finds the closest potential placement
+	/// for the wall based on its current position.
 	/// </summary>
-	public override void Attach()
+	/// <param name="parent"></param>
+	/// <returns></returns>
+	AttachPoint? GetClosestAttachPoint(out Wall parent)
 	{
 		float min = minAttachDistance;
 		AttachPoint? result = null;
-		Wall parent = null;
+		parent = null;
 
 		foreach (Wall w in GameObject.FindObjectsOfType<Wall>())
 		{
 			if (w == this)
+			{
 				continue;
+			}
 
 			AttachPoint[] attachPositions = GetAttachPositions(w);
-
+			//Debug.Log("AttachPoints: " + attachPositions.Length);
 			foreach (AttachPoint attachPoint in attachPositions)
 			{
 				float distance = Vector3.Distance(attachPoint.position, transform.position);
+				Debug.Log(distance);
 				if (distance < min)
 				{
+					Debug.Log("Found one");
 					min = distance;
 					result = attachPoint;
 					parent = w;
 				}
 			}
 		}
+		return result;
+	}
+
+	/// <summary>
+	/// Attempts to attach a wall to another wall.
+	/// </summary>
+	public override bool GhostAttach()
+	{
+		Wall parent = null;
+		AttachPoint? result = GetClosestAttachPoint(out parent);
+
 
 		if (result != null)
 		{
 			attached = true;
+
+			transform.parent = null;
+			Destroy(floatPoint);
+
+			Debug.Log("Setting position and rotation to " + result.Value.position + " and " + result.Value.rotation);
 			transform.position = result.Value.position;
 			transform.rotation = result.Value.rotation;
 
@@ -116,15 +135,17 @@ public class Wall : Building
 			else
 				parent.right = this;
 
-			oldParent = transform.parent;
-			transform.parent = null;
-			Debug.Log("Parent set to null");
+
+			//Debug.Log("Parent set to null");
+			return true;
 		}
-		else if (oldParent != null)
+		else
 		{
 			attached = false;
-			//transform.parent = oldParent;
-			Debug.Log("Parent reset, result is null: " + (result!=null));
+			transform.localPosition = new Vector3(0f, 2.0f, 3.0f);
+			transform.localRotation = Quaternion.Euler(0, 90, 0);
+			//Debug.Log("Parent reset, result is null: " + (result!=null));
+			return false;
 		}
 	}
 }

@@ -6,9 +6,10 @@ public abstract class Building : Item {
 
 	private float health = 100f;
 
+
+
 	public void Damage(float dmg)
 	{
-		Debug.Log("Health: " + health);
 		health -= dmg;
 	}
 
@@ -55,7 +56,7 @@ public abstract class Building : Item {
 	/// <summary>
 	/// Initialization.
 	/// </summary>
-	protected void Start () {
+	void Start () {
 		originalMaterial = renderer.material;
 		layerMask = LayerMask.NameToLayer("Environment");
 
@@ -72,7 +73,14 @@ public abstract class Building : Item {
 		
 	}
 
-	public abstract void Attach();
+
+
+
+	/// <summary>
+	/// Attempts to create a transparent ghost of the building to show where it will be built.
+	/// </summary>
+	/// <returns>True if the building can be attached to something, false otherwise.</returns>
+	public abstract bool GhostAttach();
 	
 	/// <summary>
 	/// Changes the color of the object.
@@ -85,9 +93,7 @@ public abstract class Building : Item {
 		//If the item has not been placed make it transparent and either red or green
 		if (!placed)
 		{
-			Attach();
-
-			if (CanPlace())
+			if (GhostAttach() || CanPlace())
 				renderer.material.color = green;
 			else
 				renderer.material.color = red;
@@ -100,15 +106,19 @@ public abstract class Building : Item {
 	/// </summary>
 	public override bool Place()
 	{
-		if (CanPlace())
-		{
+		//if (CanPlace())
+		//{
 			placed = true;
 			renderer.material = originalMaterial;
+			if (floatPoint != null)
+				Destroy(floatPoint);
+			transform.parent = null;
+			
 			collider.isTrigger = false;
 			return true;
-		}
-		else
-			return false;
+		//}
+		//else
+		//	return false;
 	}
 
 	/// <summary>

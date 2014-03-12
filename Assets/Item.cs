@@ -9,6 +9,25 @@ public abstract class Item : MonoBehaviour
 	bool placed = false;
 
 	/// <summary>
+	/// The position of the item as it is being held.
+	/// </summary>
+	protected GameObject floatPoint;
+
+	public void SetFloatPoint(Transform parent, Vector3 position, Quaternion rotation)
+	{
+		//This should never be null. This is absurd.
+		if (floatPoint == null)
+			floatPoint = new GameObject("FloatPoint");
+		Debug.Log(parent);
+		floatPoint.transform.parent = parent;
+		floatPoint.transform.localPosition = position;
+		floatPoint.transform.localRotation = rotation;
+		transform.parent = floatPoint.transform;
+		transform.localPosition = Vector3.zero;
+		transform.localRotation = Quaternion.identity;
+	}
+
+	/// <summary>
 	/// Attempts to place the object.
 	/// <returns>True if the object was placed.</returns>
 	/// </summary>
@@ -17,11 +36,19 @@ public abstract class Item : MonoBehaviour
 		if (CanPlace())
 		{
 			placed = true;
+			if (floatPoint != null)
+				Destroy(floatPoint);
+			transform.parent = null;
 			collider.isTrigger = false;
 			return true;
 		}
 		else
 			return false;
+	}
+
+	void OnDestroy()
+	{
+		Destroy(floatPoint);
 	}
 
 	/// <summary>
@@ -31,5 +58,10 @@ public abstract class Item : MonoBehaviour
 	protected virtual bool CanPlace()
 	{
 		return true;
+	}
+
+	public virtual string Serialize()
+	{
+		return gameObject.name + " " + gameObject.transform.position + " " + gameObject.transform.rotation;
 	}
 }

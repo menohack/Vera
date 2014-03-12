@@ -24,6 +24,11 @@ public class Build : MonoBehaviour {
 		//LoadItem("Floor");
 	}
 
+	void OnApplicationQuit()
+	{
+		StoreAllItems();
+	}
+
 	void LoadItem(string name)
 	{
 		//Debug.Log("Looking for " + name + "...");
@@ -52,6 +57,10 @@ public class Build : MonoBehaviour {
 				building.transform.position = position;
 				building.transform.rotation = rotation;
 				building.name = name;
+
+				Building b = building.GetComponent<Building>();
+				if (b)
+					b.Place();
 			}
 		}
 	}
@@ -69,10 +78,9 @@ public class Build : MonoBehaviour {
 	void EquipBuilding()
 	{
 		GameObject wall = Instantiate(buildings[buildingIndex]) as GameObject;
-		wall.transform.parent = transform;
-		wall.transform.localPosition = new Vector3(0f, 2.0f, 3.0f);
-		wall.transform.localRotation = Quaternion.Euler(0, 90, 0);
-		//wall.collider.enabled = false;
+		Item i = wall.GetComponent<Item>();
+		if (i != null)
+			i.SetFloatPoint(transform, new Vector3(0f, 2.0f, 3.0f), Quaternion.Euler(0, 90, 0));
 		wall.name = buildings[buildingIndex].name;
 		if (wall.rigidbody)
 			wall.rigidbody.isKinematic = true;
@@ -124,7 +132,6 @@ public class Build : MonoBehaviour {
 		Item itemScript = itemHeld.GetComponent<Item>();
 		if (itemScript && itemScript.Place())
 		{
-			itemHeld.transform.parent = null;
 			if (itemHeld.rigidbody)
 				itemHeld.rigidbody.isKinematic = false;
 			itemHeld.collider.enabled = true;
