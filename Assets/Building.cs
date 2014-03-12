@@ -106,8 +106,8 @@ public abstract class Building : Item {
 	/// </summary>
 	public override bool Place()
 	{
-		//if (CanPlace())
-		//{
+		if (CanPlace())
+		{
 			placed = true;
 			renderer.material = originalMaterial;
 			if (floatPoint != null)
@@ -116,9 +116,9 @@ public abstract class Building : Item {
 			
 			collider.isTrigger = false;
 			return true;
-		//}
-		//else
-		//	return false;
+		}
+		else
+			return false;
 	}
 
 	/// <summary>

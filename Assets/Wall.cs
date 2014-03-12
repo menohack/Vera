@@ -6,7 +6,7 @@ public class Wall : Building
 	/// <summary>
 	/// The minimum distance for a wall to be considered for attaching.
 	/// </summary>
-	public float minAttachDistance = 5.0f;
+	public float minAttachDistance = 3.0f;
 
 	/// <summary>
 	/// The wall attached to the right.
@@ -101,7 +101,8 @@ public class Wall : Building
 			foreach (AttachPoint attachPoint in attachPositions)
 			{
 				float distance = Vector3.Distance(attachPoint.position, floatPoint.transform.position);
-				if (distance < min)
+				//checks within distance and if not already filled
+				if ((distance < min) && (!(w.left != null && w.right != null)))
 				{
 					min = distance;
 					result = attachPoint;
@@ -135,16 +136,33 @@ public class Wall : Building
 			transform.position = result.Value.position;
 			transform.rotation = result.Value.rotation;
 
-			//We need to keep track of who is attached to the left or right so that multiple
-			//walls don't overlap. This is the piece of code that gave me so much trouble.
-			//Still not sure why.
-			/*
-			if (result.Value.left)
-				parent.left = this;
-			else
-				parent.right = this;
-			*/
 			return true;
 		}
 	}
+	/// <summary>
+	/// Attempts to set the wall to a parent. (This is called in Build.cs in PlaceItem()
+	/// </summary>
+	/// <returns><c>true</c>, if wall was set, <c>false</c> otherwise.</returns>
+	public bool setWall()
+	{
+		Wall parent = null;
+		AttachPoint? result = GetClosestAttachPoint(out parent);
+		if (result != null) 
+		{
+			if (result.Value.left)
+			{
+				parent.left = this;
+				this.right = parent;
+			}
+			else
+			{
+				parent.right = this;
+				this.left = parent;
+			}
+			return true;
+		}
+		else
+			return false;
+	}
+
 }

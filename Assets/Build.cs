@@ -136,6 +136,11 @@ public class Build : MonoBehaviour {
 				itemHeld.rigidbody.isKinematic = false;
 			itemHeld.collider.enabled = true;
 
+			Wall wallScript = itemHeld.GetComponent<Wall>();
+			if (wallScript)
+			{
+				bool ws = wallScript.setWall();
+			}
 			//Save the item to file
 			//StoreItem(itemHeld);
 			StoreAllItems();
