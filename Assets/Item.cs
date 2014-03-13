@@ -51,7 +51,7 @@ public abstract class Item : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Tests whether the item can be placed.
+	/// Tests whether the item can be placed. Needs to be written.
 	/// </summary>
 	/// <returns>True if the item can be placed.</returns>
 	protected virtual bool CanPlace()

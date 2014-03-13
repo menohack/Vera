@@ -47,20 +47,20 @@ public class Wall : Building
 		Vector3 originalPos = transform.position;
 		Quaternion originalRotation = w.transform.rotation;
 
-		Vector3 rightPosition = w.transform.position + w.transform.forward * 4.0f ;
-		Vector3 leftPosition = w.transform.position - w.transform.forward * 4.0f ;
+		Vector3 rightPosition = w.transform.position + w.transform.right * 6.0f ;
+		Vector3 leftPosition = w.transform.position - w.transform.right * 6.0f ;
 
 		//45Forward
 		transform.position = leftPosition;
 		transform.rotation = w.transform.rotation;
-		transform.RotateAround (w.transform.position - w.transform.forward * 2.0f, Vector3.up, 45.0f);
+		transform.RotateAround (w.transform.position - w.transform.right * 2.0f, Vector3.up, 45.0f);
 		AttachPoint leftCenterForward = new AttachPoint (transform.position, transform.rotation, true);
 		AttachPoint leftUpForward = new AttachPoint (transform.position + w.transform.up * 1.0f, transform.rotation, true);
 		AttachPoint leftDownForward = new AttachPoint (transform.position - w.transform.up * 1.0f, transform.rotation, true);
 
 		transform.rotation = w.transform.rotation;
 		transform.position = rightPosition;
-		transform.RotateAround (w.transform.position + w.transform.forward * 2.0f, Vector3.up, -45.0f);
+		transform.RotateAround (w.transform.position + w.transform.right * 2.0f, Vector3.up, -45.0f);
 		AttachPoint rightCenterForward = new AttachPoint (transform.position, transform.rotation, false);
 		AttachPoint rightUpForward = new AttachPoint (transform.position + w.transform.up * 1.0f, transform.rotation, false);
 		AttachPoint rightDownForward = new AttachPoint (transform.position - w.transform.up * 1.0f, transform.rotation, false);
@@ -70,28 +70,33 @@ public class Wall : Building
 		transform.position = originalPos;
 
 		//Straight On
-		AttachPoint leftCenter = new AttachPoint(w.transform.position - w.transform.forward * 4.0f, w.transform.rotation, true);
-		AttachPoint leftUp = new AttachPoint(w.transform.position - w.transform.forward * 4.0f + w.transform.up * 1.0f, w.transform.rotation, true);
-		AttachPoint leftDown = new AttachPoint(w.transform.position - w.transform.forward * 4.0f - w.transform.up * 1.0f, w.transform.rotation, true);
+		AttachPoint leftCenter = new AttachPoint(w.transform.position - w.transform.right * 4.0f, w.transform.rotation, true);
+		AttachPoint leftUp = new AttachPoint(w.transform.position - w.transform.right * 4.0f + w.transform.up * 1.0f, w.transform.rotation, true);
+		AttachPoint leftDown = new AttachPoint(w.transform.position - w.transform.right * 4.0f - w.transform.up * 1.0f, w.transform.rotation, true);
 
-		AttachPoint rightCenter = new AttachPoint(w.transform.position + w.transform.forward * 4.0f, w.transform.rotation, false);
-		AttachPoint rightUp = new AttachPoint(w.transform.position + w.transform.forward * 4.0f + w.transform.up * 1.0f, w.transform.rotation, false);
-		AttachPoint rightDown = new AttachPoint(w.transform.position + w.transform.forward * 4.0f - w.transform.up * 1.0f, w.transform.rotation, false);
+		AttachPoint rightCenter = new AttachPoint(w.transform.position + w.transform.right * 4.0f, w.transform.rotation, false);
+		AttachPoint rightUp = new AttachPoint(w.transform.position + w.transform.right * 4.0f + w.transform.up * 1.0f, w.transform.rotation, false);
+		AttachPoint rightDown = new AttachPoint(w.transform.position + w.transform.right * 4.0f - w.transform.up * 1.0f, w.transform.rotation, false);
 
 		//45Back
 		transform.position = leftPosition;
 		transform.rotation = w.transform.rotation;
-		transform.RotateAround (w.transform.position - w.transform.forward * 2.0f, Vector3.up, -45.0f);
+		transform.RotateAround (w.transform.position - w.transform.right * 2.0f, Vector3.up, -45.0f);
 		AttachPoint leftCenterBack = new AttachPoint (transform.position, transform.rotation, true);
-		AttachPoint leftUpBack = new AttachPoint (transform.position + w.transform.up * 1.0f, transform.rotation, true);
-		AttachPoint leftDownBack = new AttachPoint (transform.position - w.transform.up * 1.0f, transform.rotation, true);
+		AttachPoint leftUpBack = new AttachPoint (transform.position + w.transform.forward * 1.0f, transform.rotation, true);
+		AttachPoint leftDownBack = new AttachPoint (transform.position - w.transform.forward * 1.0f, transform.rotation, true);
 		
 		transform.rotation = w.transform.rotation;
 		transform.position = rightPosition;
-		transform.RotateAround (w.transform.position + w.transform.forward * 2.0f, Vector3.up, 45.0f);
+		transform.RotateAround (w.transform.position + w.transform.right * 2.0f, Vector3.up, 45.0f);
 		AttachPoint rightCenterBack = new AttachPoint (transform.position, transform.rotation, false);
 		AttachPoint rightUpBack = new AttachPoint (transform.position + w.transform.up * 1.0f, transform.rotation, false);
 		AttachPoint rightDownBack = new AttachPoint (transform.position - w.transform.up * 1.0f, transform.rotation, false);
+
+		//set back to normal
+		//This was left out, why don't we need it??
+		//transform.rotation = originalRotation;
+		//transform.position = originalPos;
 
 		//Both positions are filled
 		if (w.left != null && w.right != null)
@@ -103,7 +108,8 @@ public class Wall : Building
 		//Both positions are empty
 		else if (w.left == null && w.right == null)
 		{
-			AttachPoint[] attachPositions = { leftCenterBack, leftUpBack, leftDownBack, leftCenterForward, leftUpForward, leftDownForward, leftCenter, leftUp, leftDown, rightCenter, rightUp, rightDown, rightCenterForward, rightUpForward, rightDownForward,rightCenterBack, rightUpBack, rightDownBack };
+			//AttachPoint[] attachPositions = { leftCenterBack, leftUpBack, leftDownBack, leftCenterForward, leftUpForward, leftDownForward, leftCenter, leftUp, leftDown, rightCenter, rightUp, rightDown, rightCenterForward, rightUpForward, rightDownForward,rightCenterBack, rightUpBack, rightDownBack };
+			AttachPoint[] attachPositions = { leftCenterBack, leftUpBack, leftDownBack };
 			return attachPositions;
 		}
 
@@ -142,6 +148,7 @@ public class Wall : Building
 			AttachPoint[] attachPositions = GetAttachPositions(w);
 			foreach (AttachPoint attachPoint in attachPositions)
 			{
+				Debug.Log("FloatPoint is " + floatPoint);
 				float distance = Vector3.Distance(attachPoint.position, floatPoint.transform.position);
 				//checks within distance and if not already filled
 				if (distance < min)
