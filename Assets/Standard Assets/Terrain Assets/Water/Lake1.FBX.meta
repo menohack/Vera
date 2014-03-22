@@ -1,34 +1,13 @@
 fileFormatVersion: 2
-guid: 8d8e3225df02bcf45b4af47e1abcd127
+guid: 1c64140e49465b84e958cf8c07812462
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
-    100000: terrain
-    100002: terrain_MeshPart0
-    100004: terrain_MeshPart1
-    100006: //RootNode
-    100008: lakes
-    100010: lakes_MeshPart0
-    100012: lakes_MeshPart1
-    400000: terrain
-    400002: terrain_MeshPart0
-    400004: terrain_MeshPart1
-    400006: //RootNode
-    400008: lakes
-    400010: lakes_MeshPart0
-    400012: lakes_MeshPart1
-    2300000: terrain_MeshPart0
-    2300002: terrain_MeshPart1
-    2300004: lakes_MeshPart0
-    2300006: lakes_MeshPart1
-    3300000: terrain_MeshPart0
-    3300002: terrain_MeshPart1
-    3300004: lakes_MeshPart0
-    3300006: lakes_MeshPart1
-    4300000: terrain_MeshPart0
-    4300002: terrain_MeshPart1
-    4300004: lakes_MeshPart0
-    4300006: lakes_MeshPart1
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Plane002
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -48,7 +27,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: .00999999978
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1

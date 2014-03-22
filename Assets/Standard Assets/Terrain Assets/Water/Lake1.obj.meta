@@ -1,34 +1,15 @@
 fileFormatVersion: 2
-guid: 8d8e3225df02bcf45b4af47e1abcd127
+guid: ae22c292368f45c40b062dbe3d9d94cf
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
-    100000: terrain
-    100002: terrain_MeshPart0
-    100004: terrain_MeshPart1
-    100006: //RootNode
-    100008: lakes
-    100010: lakes_MeshPart0
-    100012: lakes_MeshPart1
-    400000: terrain
-    400002: terrain_MeshPart0
-    400004: terrain_MeshPart1
-    400006: //RootNode
-    400008: lakes
-    400010: lakes_MeshPart0
-    400012: lakes_MeshPart1
-    2300000: terrain_MeshPart0
-    2300002: terrain_MeshPart1
-    2300004: lakes_MeshPart0
-    2300006: lakes_MeshPart1
-    3300000: terrain_MeshPart0
-    3300002: terrain_MeshPart1
-    3300004: lakes_MeshPart0
-    3300006: lakes_MeshPart1
-    4300000: terrain_MeshPart0
-    4300002: terrain_MeshPart1
-    4300004: lakes_MeshPart0
-    4300006: lakes_MeshPart1
+    100000: //RootNode
+    100002: Plane002
+    400000: //RootNode
+    400002: Plane002
+    2300000: Plane002
+    3300000: Plane002
+    4300000: Plane002
     9500000: //RootNode
   materials:
     importMaterials: 1
