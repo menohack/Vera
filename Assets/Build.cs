@@ -13,6 +13,8 @@ public class Build : MonoBehaviour {
 	Object[] buildings;
 	int buildingIndex = 0;
 
+	Inventory inventory;
+
 	// Use this for initialization
 	void Start () {
 		//Load the building prefabs
@@ -22,6 +24,8 @@ public class Build : MonoBehaviour {
 		LoadItem("Rock");
 		LoadItem("Wall");
 		//LoadItem("Floor");
+
+		inventory = gameObject.GetComponent<Inventory>();
 	}
 
 	void OnApplicationQuit()
@@ -203,8 +207,9 @@ public class Build : MonoBehaviour {
 							hp.Damage(25);
 							hp.IsAlive();
 					}
-					else if (hit.transform.tag == "Ore")
+					else if (hit.transform.tag == "Ore" || hit.transform.tag == "Tree")
 					{
+						/*
 						GameObject item = hit.transform.gameObject;
 
 						item.transform.parent = transform;
@@ -214,6 +219,19 @@ public class Build : MonoBehaviour {
 
 						hasItem = true;
 						itemHeld = item;
+						*/
+						Resource resource = hit.transform.gameObject.GetComponent<Resource>();
+						int gatherCount = resource.Gather(1);
+
+						if (gatherCount > 0)
+						{
+							if (resource is Tree)
+								inventory.AddWood(gatherCount);
+							else if (resource is Ore)
+								inventory.AddOre(gatherCount);
+							else
+								Debug.Log("Error!!!!!!!11eleven!");
+						}
 					}
 				}
 			}
