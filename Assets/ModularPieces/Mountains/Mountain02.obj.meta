@@ -7,19 +7,24 @@ ModelImporter:
     100002: Plane003
     100004: Plane005
     100006: mt2
+    100008: mt22
     400000: //RootNode
     400002: Plane003
     400004: Plane005
     400006: mt2
+    400008: mt22
     2300000: Plane003
     2300002: Plane005
     2300004: mt2
+    2300006: mt22
     3300000: Plane003
     3300002: Plane005
     3300004: mt2
+    3300006: mt22
     4300000: Plane003
     4300002: Plane005
     4300004: mt2
+    4300006: mt22
     9500000: //RootNode
   materials:
     importMaterials: 1
