@@ -5,11 +5,26 @@ ModelImporter:
   fileIDToRecycleName:
     100000: Box047
     100002: //RootNode
+    100004: Plane003
+    100006: Plane004
+    100008: mt1
     400000: Box047
     400002: //RootNode
+    400004: Plane003
+    400006: Plane004
+    400008: mt1
     2300000: Box047
+    2300002: Plane003
+    2300004: Plane004
+    2300006: mt1
     3300000: Box047
+    3300002: Plane003
+    3300004: Plane004
+    3300006: mt1
     4300000: Box047
+    4300002: Plane003
+    4300004: Plane004
+    4300006: mt1
     9500000: //RootNode
   materials:
     importMaterials: 1
