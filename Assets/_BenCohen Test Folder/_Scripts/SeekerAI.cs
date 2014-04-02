@@ -4,7 +4,7 @@ using Pathfinding;
 
 
 public class SeekerAI : AIPath {
-
+	
 	public override void OnTargetReached () {
 		Debug.Log ("target reached");
 		//End of path has been reached
@@ -13,5 +13,7 @@ public class SeekerAI : AIPath {
 		//You can also create a new script which inherits from this one
 		//and override the function in that script
 	}
+
+
 
 }

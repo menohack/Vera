@@ -1,11 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_BenCohen Test Folder/_Scripts/SeekerAI.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_BenCohen Test Folder/_Scripts/TargetObject.cs">
     <Files>
-      <File FileName="Assets/_BenCohen Test Folder/_Scripts/SeekerAI.cs" Line="9" Column="15" />
-      <File FileName="Assets/AstarPathfindingProject/Core/AI/Seeker.cs" Line="253" Column="18" />
-      <File FileName="Assets/AstarPathfindingProject/Utilities/AstarProfiler.cs" Line="72" Column="45" />
-      <File FileName="Assets/AstarPathfindingProject/Core/AI/AIPath.cs" Line="5" Column="18" />
+      <File FileName="Assets/_BenCohen Test Folder/_Scripts/SeekerAI.cs" Line="1" Column="1" />
+      <File FileName="Assets/AstarPathfindingProject/Core/AI/Seeker.cs" Line="1" Column="1" />
+      <File FileName="Assets/AstarPathfindingProject/Utilities/AstarProfiler.cs" Line="1" Column="1" />
+      <File FileName="Assets/AstarPathfindingProject/Core/AI/AIPath.cs" Line="1" Column="1" />
+      <File FileName="Assets/AstarPathfindingProject/ExampleScenes/ExampleScripts/TargetMover.cs" Line="1" Column="1" />
+      <File FileName="Assets/_BenCohen Test Folder/_Scripts/TargetObject.cs" Line="4" Column="15" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
