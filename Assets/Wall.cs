@@ -18,6 +18,16 @@ public class Wall : Building
 	/// </summary>
 	public Wall left = null;
 
+	/// <summary>
+	/// The wood cost to build a wall.
+	/// </summary>
+	public static int WALL_COST_WOOD = 1;
+
+	/// <summary>
+	/// The ore cost to build a wall.
+	/// </summary>
+	public static int WALL_COST_ORE = 1;
+
 
 	/// <summary>
 	/// A data structure that stores a position, rotation, and whether it is to the left or right

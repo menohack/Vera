@@ -16,6 +16,16 @@ public class Inventory : MonoBehaviour {
 	
 	}
 
+	public int GetWood()
+	{
+		return wood;
+	}
+
+	public int GetOre()
+	{
+		return ore;
+	}
+
 	public void AddWood(int units)
 	{
 		if (units < 0)
