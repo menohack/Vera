@@ -119,21 +119,21 @@ public class Wall : Building
 		else if (w.left == null && w.right == null)
 		{
 			//AttachPoint[] attachPositions = { leftCenterBack, leftUpBack, leftDownBack, leftCenterForward, leftUpForward, leftDownForward, leftCenter, leftUp, leftDown, rightCenter, rightUp, rightDown, rightCenterForward, rightUpForward, rightDownForward,rightCenterBack, rightUpBack, rightDownBack };
-			AttachPoint[] attachPositions = { leftCenterBack, leftUpBack, leftDownBack };
+			AttachPoint[] attachPositions = { rightCenter, rightUp, rightDown, leftCenter, leftUp, leftDown };
 			return attachPositions;
 		}
 
 		//The right position is open
 		else if (w.right == null)
 		{
-			AttachPoint[] attachPositions = { rightCenter, rightUp, rightDown, rightCenterForward, rightUpForward, rightDownForward,rightCenterBack, rightUpBack, rightDownBack };
+			AttachPoint[] attachPositions = { rightCenter, rightUp, rightDown/*, rightCenterForward, rightUpForward, rightDownForward,rightCenterBack, rightUpBack, rightDownBack*/ };
 			return attachPositions;
 		}
 
 		//The left position is open
 		else
 		{
-			AttachPoint[] attachPositions = { leftCenterBack, leftUpBack, leftDownBack, leftCenterForward, leftUpForward, leftDownForward, leftCenter, leftUp, leftDown };
+			AttachPoint[] attachPositions = { leftCenter, leftUp, leftDown /*leftCenterBack, leftUpBack, leftDownBack, leftCenterForward, leftUpForward, leftDownForward*/ };
 			return attachPositions;
 		}
 	}
