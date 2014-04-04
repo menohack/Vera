@@ -20,6 +20,11 @@ public class Melee : MonoBehaviour {
 	public int DamageValue = 10;
 
 	/// <summary>
+	/// Force applied to a hit in "Newtons."
+	/// </summary>
+	public float myForce = 500f;
+
+	/// <summary>
 	/// Draw Raycasts on Debug.
 	/// </summary>
 	public bool debug = false;
@@ -28,7 +33,7 @@ public class Melee : MonoBehaviour {
 		//Hardcoded KeyCode for prelim purposes
 		if (Input.GetKeyDown(KeyCode.V))
 		{
-			HashSet<Health> thingsWeHit = new HashSet<Health>(); //store each healthcomponent we hit
+			HashSet<GameObject> thingsWeHit = new HashSet<GameObject>(); //store each healthcomponent we hit
 
 			for (int i = 0; i < 5; i++)
 			{
@@ -47,18 +52,32 @@ public class Melee : MonoBehaviour {
 				//for each thing we hit, add it to our hash if it isn't already there
 				foreach (RaycastHit objHit in hits)
 				{
-					Health objHealth = objHit.transform.gameObject.GetComponent<Health>();
-					if (objHealth != null && !thingsWeHit.Contains(objHealth))
+					GameObject obj = objHit.transform.gameObject;
+					if (!thingsWeHit.Contains(obj))
 					{
-						thingsWeHit.Add(objHealth);
+						thingsWeHit.Add(obj);
 					}
 				}
 			}
 
 			//Go through and apply damage to all things we hit
-			foreach (Health hp in thingsWeHit)
+			foreach (GameObject hit in thingsWeHit)
 			{
-				hp.Damage(DamageValue);
+				//Knockback
+				Rigidbody myBodyIsRigid = hit.GetComponent<Rigidbody>();
+				if (myBodyIsRigid != null)
+				{
+					Vector3 displace = hit.transform.position - transform.position;
+					displace.Normalize();
+					myBodyIsRigid.AddForce(displace * myForce);
+				}
+
+				//Damage
+				Health myHealth = hit.GetComponent<Health>();
+				if (myHealth != null)
+				{
+					myHealth.Damage(DamageValue);
+				}
 			}
 
 		}
