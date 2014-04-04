@@ -1,5 +1,5 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 26.03.2014 19:19:56
+# File Created: 04.04.2014 15:16:36
 
 newmtl woodPile
 	Ns 10.0000
@@ -12,5 +12,5 @@ newmtl woodPile
 	Kd 0.5882 0.5882 0.5882
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka C:\Users\Jon\Documents\GitHub\Vera\Assets\ModularPieces\Wood\WoodDIFF.tga
-	map_Kd C:\Users\Jon\Documents\GitHub\Vera\Assets\ModularPieces\Wood\WoodDIFF.tga
+	map_Ka D:\Github\Vera\Assets\ModularPieces\Wood\WoodDIFF.tga
+	map_Kd D:\Github\Vera\Assets\ModularPieces\Wood\WoodDIFF.tga
