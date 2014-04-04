@@ -27,7 +27,6 @@ public class DayNight : MonoBehaviour {
 		timeInSeconds += Time.deltaTime; //just to let us know how many seconds have passed
 
 		float time = timer - Mathf.Floor (timer);
-		Debug.Log (time);
 		//0 is midnight, .5 is always noon
 		if (time < .25)
 		{
