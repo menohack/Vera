@@ -146,7 +146,7 @@ public class ThirdPersonController : MonoBehaviour
 	{
 		if (jumpCheck)
 			grounded = jumpCheck.IsGrounded();
-		Debug.Log(grounded);
+//		Debug.Log(grounded);
 		/*
 		grounded = Physics.Raycast (
 			target.transform.position + target.transform.up * -groundedCheckOffset,
