@@ -18,16 +18,6 @@ public class Wall : Building
 	/// </summary>
 	public Wall left = null;
 
-	/// <summary>
-	/// The wood cost to build a wall.
-	/// </summary>
-	public static int WALL_COST_WOOD = 1;
-
-	/// <summary>
-	/// The ore cost to build a wall.
-	/// </summary>
-	public static int WALL_COST_ORE = 1;
-
 
 	/// <summary>
 	/// A data structure that stores a position, rotation, and whether it is to the left or right
@@ -119,21 +109,21 @@ public class Wall : Building
 		else if (w.left == null && w.right == null)
 		{
 			//AttachPoint[] attachPositions = { leftCenterBack, leftUpBack, leftDownBack, leftCenterForward, leftUpForward, leftDownForward, leftCenter, leftUp, leftDown, rightCenter, rightUp, rightDown, rightCenterForward, rightUpForward, rightDownForward,rightCenterBack, rightUpBack, rightDownBack };
-			AttachPoint[] attachPositions = { rightCenter, rightUp, rightDown, leftCenter, leftUp, leftDown };
+			AttachPoint[] attachPositions = { leftCenterBack, leftUpBack, leftDownBack };
 			return attachPositions;
 		}
 
 		//The right position is open
 		else if (w.right == null)
 		{
-			AttachPoint[] attachPositions = { rightCenter, rightUp, rightDown/*, rightCenterForward, rightUpForward, rightDownForward,rightCenterBack, rightUpBack, rightDownBack*/ };
+			AttachPoint[] attachPositions = { rightCenter, rightUp, rightDown, rightCenterForward, rightUpForward, rightDownForward,rightCenterBack, rightUpBack, rightDownBack };
 			return attachPositions;
 		}
 
 		//The left position is open
 		else
 		{
-			AttachPoint[] attachPositions = { leftCenter, leftUp, leftDown /*leftCenterBack, leftUpBack, leftDownBack, leftCenterForward, leftUpForward, leftDownForward*/ };
+			AttachPoint[] attachPositions = { leftCenterBack, leftUpBack, leftDownBack, leftCenterForward, leftUpForward, leftDownForward, leftCenter, leftUp, leftDown };
 			return attachPositions;
 		}
 	}
@@ -158,6 +148,7 @@ public class Wall : Building
 			AttachPoint[] attachPositions = GetAttachPositions(w);
 			foreach (AttachPoint attachPoint in attachPositions)
 			{
+				Debug.Log("FloatPoint is " + floatPoint);
 				float distance = Vector3.Distance(attachPoint.position, floatPoint.transform.position);
 				//checks within distance and if not already filled
 				if (distance < min)
@@ -211,9 +202,15 @@ public class Wall : Building
 	public void SetWall()
 	{
 		if ((this.right != null) && (this.right.left == null))
+		{
 			this.right.left = this;
+			Debug.Log ("On The Right Of Parent");
+		}
 		if ((this.left != null) && (this.left.right == null))
+		{
 			this.left.right = this;
+			Debug.Log ("On The Left Of Parent");
+		}
 	}
 
 	public void DestroyUpdate()
