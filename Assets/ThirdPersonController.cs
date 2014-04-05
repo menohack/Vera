@@ -34,8 +34,6 @@ public class ThirdPersonController : MonoBehaviour
 		
 		
 	private bool grounded, walking;
-
-	private JumpCheck jumpCheck;
 	
 	
 	public bool Grounded
@@ -81,10 +79,6 @@ public class ThirdPersonController : MonoBehaviour
 		target.freezeRotation = true;
 			// We will be controlling the rotation of the target, so we tell the physics system to leave it be
 		walking = false;
-
-		jumpCheck = gameObject.GetComponentInChildren<JumpCheck>();
-		if (!jumpCheck)
-			Debug.LogError("Unable to find JumpCheck");
 	}
 	
 	
@@ -144,17 +138,12 @@ public class ThirdPersonController : MonoBehaviour
 	void FixedUpdate ()
 	// Handle movement here since physics will only be calculated in fixed frames anyway
 	{
-		if (jumpCheck)
-			grounded = jumpCheck.IsGrounded();
-//		Debug.Log(grounded);
-		/*
 		grounded = Physics.Raycast (
 			target.transform.position + target.transform.up * -groundedCheckOffset,
 			target.transform.up * -1,
 			groundedDistance,
 			groundLayers
 		);
-		 * */
 			// Shoot a ray downward to see if we're touching the ground
 		
 		if (grounded)
