@@ -5,7 +5,3 @@
 *.csproj
 *.sln
 *.userprefs
-
-Assets/_BenCohen Test Folder/Prefabs/Wolf.prefab
-
-Assets/DayNight.cs
