@@ -12,7 +12,7 @@ public class Melee : MonoBehaviour {
 	/// <summary>
 	/// Sphere diameter of return code
 	/// </summary>
-	public static float sphereRadius = 0.3f;
+	public static float sphereRadius = 0.2f;
 
 	/// <summary>
 	/// The amount of damage done by the melee attack.
