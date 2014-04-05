@@ -39,7 +39,6 @@ public class JumpCheck : MonoBehaviour
 		//If the item overlaps a terrain object
 		if (other.gameObject.layer == layerMask)
 			overlapCount++;
-		Debug.Log("Derp");
 	}
 
 	/// <summary>

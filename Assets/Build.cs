@@ -12,7 +12,7 @@ public class Build : MonoBehaviour {
 	/// <summary>
 	/// The currently held item, which can be a building as well.
 	/// </summary>
-	GameObject itemHeld;
+	GameObject itemHeld = null;
 
 	/// <summary>
 	/// If the player is holding ("ghosting") a potential building.
@@ -70,7 +70,7 @@ public class Build : MonoBehaviour {
 		GameObject wall = Instantiate(buildings[buildingIndex]) as GameObject;
 		Item i = wall.GetComponent<Item>();
 		if (i != null)
-			i.SetFloatPoint(transform, new Vector3(1.75f, -1.05f, 2.0f), Quaternion.Euler(-90.0f, 0, 0));
+			i.SetFloatPoint(transform, new Vector3(0f, -1.05f, 2.0f), Quaternion.Euler(-90.0f, 0, 0));
 		wall.name = buildings[buildingIndex].name;
 		if (wall.rigidbody)
 			wall.rigidbody.isKinematic = true;
@@ -192,11 +192,7 @@ public class Build : MonoBehaviour {
 			}
 			else if (Input.GetKeyDown(KeyCode.R))
 			{
-				GameObject[] gos = GameObject.FindGameObjectsWithTag("Ore");
-				foreach (GameObject go in gos)
-					Destroy(go);
-
-				gos = GameObject.FindGameObjectsWithTag("Building");
+				GameObject[] gos = GameObject.FindGameObjectsWithTag("Building");
 				foreach (GameObject go in gos)
 					Destroy(go);
 
