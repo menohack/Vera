@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Enemy : MonoBehaviour {
 
@@ -10,9 +11,38 @@ public class Enemy : MonoBehaviour {
 
 	public float maxFollowDistance = 20.0f;
 
+	GameObject target = null;
+
+	public float attackDistance = 12;
+
+	public TimeSpan attackCooldown = new TimeSpan(0, 0, 1);
+
+	DateTime lastAttack;
+
+	public float attackDamage = 10.0f;
+
 	// Use this for initialization
 	void Start () {
 	
+	}
+
+	void Update()
+	{
+
+		if (target != null && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
+		{
+			float distance = Vector3.Distance(target.gameObject.transform.position, transform.position);
+			if (distance < attackDistance)
+			{
+				Health health = target.GetComponent<Health>();
+				if (health)
+				{
+					Debug.Log("Enemy attacked");
+					health.Damage(attackDamage);
+					lastAttack = DateTime.Now;
+				}
+			}
+		}
 	}
 	
 	// Update is called once per frame
@@ -21,7 +51,7 @@ public class Enemy : MonoBehaviour {
 		
 		if (targets.Length > 0)
 		{
-			GameObject target = targets[0];
+			target = targets[0];
 			float minDistance = Vector3.Distance(targets[0].gameObject.transform.position, transform.position);
 			for (int i=1; i < targets.Length; i++)
 			{
@@ -34,10 +64,11 @@ public class Enemy : MonoBehaviour {
 			}
 
 			
-			transform.LookAt(target.transform.position, Vector3.up);
+			//transform.LookAt(target.transform.position, Vector3.up);
 			if (minDistance < maxFollowDistance && minDistance > minFollowDistance)
 				//rigidbody.AddForce(transform.forward * MOVE_FORCE * Time.fixedDeltaTime, ForceMode.VelocityChange);
-				transform.position += transform.forward * Time.fixedDeltaTime * speed;
+				//transform.position += transform.forward * Time.fixedDeltaTime * speed;
+				transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.fixedDeltaTime);
 			
 		}
 			
