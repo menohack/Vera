@@ -4,159 +4,125 @@ using System.Collections.Generic;
 
 public class Build : MonoBehaviour {
 
-	public Transform buildObject;
-	public float rayDistance = 5.0f;
-	bool hasItem = false;
-	GameObject itemHeld;
+	/// <summary>
+	/// The distance of a ray in front of the character for mining and picking up objects.
+	/// </summary>
+	public static float RAYCAST_DISTANCE = 5.0f;
+
+	/// <summary>
+	/// The currently held item, which can be a building as well.
+	/// </summary>
+	GameObject itemHeld = null;
+
+	/// <summary>
+	/// If the player is holding ("ghosting") a potential building.
+	/// </summary>
 	bool hasBuilding = false;
 
+	/// <summary>
+	/// The list of building prefabs available to the player.
+	/// </summary>
 	Object[] buildings;
+
+	/// <summary>
+	/// The index of the currently selected building from buildings.
+	/// </summary>
 	int buildingIndex = 0;
 
-	// Use this for initialization
+	/// <summary>
+	/// The Player's inventory.
+	/// </summary>
+	Inventory inventory;
+
+	/// <summary>
+	/// Load the building prefabs (used for instantiating them) and the inventory.
+	/// </summary>
 	void Start () {
 		//Load the building prefabs
 		buildings = Resources.LoadAll("Buildings");
 
-		//Load the building instances
-		LoadItem("Rock");
-		LoadItem("Wall");
-		//LoadItem("Floor");
+		inventory = gameObject.GetComponent<Inventory>();
 	}
 
-	void OnApplicationQuit()
-	{
-		StoreAllItems();
-	}
 
-	void LoadItem(string name)
-	{
-		//Debug.Log("Looking for " + name + "...");
-		int i = 0;
-		while (PlayerPrefs.HasKey(name + i))
-		{
-			string s = PlayerPrefs.GetString(name + i++);
-			//Debug.Log("Found " + s);
-			string[] floats = s.Split(' ');
-
-			Vector3 position = new Vector3(float.Parse(floats[0]), float.Parse(floats[1]), float.Parse(floats[2]));
-			Quaternion rotation = new Quaternion(float.Parse(floats[3]), float.Parse(floats[4]), float.Parse(floats[5]), float.Parse(floats[6]));
-
-			Object resource = null;
-			foreach (Object o in buildings)
-			{
-				GameObject go = o as GameObject;
-				if (go.name == name)
-					resource = o;
-			}
-
-			if (resource != null)
-			{
-				//Debug.Log("Instantiating " + name);
-				GameObject building = Instantiate(resource) as GameObject;
-				building.transform.position = position;
-				building.transform.rotation = rotation;
-				building.name = name;
-
-				Building b = building.GetComponent<Building>();
-				if (b)
-					b.Place();
-			}
-		}
-	}
-
+	/// <summary>
+	/// Scrolls through the array of buildings by delta positions. Delta may be negative.
+	/// </summary>
+	/// <param name="delta">A positive or negative value indicating the number of array positions to move.</param>
+	/// <returns>The new index of the array.</returns>
 	int ScrollBuildings(int delta)
 	{
-		int index = buildingIndex + delta;
-		if (index >= buildings.Length)
-			index = index % buildings.Length;
-		else if (index < 0)
-			index = buildings.Length - (-index) % buildings.Length;
+		int index;
+		if (buildingIndex + delta == 0)
+			return 0;
+		else if (buildingIndex + delta < 0)
+			index = buildings.Length - ((buildingIndex + delta) * -1) % buildings.Length -1;
+		else
+			index = (buildingIndex + delta) % buildings.Length;
 		return index;
 	}
 
+	/// <summary>
+	/// Spawn a "ghost" building in front of the player for placement.
+	/// </summary>
 	void EquipBuilding()
 	{
 		GameObject wall = Instantiate(buildings[buildingIndex]) as GameObject;
 		Item i = wall.GetComponent<Item>();
 		if (i != null)
-			i.SetFloatPoint(transform, new Vector3(1.75f, -1.05f, 2.0f), Quaternion.Euler(-90.0f, 0, 0));
+			i.SetFloatPoint(transform, new Vector3(0f, -1.05f, 2.0f), Quaternion.Euler(-90.0f, 0, 0));
 		wall.name = buildings[buildingIndex].name;
 		if (wall.rigidbody)
 			wall.rigidbody.isKinematic = true;
 
-		hasItem = true;
 		hasBuilding = true;
 		itemHeld = wall;
 	}
 
 	/// <summary>
-	/// Saves an item to PlayerPrefs so that it is loaded the next time the game is started.
+	/// Places the currently-held item in its current position.
 	/// </summary>
-	/// <param name="item"></param>
-	void StoreItem(GameObject item, string key)
-	{
-		Vector3 p = item.transform.position;
-		Quaternion r = item.transform.rotation;
-		string itemString = string.Format("{0} {1} {2} {3} {4} {5} {6}", p.x, p.y, p.z, r.x, r.y, r.z, r.w);
-		//Debug.Log(key + ":" + itemString);
-		PlayerPrefs.SetString(key, itemString);
-	}
-
-	void StoreObjectsWithTag(string tag)
-	{
-		GameObject[] o = GameObject.FindGameObjectsWithTag(tag);
-
-		Dictionary<string, int> indices = new Dictionary<string, int>();
-
-		for (int i = 0; i < o.Length; i++)
-		{
-			int index = 0;
-			if (indices.ContainsKey(o[i].name))
-				index = indices[o[i].name];
-			
-			indices[o[i].name] = index+1;
-
-			StoreItem(o[i], o[i].name + index);
-		}
-	}
-
-	void StoreAllItems()
-	{
-		StoreObjectsWithTag("Ore");
-		StoreObjectsWithTag("Building");
-	}
-
 	void PlaceItem()
 	{
+		Wall wallScript = itemHeld.GetComponent<Wall>();
+		if (wallScript)
+		{
+			if (inventory && inventory.GetOre() >= Wall.WALL_COST_ORE && inventory.GetWood() >= Wall.WALL_COST_WOOD)
+			{
+				inventory.RemoveOre(Wall.WALL_COST_ORE);
+				inventory.RemoveWood(Wall.WALL_COST_WOOD);
+			}
+			else
+				return;
+		}
+
 		Item itemScript = itemHeld.GetComponent<Item>();
+		
 		if (itemScript && itemScript.Place())
 		{
 			if (itemHeld.rigidbody)
 				itemHeld.rigidbody.isKinematic = false;
 			itemHeld.collider.enabled = true;
 
-			Wall wallScript = itemHeld.GetComponent<Wall>();
+			
 			if (wallScript)
 			{
 				wallScript.SetWall();
 			}
-			//Save the item to file
-			//StoreItem(itemHeld);
-			StoreAllItems();
 
-			hasItem = false;
 			hasBuilding = false;
 			itemHeld = null;
 		}
 	}
 
-	// Update is called once per frame
+	/// <summary>
+	/// The logic for spawning objects and attacking. Part of this should be extracted to more appropriate classes.
+	/// </summary>
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.G))
 			Networking.Instance.GetMap();
 
-		if (hasItem)
+		if (itemHeld != null)
 		{
 			float scroll = Input.GetAxis("Mouse ScrollWheel");
 			if (Input.GetButtonDown("Fire1"))
@@ -167,7 +133,7 @@ public class Build : MonoBehaviour {
 			else if (hasBuilding && Input.GetButtonDown("Fire2"))
 			{
 				Destroy(itemHeld);
-				hasItem = false;
+				itemHeld = null;
 				hasBuilding = false;
 			}
 			else if (hasBuilding && scroll != 0.0f)
@@ -192,7 +158,7 @@ public class Build : MonoBehaviour {
 
 
 				//TODO: destructible (buildings) and attackable (NPC/other player) tags?
-				if (Physics.Raycast(transform.position, transform.forward, out hit, rayDistance, layerMask))
+				if (Physics.Raycast(transform.position, transform.forward, out hit, RAYCAST_DISTANCE, layerMask))
 				{
 					if (hit.transform.tag == "Building")
 					{
@@ -203,17 +169,20 @@ public class Build : MonoBehaviour {
 							hp.Damage(25);
 							hp.IsAlive();
 					}
-					else if (hit.transform.tag == "Ore")
+					else if (hit.transform.tag == "Ore" || hit.transform.tag == "Tree")
 					{
-						GameObject item = hit.transform.gameObject;
+						Resource resource = hit.transform.gameObject.GetComponent<Resource>();
+						int gatherCount = resource.Gather(1);
 
-						item.transform.parent = transform;
-						item.transform.localPosition = new Vector3(0f, 1.0f, 3.0f);
-						if (item.rigidbody)
-							item.rigidbody.isKinematic = true;
-
-						hasItem = true;
-						itemHeld = item;
+						if (gatherCount > 0)
+						{
+							if (resource is Tree)
+								inventory.AddWood(gatherCount);
+							else if (resource is Ore)
+								inventory.AddOre(gatherCount);
+							else
+								Debug.Log("Error!!!!!!!11eleven!");
+						}
 					}
 				}
 			}
@@ -223,11 +192,7 @@ public class Build : MonoBehaviour {
 			}
 			else if (Input.GetKeyDown(KeyCode.R))
 			{
-				GameObject[] gos = GameObject.FindGameObjectsWithTag("Ore");
-				foreach (GameObject go in gos)
-					Destroy(go);
-
-				gos = GameObject.FindGameObjectsWithTag("Building");
+				GameObject[] gos = GameObject.FindGameObjectsWithTag("Building");
 				foreach (GameObject go in gos)
 					Destroy(go);
 
