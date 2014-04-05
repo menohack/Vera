@@ -6,9 +6,9 @@ public class DayNight : MonoBehaviour {
 	/// <summary>
 	/// The timer.
 	/// </summary>
-	public float timer = 0;
+	private float timer = 0;
 
-	public float timeInSeconds = 0;
+	private float timeInSeconds = 0;
 
 	public Color dayColor;
 	public Color nightColor;
@@ -18,7 +18,7 @@ public class DayNight : MonoBehaviour {
 	/// <summary>
 	/// The length of the day in seconds
 	/// </summary>
-	private float dayLength = 100;
+	public float dayLength = 100;
 	
 	// Update is called once per frame
 	void Update () {
