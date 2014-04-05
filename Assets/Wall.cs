@@ -158,6 +158,7 @@ public class Wall : Building
 			AttachPoint[] attachPositions = GetAttachPositions(w);
 			foreach (AttachPoint attachPoint in attachPositions)
 			{
+				Debug.Log("FloatPoint is " + floatPoint);
 				float distance = Vector3.Distance(attachPoint.position, floatPoint.transform.position);
 				//checks within distance and if not already filled
 				if (distance < min)
@@ -211,9 +212,15 @@ public class Wall : Building
 	public void SetWall()
 	{
 		if ((this.right != null) && (this.right.left == null))
+		{
 			this.right.left = this;
+			Debug.Log ("On The Right Of Parent");
+		}
 		if ((this.left != null) && (this.left.right == null))
+		{
 			this.left.right = this;
+			Debug.Log ("On The Left Of Parent");
+		}
 	}
 
 	public void DestroyUpdate()
