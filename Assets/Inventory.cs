@@ -3,12 +3,17 @@ using System.Collections;
 
 public class Inventory : MonoBehaviour {
 
+	public int startingWood = 20;
+
+	public int startingOre = 20;
+
 	int wood = 0;
 	int ore = 0;
 
 	// Use this for initialization
 	void Start () {
-	
+		wood = startingWood;
+		ore = startingOre;
 	}
 	
 	// Update is called once per frame

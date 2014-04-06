@@ -3,33 +3,10 @@ using System.Collections;
 
 public abstract class Building : Item {
 
-
+	/// <summary>
+	/// The hit points of the building.
+	/// </summary>
 	private float health = 100f;
-
-
-
-	public void Damage(float dmg)
-	{
-		health -= dmg;
-//		Debug.Log ("Damage: " + dmg);
-//		Debug.Log ("MyHealth: " + health);
-	}
-
-	public bool IsAlive()
-	{
-		if (health <= 0)
-		{
-			Wall wscript = gameObject.GetComponent<Wall>();
-			if (wscript)
-			{
-				wscript.DestroyUpdate();
-			}
-			Destroy(gameObject);
-			return false;
-		}
-		else
-			return true;
-	}
 
 	/// <summary>
 	/// Counts the number of intersections with the environment. Zero means no intersection.
@@ -40,8 +17,6 @@ public abstract class Building : Item {
 	/// Whether this item has been placed yet.
 	/// </summary>
 	bool placed = false;
-
-	protected bool attached = false;
 
 	/// <summary>
 	/// The layer of the environment.
@@ -83,15 +58,30 @@ public abstract class Building : Item {
 		
 	}
 
-
-
+	/// <summary>
+	/// Damages the building for dmg damage.
+	/// </summary>
+	/// <param name="dmg">The positive number of damage points to inflict.</param>
+	public void Damage(float dmg)
+	{
+		health -= dmg;
+	}
 
 	/// <summary>
-	/// Attempts to create a transparent ghost of the building to show where it will be built.
+	/// Checks if the building is alive. If it is not it destroys it.
 	/// </summary>
-	/// <returns>True if the building can be attached to something, false otherwise.</returns>
-	public abstract bool GhostAttach();
-	
+	/// <returns>True if the building is alive.</returns>
+	public bool IsAlive()
+	{
+		if (health <= 0)
+		{
+			Destroy(gameObject);
+			return false;
+		}
+		else
+			return true;
+	}
+
 	/// <summary>
 	/// Changes the color of the object & Destroys the object when health <= 0
 	/// </summary>
@@ -100,7 +90,7 @@ public abstract class Building : Item {
 		//If the item has not been placed make it transparent and either red or green
 		if (!placed)
 		{
-			if (GhostAttach() || CanPlace())
+			if (CanPlace())
 				renderer.material.color = green;
 			else
 				renderer.material.color = red;
@@ -134,9 +124,6 @@ public abstract class Building : Item {
 	/// <returns>True if the item can be placed.</returns>
 	protected override bool CanPlace()
 	{
-		if (attached)
-			return true;
-
 		foreach (GameObject g in GameObject.FindGameObjectsWithTag("Building"))
 			if (g != gameObject && Vector3.Distance(g.transform.position, transform.position) < minBuildingDistance)
 				return false;

@@ -104,11 +104,6 @@ public class Build : MonoBehaviour {
 				itemHeld.rigidbody.isKinematic = false;
 			itemHeld.collider.enabled = true;
 
-			
-			if (wallScript)
-			{
-				wallScript.SetWall();
-			}
 
 			hasBuilding = false;
 			itemHeld = null;
@@ -195,8 +190,6 @@ public class Build : MonoBehaviour {
 				GameObject[] gos = GameObject.FindGameObjectsWithTag("Building");
 				foreach (GameObject go in gos)
 					Destroy(go);
-
-				PlayerPrefs.DeleteAll();
 			}
 		}
 		

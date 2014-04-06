@@ -21,15 +21,25 @@ public class Enemy : MonoBehaviour {
 
 	public float attackDamage = 10.0f;
 
+	int ignoreLayerMask;
+
 	// Use this for initialization
 	void Start () {
-	
+		ignoreLayerMask = ~(1 << 10 | 1 << 11);
 	}
 
 	void Update()
 	{
+		Attack();
+		
+	}
 
-		if (target != null && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
+	/// <summary>
+	/// Attacks the current target.
+	/// </summary>
+	void Attack()
+	{
+		if (target != null && IsTargetVisible() && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
 		{
 			float distance = Vector3.Distance(target.gameObject.transform.position, transform.position);
 			if (distance < attackDistance)
@@ -43,6 +53,18 @@ public class Enemy : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	bool IsTargetVisible()
+	{
+		Vector3 ray = target.transform.position - transform.position;
+		float length = Vector3.Distance(target.transform.position, transform.position);
+		bool hit = Physics.Raycast(new Ray(transform.position, ray), length, ignoreLayerMask);
+		if (!hit)
+			Debug.DrawLine(transform.position, target.transform.position, Color.red, 0.5f);
+		else
+			Debug.DrawLine(transform.position, target.transform.position, Color.blue, 0.5f);
+		return !hit;
 	}
 	
 	// Update is called once per frame
