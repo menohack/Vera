@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Wall : Building
 {
@@ -17,4 +16,20 @@ public class Wall : Building
 	/// The ore cost to build a wall.
 	/// </summary>
 	public static int WALL_COST_ORE = 1;
+
+	public float SCALE = 2f;
+
+	Transform held;
+
+	public override void SetGhostPosition(Transform heldPosition)
+	{
+		held = heldPosition;
+	}
+
+	protected override void Update()
+	{
+		if (held)
+			transform.position = new Vector3(Mathf.Floor(held.position.x / SCALE) * SCALE, held.position.y, Mathf.Floor(held.position.z / SCALE) * SCALE);
+		base.Update();
+	}
 }

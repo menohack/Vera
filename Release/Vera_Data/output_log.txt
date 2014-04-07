@@ -17,15 +17,53 @@ Platform assembly: E:\Coolege\Projects\Vera\Release\Vera_Data\Managed\Pathfindin
 Loading E:\Coolege\Projects\Vera\Release\Vera_Data\Managed\Pathfinding.Ionic.Zip.Reduced.dll into Unity Child Domain
 Platform assembly: E:\Coolege\Projects\Vera\Release\Vera_Data\Managed\Pathfinding.JsonFx.dll (this message is harmless)
 Loading E:\Coolege\Projects\Vera\Release\Vera_Data\Managed\Pathfinding.JsonFx.dll into Unity Child Domain
-- Completed reload, in  0.063 seconds
+- Completed reload, in  0.184 seconds
 <RI> Initializing input.
 <RI> Input initialized.
 desktop: 1920x1200 59Hz; virtual: 1920x1200 at 0,0
 Platform assembly: E:\Coolege\Projects\Vera\Release\Vera_Data\Managed\System.dll (this message is harmless)
 Platform assembly: E:\Coolege\Projects\Vera\Release\Vera_Data\Managed\System.Core.dll (this message is harmless)
-UnloadTime: 7.167391 ms
+HandleD3DDeviceLost
+  HandleD3DDeviceLost: still lost
+Skipped rendering frame because GfxDevice is in invalid state (device lost)
+ 
+(Filename:  Line: 1539)
+
+HandleD3DDeviceLost
+  HandleD3DDeviceLost: needs reset, doing it
+FullResetD3DDevice
+ResetD3DDevice
+dev->Reset
+D3Dwindow device not lost anymore
+UnloadTime: 6.209365 ms
 Unloading 4 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
 
-Unloading 16 unused Assets to reduce memory usage. Loaded Objects now: 771.
-Total: 0.752371 ms (FindLiveObjects: 0.053718 ms CreateObjectMapping: 0.020342 ms MarkObjects: 0.198661 ms  DeleteObjects: 0.085821 ms)
+Unloading 16 unused Assets to reduce memory usage. Loaded Objects now: 773.
+Total: 0.741563 ms (FindLiveObjects: 0.047043 ms CreateObjectMapping: 0.020025 ms MarkObjects: 0.212965 ms  DeleteObjects: 0.070564 ms)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at Enemy.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at Enemy.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+UnloadTime: 10.578012 ms
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 82 unused Assets to reduce memory usage. Loaded Objects now: 774.
+Total: 1.355984 ms (FindLiveObjects: 0.053082 ms CreateObjectMapping: 0.032421 ms MarkObjects: 0.198343 ms  DeleteObjects: 0.597256 ms)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at Enemy.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at Enemy.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
 

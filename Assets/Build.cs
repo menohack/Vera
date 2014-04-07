@@ -34,6 +34,8 @@ public class Build : MonoBehaviour {
 	/// </summary>
 	Inventory inventory;
 
+	Transform holdPoint;
+
 	/// <summary>
 	/// Load the building prefabs (used for instantiating them) and the inventory.
 	/// </summary>
@@ -42,6 +44,9 @@ public class Build : MonoBehaviour {
 		buildings = Resources.LoadAll("Buildings");
 
 		inventory = gameObject.GetComponent<Inventory>();
+
+		GameObject hp = GameObject.Find("HoldPoint");
+		holdPoint = hp.transform;
 	}
 
 
@@ -70,7 +75,7 @@ public class Build : MonoBehaviour {
 		GameObject wall = Instantiate(buildings[buildingIndex]) as GameObject;
 		Item i = wall.GetComponent<Item>();
 		if (i != null)
-			i.SetFloatPoint(transform, new Vector3(0f, -1.05f, 2.0f), Quaternion.Euler(-90.0f, 0, 0));
+			i.SetGhostPosition(holdPoint);
 		wall.name = buildings[buildingIndex].name;
 		if (wall.rigidbody)
 			wall.rigidbody.isKinematic = true;

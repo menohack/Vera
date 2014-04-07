@@ -14,11 +14,6 @@ public abstract class Building : Item {
 	protected int overlapCount = 0;
 
 	/// <summary>
-	/// Whether this item has been placed yet.
-	/// </summary>
-	bool placed = false;
-
-	/// <summary>
 	/// The layer of the environment.
 	/// </summary>
 	int layerMask;
@@ -58,6 +53,11 @@ public abstract class Building : Item {
 		
 	}
 
+	public override void SetGhostPosition(Transform heldPosition)
+	{
+		return;
+	}
+
 	/// <summary>
 	/// Damages the building for dmg damage.
 	/// </summary>
@@ -83,9 +83,9 @@ public abstract class Building : Item {
 	}
 
 	/// <summary>
-	/// Changes the color of the object & Destroys the object when health <= 0
+	/// Changes the color of the object & Destroys the object when health is less than or equal to zero.
 	/// </summary>
-	protected void Update ()
+	protected override void Update ()
 	{
 		//If the item has not been placed make it transparent and either red or green
 		if (!placed)
@@ -107,8 +107,6 @@ public abstract class Building : Item {
 		{
 			placed = true;
 			renderer.material = originalMaterial;
-			if (floatPoint != null)
-				Destroy(floatPoint);
 			transform.parent = null;
 			
 			collider.isTrigger = false;
@@ -127,7 +125,7 @@ public abstract class Building : Item {
 		foreach (GameObject g in GameObject.FindGameObjectsWithTag("Building"))
 			if (g != gameObject && Vector3.Distance(g.transform.position, transform.position) < minBuildingDistance)
 				return false;
-
+		
 		return IntersectingTerrain();
 	}
 
@@ -145,6 +143,7 @@ public abstract class Building : Item {
 		//If the item overlaps a terrain object
 		if (other.gameObject.layer == layerMask)
 			overlapCount++;
+		Debug.Log(overlapCount);
 	}
 
 	/// <summary>
@@ -156,5 +155,6 @@ public abstract class Building : Item {
 		//If the item no longer overlaps a terrain object
 		if (other.gameObject.layer == layerMask)
 			overlapCount--;
+		Debug.Log(overlapCount);
 	}
 }
