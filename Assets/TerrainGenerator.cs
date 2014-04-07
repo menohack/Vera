@@ -61,12 +61,6 @@ public class TerrainGenerator : MonoBehaviour {
 		Ore, Trees, Water, Fertile
 	}
 
-	[DataContract(Name = "Ballz")]
-	public class GameData
-	{
-		[DataMember(Name = "Derp")]
-		public Dictionary<TerrainType, Tuple<int, int>> terrain = new Dictionary<TerrainType, Tuple<int, int>>();
-	}
 
 	/// <summary>
 	/// Seed Simplex noise generator randomly.

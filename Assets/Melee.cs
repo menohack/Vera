@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic; //Has many data structures
+using System.Collections.Generic;
+using System; //Has many data structures
 
 public class Melee : MonoBehaviour {
 
@@ -28,10 +29,14 @@ public class Melee : MonoBehaviour {
 	/// Draw Raycasts on Debug.
 	/// </summary>
 	public bool debug = false;
+
+	public TimeSpan attackCooldown = new TimeSpan(0, 0, 1);
+
+	DateTime lastAttack;
 	
 	void Update () {
 		//Hardcoded KeyCode for prelim purposes
-		if (Input.GetKeyDown(KeyCode.V))
+		if (Input.GetAxis("Fire1") == 1.0f && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
 		{
 			HashSet<GameObject> thingsWeHit = new HashSet<GameObject>(); //store each healthcomponent we hit
 
@@ -39,7 +44,7 @@ public class Melee : MonoBehaviour {
 			{
 				//Create a ray out of the player in a certain spherical radius (in lieu of cone gameObject)
 				Vector3 myDir = transform.forward;
-				myDir += Random.insideUnitSphere * sphereRadius; //gives new direction
+				myDir += UnityEngine.Random.insideUnitSphere * sphereRadius; //gives new direction
 				myDir.Normalize(); //set magnitude of vector back to 1
 
 				//get all hits in the ray
@@ -80,6 +85,7 @@ public class Melee : MonoBehaviour {
 				}
 			}
 
+			lastAttack = DateTime.Now;
 		}
 	}
 }

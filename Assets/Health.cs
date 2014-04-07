@@ -4,9 +4,19 @@ using System.Collections;
 public class Health : MonoBehaviour {
 
 	/// <summary>
-	/// Amount of health.
+	/// Max health.
 	/// </summary>
-	public float healthValue = 100.0f;
+	public float maxHealth = 100f;
+
+	/// <summary>
+	/// Current health.
+	/// </summary>
+	float health = 100f;
+
+	void Start()
+	{
+		health = maxHealth;
+	}
 
 	/// <summary>
 	/// Gets damaged by the input amount.
@@ -14,11 +24,19 @@ public class Health : MonoBehaviour {
 	/// <param name="dmg">Dmg.</param>
 	public void Damage(float dmg)
 	{
-		healthValue -= dmg;
-		Debug.Log ("I am now at " +  healthValue + " HP!");
-		if (healthValue <= 0)
+		health -= dmg;
+		if (health <= 0)
 		{
-			Destroy (this.gameObject);
+			health = 0f;
+			if (gameObject.tag == "Player")
+				Menu.EndGame();
+			else
+				Destroy(this.gameObject);
 		}
+	}
+
+	public float GetHealth()
+	{
+		return health;
 	}
 }

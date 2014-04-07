@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour {
 
 	GameObject target = null;
 
-	public float attackDistance = 12;
+	public float attackDistance = 5f;
 
 	public TimeSpan attackCooldown = new TimeSpan(0, 0, 1);
 
@@ -23,6 +23,10 @@ public class Enemy : MonoBehaviour {
 
 	int ignoreLayerMask;
 
+	Vector3 attackStartPoint, attackEndPoint;
+
+	public Boolean debug = false;
+
 	// Use this for initialization
 	void Start () {
 		ignoreLayerMask = ~(1 << 10 | 1 << 11);
@@ -30,6 +34,8 @@ public class Enemy : MonoBehaviour {
 
 	void Update()
 	{
+		attackStartPoint = transform.position + new Vector3(0, 1f, 0);
+		attackEndPoint = target.transform.position;
 		Attack();
 		
 	}
@@ -39,31 +45,38 @@ public class Enemy : MonoBehaviour {
 	/// </summary>
 	void Attack()
 	{
-		if (target != null && IsTargetVisible() && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
+		Vector3 debugRay = attackEndPoint - attackStartPoint;
+		debugRay.Normalize();
+		debugRay *= attackDistance;
+
+		if (target != null && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
 		{
-			float distance = Vector3.Distance(target.gameObject.transform.position, transform.position);
-			if (distance < attackDistance)
+			if (IsTargetVisible())
 			{
-				Health health = target.GetComponent<Health>();
-				if (health)
+				float distance = Vector3.Distance(target.gameObject.transform.position, transform.position);
+				if (distance < attackDistance)
 				{
-					Debug.Log("Enemy attacked");
-					health.Damage(attackDamage);
-					lastAttack = DateTime.Now;
+					Health health = target.GetComponent<Health>();
+					if (health)
+					{
+						if (debug)
+							Debug.DrawLine(attackStartPoint, attackEndPoint, Color.red, 1f);
+						health.Damage(attackDamage);
+						lastAttack = DateTime.Now;
+					}
 				}
+				else if (debug)
+					Debug.DrawLine(attackStartPoint, attackStartPoint + debugRay, Color.blue, 1f);
 			}
+			else if (debug)
+				Debug.DrawLine(attackStartPoint, attackStartPoint + debugRay, Color.green, 1f);
 		}
 	}
 
 	bool IsTargetVisible()
 	{
-		Vector3 ray = target.transform.position - transform.position;
-		float length = Vector3.Distance(target.transform.position, transform.position);
-		bool hit = Physics.Raycast(new Ray(transform.position, ray), length, ignoreLayerMask);
-		if (!hit)
-			Debug.DrawLine(transform.position, target.transform.position, Color.red, 0.5f);
-		else
-			Debug.DrawLine(transform.position, target.transform.position, Color.blue, 0.5f);
+		Vector3 ray = attackEndPoint - attackStartPoint;
+		bool hit = Physics.Raycast(new Ray(attackStartPoint, ray), ray.magnitude, ignoreLayerMask);
 		return !hit;
 	}
 	

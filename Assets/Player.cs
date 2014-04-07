@@ -3,12 +3,11 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-	// Use this for initialization
-	void Start ()
-	{
-	
-	}
-	
+	public Texture2D healthBarFront;
+
+	public Texture2D healthBarBack;
+
+	public GUIStyle style;
  
 	void Update()
 	{
@@ -17,11 +16,29 @@ public class Player : MonoBehaviour {
 
 	void OnGUI()
 	{
-		GUILayout.BeginArea(new Rect(0, Screen.height / 2, 200, 20));
-		GUILayout.BeginHorizontal();
-		if (GUILayout.Button("Connect to server"))
-			Debug.Log(Networking.Instance.GetMap());
-		GUILayout.EndHorizontal();
-		GUILayout.EndArea();
+		float offsetFromCorner = Screen.height * 0.1f;
+		Vector2 position = new Vector2(offsetFromCorner, Screen.height - offsetFromCorner);
+
+		float maxHealth = 0;
+		float health = 0;
+		Health healthScript = gameObject.GetComponent<Health>();
+		if (healthScript)
+		{
+			health = healthScript.GetHealth();
+			maxHealth = healthScript.maxHealth;
+		}
+		else
+			Debug.LogError("Health script not found");
+
+
+		float healthPercentage = health / maxHealth;
+
+		if (healthPercentage >= 0)
+		{
+			GUI.BeginGroup(new Rect(position.x, Screen.height - position.y, healthBarBack.width * healthPercentage, healthBarBack.height), style);
+			GUI.Box(new Rect(0, 0, healthBarBack.width, healthBarBack.height), healthBarBack, style);
+			GUI.EndGroup();
+		}
+		GUI.Box(new Rect(position.x, Screen.height - position.y, healthBarFront.width, healthBarFront.height), healthBarFront, style);
 	}
 }
