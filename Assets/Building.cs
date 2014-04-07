@@ -21,7 +21,7 @@ public abstract class Building : Item {
 	/// <summary>
 	/// The minimum distance two buildings that are not connected may be.
 	/// </summary>
-	public float minBuildingDistance = 2.0f;
+	public float minBuildingDistance = 1.0f;
 
 	/// <summary>
 	/// The original material of the wall.

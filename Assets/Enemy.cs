@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour {
 
 	public TimeSpan attackCooldown = new TimeSpan(0, 0, 1);
 
-	DateTime lastAttack;
+	DateTime? lastAttack = null;
 
 	public float attackDamage = 10.0f;
 

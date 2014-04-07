@@ -32,7 +32,7 @@ public class Melee : MonoBehaviour {
 
 	public TimeSpan attackCooldown = new TimeSpan(0, 0, 1);
 
-	DateTime lastAttack;
+	DateTime? lastAttack;
 	
 	void Update () {
 		//Hardcoded KeyCode for prelim purposes
