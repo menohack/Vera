@@ -21,7 +21,7 @@ public abstract class Building : Item {
 	/// <summary>
 	/// The minimum distance two buildings that are not connected may be.
 	/// </summary>
-	public float minBuildingDistance = 10.0f;
+	public float minBuildingDistance = 2.0f;
 
 	/// <summary>
 	/// The original material of the wall.
@@ -125,7 +125,8 @@ public abstract class Building : Item {
 		foreach (GameObject g in GameObject.FindGameObjectsWithTag("Building"))
 			if (g != gameObject && Vector3.Distance(g.transform.position, transform.position) < minBuildingDistance)
 				return false;
-		
+
+		return true;
 		return IntersectingTerrain();
 	}
 

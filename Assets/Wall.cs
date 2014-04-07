@@ -3,11 +3,6 @@
 public class Wall : Building
 {
 	/// <summary>
-	/// The minimum distance for a wall to be considered for attaching.
-	/// </summary>
-	public float minAttachDistance = 3.0f;
-
-	/// <summary>
 	/// The wood cost to build a wall.
 	/// </summary>
 	public static int WALL_COST_WOOD = 1;
@@ -28,7 +23,7 @@ public class Wall : Building
 
 	protected override void Update()
 	{
-		if (held)
+		if (held && !placed)
 			transform.position = new Vector3(Mathf.Floor(held.position.x / SCALE) * SCALE, held.position.y, Mathf.Floor(held.position.z / SCALE) * SCALE);
 		base.Update();
 	}
