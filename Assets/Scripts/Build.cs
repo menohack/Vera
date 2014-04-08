@@ -89,14 +89,12 @@ public class Build : MonoBehaviour {
 	/// </summary>
 	void PlaceItem()
 	{
+		bool spend = false;
 		Wall wallScript = itemHeld.GetComponent<Wall>();
 		if (wallScript)
 		{
 			if (inventory && inventory.GetOre() >= Wall.WALL_COST_ORE && inventory.GetWood() >= Wall.WALL_COST_WOOD)
-			{
-				inventory.RemoveOre(Wall.WALL_COST_ORE);
-				inventory.RemoveWood(Wall.WALL_COST_WOOD);
-			}
+				spend = true;
 			else
 				return;
 		}
@@ -105,6 +103,11 @@ public class Build : MonoBehaviour {
 		
 		if (itemScript && itemScript.Place())
 		{
+			if (spend)
+			{
+				inventory.RemoveOre(Wall.WALL_COST_ORE);
+				inventory.RemoveWood(Wall.WALL_COST_WOOD);
+			}
 			if (itemHeld.rigidbody)
 				itemHeld.rigidbody.isKinematic = false;
 			itemHeld.collider.enabled = true;

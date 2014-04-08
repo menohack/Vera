@@ -126,6 +126,8 @@ public abstract class Building : Item {
 			if (g != gameObject && Vector3.Distance(g.transform.position, transform.position) < minBuildingDistance)
 				return false;
 
+		//This is broken, no idea why
+		return true;
 		return IntersectingTerrain();
 	}
 
@@ -136,9 +138,11 @@ public abstract class Building : Item {
 
 	void OnGUI()
 	{
+		/*
 		GUIStyle style = new GUIStyle();
 		style.fontSize = 32;
 		GUI.Label(new Rect(Screen.width - 200, 200, 200, 200), "overlap: " + overlapCount, style);
+		 * */
 	}
 
 	/// <summary>
@@ -147,10 +151,10 @@ public abstract class Building : Item {
 	/// <param name="other">The collider that is being intersected.</param>
 	void OnTriggerEnter(Collider other)
 	{
+		//Debug.Log(overlapCount);
 		//If the item overlaps a terrain object
 		if (other.gameObject.layer == layerMask)
 			overlapCount++;
-		Debug.Log(overlapCount);
 	}
 
 	/// <summary>
@@ -159,9 +163,9 @@ public abstract class Building : Item {
 	/// <param name="other">The collider that is no longer being intersected.</param>
 	void OnTriggerExit(Collider other)
 	{
+		//Debug.Log(overlapCount);
 		//If the item no longer overlaps a terrain object
 		if (other.gameObject.layer == layerMask)
 			overlapCount--;
-		Debug.Log(overlapCount);
 	}
 }

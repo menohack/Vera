@@ -34,10 +34,12 @@ public class Enemy : MonoBehaviour {
 
 	void Update()
 	{
-		attackStartPoint = transform.position + new Vector3(0, 1f, 0);
-		attackEndPoint = target.transform.position;
-		Attack();
-		
+		if (target)
+		{
+			attackStartPoint = transform.position + new Vector3(0, 1f, 0);
+			attackEndPoint = target.transform.position;
+			Attack();
+		}
 	}
 
 	/// <summary>
