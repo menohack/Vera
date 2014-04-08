@@ -40,6 +40,8 @@ public abstract class Building : Item {
 	/// </summary>
 	protected Transform held;
 
+	float ghostTransparency = 0.5f;
+
 	/// <summary>
 	/// Initialization.
 	/// </summary>
@@ -48,15 +50,16 @@ public abstract class Building : Item {
 		layerMask = LayerMask.NameToLayer("Environment");
 
 		renderer.material = new Material(renderer.material);
+		renderer.material.shader = Shader.Find("Transparent/Diffuse");
+
+		float weight = 0.5f;
 		red = renderer.material.color;
-		red *= new Color(0.9f, 0.9f, 0.9f);
-		red += 0.9f * Color.red;
-		red.a = 0.8f;
+		red = red * weight + Color.red * weight;
+		red.a = ghostTransparency;
 
 		green = renderer.material.color;
-		green *= new Color(0.9f, 0.9f, 0.9f);
-		green += 0.9f * Color.green;
-		green.a = 0.8f;
+		green = green * weight + Color.green * weight;
+		green.a = ghostTransparency;
 		
 	}
 
