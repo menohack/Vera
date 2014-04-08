@@ -33,6 +33,13 @@ public abstract class Building : Item {
 	/// </summary>
 	Color red, green;
 
+	public float SCALE = 2f;
+
+	/// <summary>
+	/// The transform about which the building is held.
+	/// </summary>
+	protected Transform held;
+
 	/// <summary>
 	/// Initialization.
 	/// </summary>
@@ -53,9 +60,14 @@ public abstract class Building : Item {
 		
 	}
 
+	public abstract int GetOreCost();
+
+	public abstract int GetWoodCost();
+
 	public override void SetGhostPosition(Transform heldPosition)
 	{
-		return;
+		held = heldPosition;
+		UpdatePosition();
 	}
 
 	/// <summary>
@@ -87,6 +99,8 @@ public abstract class Building : Item {
 	/// </summary>
 	protected override void Update ()
 	{
+		UpdatePosition();
+
 		//If the item has not been placed make it transparent and either red or green
 		if (!placed)
 		{
@@ -96,6 +110,8 @@ public abstract class Building : Item {
 				renderer.material.color = red;
 		}
 	}
+
+	protected abstract void UpdatePosition();
 
 	/// <summary>
 	/// Attempts to place the object.

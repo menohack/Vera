@@ -12,30 +12,24 @@ public class Wall : Building
 	/// </summary>
 	public static int WALL_COST_ORE = 1;
 
-	public float SCALE = 2f;
-
-	Transform held;
-
-	public override void SetGhostPosition(Transform heldPosition)
+	public override int GetOreCost()
 	{
-		held = heldPosition;
-		UpdatePosition();
+		return WALL_COST_ORE;
 	}
 
-	void UpdatePosition()
+	public override int GetWoodCost()
 	{
-		float xOffset = 0.0f, yOffset = 0.0f;
-		if (gameObject.name == "Wall 2")
-			xOffset = yOffset = 1.0f;
+		return WALL_COST_WOOD;
+	}
+
+	protected override void UpdatePosition()
+	{
+		float xOffset = 0.0f, zOffset = 0.0f;
+		if (gameObject.name == "Wall 2" || gameObject.name == "WoodGate")
+			xOffset = zOffset = 1.0f;
 		//else if (gameObject.name == "Wall 1")
 		//	xOffset = yOffset = 2.0f * Mathf.Sin(45f * Mathf.Deg2Rad);
 		if (held && !placed)
-			transform.position = new Vector3(Mathf.Floor(held.position.x / SCALE + 0.5f) * SCALE + xOffset, held.position.y, Mathf.Floor(held.position.z / SCALE + 0.5f) * SCALE + yOffset);
-	}
-
-	protected override void Update()
-	{
-		UpdatePosition();
-		base.Update();
+			transform.position = new Vector3(Mathf.Floor(held.position.x / SCALE + 0.5f) * SCALE + xOffset, held.position.y, Mathf.Floor(held.position.z / SCALE + 0.5f) * SCALE + zOffset);
 	}
 }
