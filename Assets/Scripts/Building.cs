@@ -126,13 +126,19 @@ public abstract class Building : Item {
 			if (g != gameObject && Vector3.Distance(g.transform.position, transform.position) < minBuildingDistance)
 				return false;
 
-		return true;
 		return IntersectingTerrain();
 	}
 
 	protected bool IntersectingTerrain()
 	{
 		return overlapCount != 0;
+	}
+
+	void OnGUI()
+	{
+		GUIStyle style = new GUIStyle();
+		style.fontSize = 32;
+		GUI.Label(new Rect(Screen.width - 200, 200, 200, 200), "overlap: " + overlapCount, style);
 	}
 
 	/// <summary>
