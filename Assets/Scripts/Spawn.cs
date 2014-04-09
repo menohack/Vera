@@ -8,6 +8,7 @@ public class Spawn : MonoBehaviour {
 	public GameObject tree2;
 	public GameObject tree3;
 	public GameObject ore;
+	public GameObject wolf;
 
 	public int treeCount = 1000;
 	public int oreCount = 1000;
@@ -27,6 +28,8 @@ public class Spawn : MonoBehaviour {
 		//Spawn resources randomly
 		SpawnTrees(treeCount, terrainSize);
 		SpawnOre(oreCount, terrainSize);
+		GameObject player = GameObject.FindWithTag("Player");
+		SpawnWolves(100, 20f, 50f, player.transform.position);
 	}
 
 	void SpawnTrees(int count, Vector3 size)
@@ -74,9 +77,17 @@ public class Spawn : MonoBehaviour {
 	/// <param name="position">The position about which to spawn the wolves.</param>
 	public void SpawnWolves(int count, float minRadius, float maxRadius, Vector3 position)
 	{
-		if (minRadius < 0f || minRadius > maxRadius)
+		if (minRadius < 0f || minRadius > maxRadius || count < 0)
 			throw new UnityException("Invalid parameters to SpawnWolves");
 
-
+		for (int i = 0; i < count; i++)
+		{
+			GameObject spawn = Instantiate(wolf) as GameObject;
+			float angle = Random.Range(0, 360);
+			float distance = Random.Range(minRadius, maxRadius);
+			float z = distance / Mathf.Sin(Mathf.Deg2Rad * angle);
+			float x = distance / Mathf.Cos(Mathf.Deg2Rad* angle);
+			spawn.transform.position = position + new Vector3(x, terrain.SampleHeight(new Vector3(x, 0, z)), z);
+		}
 	}
 }
