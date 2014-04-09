@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Pathfinding;
 
 public class Spawn : MonoBehaviour {
 
@@ -29,7 +30,7 @@ public class Spawn : MonoBehaviour {
 		SpawnTrees(treeCount, terrainSize);
 		SpawnOre(oreCount, terrainSize);
 		GameObject player = GameObject.FindWithTag("Player");
-		SpawnWolves(100, 20f, 50f, player.transform.position);
+		SpawnWolves(100, 20f, 50f, player.transform.position, player.transform);
 	}
 
 	void SpawnTrees(int count, Vector3 size)
@@ -75,7 +76,7 @@ public class Spawn : MonoBehaviour {
 	/// <param name="minRadius">The minimum radius.</param>
 	/// <param name="maxRadius">The maximum radius</param>
 	/// <param name="position">The position about which to spawn the wolves.</param>
-	public void SpawnWolves(int count, float minRadius, float maxRadius, Vector3 position)
+	public void SpawnWolves(int count, float minRadius, float maxRadius, Vector3 position, Transform target)
 	{
 		if (minRadius < 0f || minRadius > maxRadius || count < 0)
 			throw new UnityException("Invalid parameters to SpawnWolves");
@@ -88,6 +89,9 @@ public class Spawn : MonoBehaviour {
 			float z = distance / Mathf.Sin(Mathf.Deg2Rad * angle);
 			float x = distance / Mathf.Cos(Mathf.Deg2Rad* angle);
 			spawn.transform.position = position + new Vector3(x, terrain.SampleHeight(new Vector3(x, 0, z)), z);
+			//Point the 'seeker' object on the spawned wolves to target (in this case, the player Transform)
+			SeekerAI seeker = spawn.GetComponent<SeekerAI> ();
+			if (seeker != null) seeker.target = target;
 		}
 	}
 }

@@ -16,7 +16,7 @@ public class Health : MonoBehaviour {
 	float health = 100f;
 
 	public bool direct = false; /** Flush Graph Updates directly after placing. Slower, but updates are applied immidiately */
-	public bool issueGUOs = true; /** Issue a graph update object after placement */
+	public bool issueGUOs = true; /** Issue a graph update object after destruction */
 
 	void Start()
 	{
