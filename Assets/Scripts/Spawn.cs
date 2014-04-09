@@ -64,4 +64,19 @@ public class Spawn : MonoBehaviour {
 	void MovePlayer(Vector3 size)
 	{
 	}
+
+	/// <summary>
+	/// Spawns count wolves centered around position within minRadius and maxRadius radial distance.
+	/// </summary>
+	/// <param name="count">The number of wolves.</param>
+	/// <param name="minRadius">The minimum radius.</param>
+	/// <param name="maxRadius">The maximum radius</param>
+	/// <param name="position">The position about which to spawn the wolves.</param>
+	public void SpawnWolves(int count, float minRadius, float maxRadius, Vector3 position)
+	{
+		if (minRadius < 0f || minRadius > maxRadius)
+			throw new UnityException("Invalid parameters to SpawnWolves");
+
+
+	}
 }
