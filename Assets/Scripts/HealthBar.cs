@@ -9,7 +9,7 @@ public class HealthBar : MonoBehaviour {
 
 	public GUIStyle style;
 
-	public float DISPLAY_RANGE = 100;
+	public float DISPLAY_RANGE = 80f;
 	
 	// Update is called once per frame
 	void Update () {

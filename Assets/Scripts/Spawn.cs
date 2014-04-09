@@ -91,7 +91,7 @@ public class Spawn : MonoBehaviour {
 			{
 				z = distance / Mathf.Sin(Mathf.Deg2Rad * angle);
 				x = distance / Mathf.Cos(Mathf.Deg2Rad * angle);
-			} while (!float.IsInfinity(x) && !float.IsInfinity(z) && !float.IsNaN(x) && !float.IsNaN(z));
+			} while (float.IsInfinity(x) && float.IsInfinity(z) && float.IsNaN(x) && float.IsNaN(z));
 
 			Vector3 result = new Vector3(position.x + x, terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)), position.z + z);
 			spawn.transform.position = result;
