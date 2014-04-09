@@ -122,8 +122,8 @@ public class Build : MonoBehaviour {
 	/// The logic for spawning objects and attacking. Part of this should be extracted to more appropriate classes.
 	/// </summary>
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.G))
-			Networking.Instance.GetMap();
+		if (Time.timeScale == 0f)
+			return;
 
 		if (itemHeld != null)
 		{

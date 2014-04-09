@@ -1,9 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
-
-/// <summary>
+﻿/// <summary>
 /// This class checks
 /// </summary>
+using UnityEngine;
+
 public class JumpCheck : MonoBehaviour
 {
 	/// <summary>
