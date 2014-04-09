@@ -41,6 +41,10 @@ public class Spawn : MonoBehaviour {
 		SpawnObjects(count, size, ores);
 	}
 
+	public void SpawnWolves() {
+		Debug.Log ("Wolves!");
+	}
+
 	void SpawnObjects(int count, Vector3 size, GameObject[] types)
 	{
 		for (int i = 0; i < count; i++)
