@@ -29,7 +29,6 @@ public class Spawn : MonoBehaviour {
 		SpawnTrees(treeCount, terrainSize);
 		SpawnOre(oreCount, terrainSize);
 		GameObject player = GameObject.FindWithTag("Player");
-		Debug.Log("Player position: " + player.transform.position);
 		SpawnWolves(100, 20f, 50f, player.transform.position);
 	}
 
@@ -84,14 +83,17 @@ public class Spawn : MonoBehaviour {
 		for (int i = 0; i < count; i++)
 		{
 			GameObject spawn = Instantiate(wolf) as GameObject;
+
 			float angle = Random.Range(0, 360);
 			float distance = Random.Range(minRadius, maxRadius);
-			float z = distance / Mathf.Sin(Mathf.Deg2Rad * angle);
-			float x = distance / Mathf.Cos(Mathf.Deg2Rad* angle);
+			float x, z;
+			do
+			{
+				z = distance / Mathf.Sin(Mathf.Deg2Rad * angle);
+				x = distance / Mathf.Cos(Mathf.Deg2Rad * angle);
+			} while (!float.IsInfinity(x) && !float.IsInfinity(z) && !float.IsNaN(x) && !float.IsNaN(z));
 
 			Vector3 result = new Vector3(position.x + x, terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)), position.z + z);
-			Debug.Log("Spawning at " + result);
-
 			spawn.transform.position = result;
 		}
 	}
