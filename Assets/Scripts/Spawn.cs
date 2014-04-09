@@ -28,8 +28,6 @@ public class Spawn : MonoBehaviour {
 		//Spawn resources randomly
 		SpawnTrees(treeCount, terrainSize);
 		SpawnOre(oreCount, terrainSize);
-		GameObject player = GameObject.FindWithTag("Player");
-		SpawnWolves(100, 20f, 50f, player.transform.position);
 	}
 
 	void SpawnTrees(int count, Vector3 size)
@@ -68,6 +66,12 @@ public class Spawn : MonoBehaviour {
 	{
 	}
 
+	public void SpawnWolves()
+	{
+		GameObject player = GameObject.FindWithTag("Player");
+		SpawnWolves(100, 20f, 50f, player.transform.position);
+	}
+
 	/// <summary>
 	/// Spawns count wolves centered around position within minRadius and maxRadius radial distance.
 	/// </summary>
@@ -84,14 +88,14 @@ public class Spawn : MonoBehaviour {
 		{
 			GameObject spawn = Instantiate(wolf) as GameObject;
 
-			float angle = Random.Range(0, 360);
-			float distance = Random.Range(minRadius, maxRadius);
 			float x, z;
 			do
 			{
+				float angle = Random.Range(0, 360);
+				float distance = Random.Range(minRadius, maxRadius);
 				z = distance / Mathf.Sin(Mathf.Deg2Rad * angle);
 				x = distance / Mathf.Cos(Mathf.Deg2Rad * angle);
-			} while (float.IsInfinity(x) && float.IsInfinity(z) && float.IsNaN(x) && float.IsNaN(z));
+			} while (float.IsInfinity(x) || float.IsInfinity(z) || float.IsNaN(x) || float.IsNaN(z));
 
 			Vector3 result = new Vector3(position.x + x, terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)), position.z + z);
 			spawn.transform.position = result;

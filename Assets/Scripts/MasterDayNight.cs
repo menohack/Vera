@@ -18,6 +18,8 @@ public class MasterDayNight : MonoBehaviour {
 	public static float Noon = 0.5f;
 	public static float Sunset = 0.75f;
 
+	public Spawn spawn;
+
 	/// <summary>
 	/// The length of the day in seconds
 	/// </summary>
@@ -68,9 +70,6 @@ public class MasterDayNight : MonoBehaviour {
 	void wolves(object[] a)
 	{
 		Debug.Log ("Spawn Wolves at Night");
-//		foreach (object o in a)
-//		{	
-//			((GameObject) o).SendMessage("SpawnWolves", SendMessageOptions.DontRequireReceiver);
-//		}
+		spawn.SpawnWolves();
 	}
 }
