@@ -51,10 +51,10 @@ public class MasterDayNight : MonoBehaviour {
 	void resourceSpawn(object[] a)
 	{
 		Debug.Log ("Resources Spawning at Day");
-		foreach (object o in a)
-		{
-			((GameObject) o).SendMessage("SpawnWorld", SendMessageOptions.DontRequireReceiver);
-		}
+//		foreach (object o in a)
+//		{
+//			((GameObject) o).SendMessage("SpawnWorld", SendMessageOptions.DontRequireReceiver);
+//		}
 	}
 
 	void updateLights(object[] a)
@@ -68,9 +68,9 @@ public class MasterDayNight : MonoBehaviour {
 	void wolves(object[] a)
 	{
 		Debug.Log ("Spawn Wolves at Night");
-		foreach (object o in a)
-		{	
-			((GameObject) o).SendMessage("SpawnWolves", SendMessageOptions.DontRequireReceiver);
-		}
+//		foreach (object o in a)
+//		{	
+//			((GameObject) o).SendMessage("SpawnWolves", SendMessageOptions.DontRequireReceiver);
+//		}
 	}
 }
