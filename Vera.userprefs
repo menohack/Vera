@@ -1,6 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace />
+<<<<<<< HEAD
   <MonoDevelop.Ide.Workbench />
+=======
+<<<<<<< HEAD
+  <MonoDevelop.Ide.Workbench />
+=======
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/MasterDayNight.cs">
+    <Files>
+      <File FileName="Assets/Scripts/MasterDayNight.cs" Line="39" Column="22" />
+      <File FileName="Assets/Scripts/DayNight.cs" Line="35" Column="2" />
+      <File FileName="Assets/Scripts/Spawn.cs" Line="46" Column="25" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+>>>>>>> 34ebf0ed63baeb83b14f740f9062c1fad084c063
+>>>>>>> origin/JonsBranch
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
