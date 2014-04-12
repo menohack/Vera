@@ -4,7 +4,8 @@ using System;
 
 public class Enemy : MonoBehaviour {
 
-	//public float MOVE_FORCE = 0.1f;
+	public float MOVE_FORCE = 10f;
+	public float MAX_SPEED = 20f;
 	public float speed = 10.0f;
 
 	public float minFollowDistance = 2.0f;
@@ -37,7 +38,11 @@ public class Enemy : MonoBehaviour {
 		if (target)
 		{
 			attackStartPoint = transform.position + new Vector3(0, 1f, 0);
-			attackEndPoint = target.transform.position;
+			BoxCollider targetCollider = target.collider as BoxCollider;
+			if (targetCollider)
+				attackEndPoint = target.transform.position + new Vector3(0f, targetCollider.size.y, 0f);
+			else
+				throw new UnityException("Enemy script expected a box collider on player");
 			Attack();
 		}
 	}
@@ -100,12 +105,18 @@ public class Enemy : MonoBehaviour {
 				}
 			}
 
+			/*
+			Vector3 tempPosition = transform.position;
+			transform.LookAt(target.transform.position, Vector3.up);
+			transform.position = tempPosition;
+			*/
 			
-			//transform.LookAt(target.transform.position, Vector3.up);
-			if (minDistance < maxFollowDistance && minDistance > minFollowDistance)
-				//rigidbody.AddForce(transform.forward * MOVE_FORCE * Time.fixedDeltaTime, ForceMode.VelocityChange);
+			Vector3 direction = target.transform.position - transform.position;
+			direction.Normalize();
+			if (minDistance < maxFollowDistance && minDistance > minFollowDistance && transform.rigidbody.velocity.magnitude < MAX_SPEED)
+				rigidbody.AddForce(direction * MOVE_FORCE * Time.fixedDeltaTime, ForceMode.VelocityChange);
 				//transform.position += transform.forward * Time.fixedDeltaTime * speed;
-				transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.fixedDeltaTime);
+				//transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.fixedDeltaTime);
 			
 		}
 			
