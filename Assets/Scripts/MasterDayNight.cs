@@ -25,6 +25,17 @@ public class MasterDayNight : MonoBehaviour {
 	/// </summary>
 	public float dayLength = 100;
 
+	public bool debug;
+
+	void Start() 
+	{
+		if (debug) 
+		{
+			object[] all = GameObject.FindObjectsOfType<GameObject> ();
+			resourceSpawn (all);
+		}
+	}
+
 	void Update () {
 		oldTime = timer - Mathf.Floor (timer);
 		timer += Time.deltaTime / dayLength;
@@ -40,7 +51,7 @@ public class MasterDayNight : MonoBehaviour {
 		if (theTime > Sunrise && !daySent)
 		{
 			daySent = true;
-			resourceSpawn(all);
+//			resourceSpawn(all);
 		}
 		if (theTime > Sunset && !nightSent) 
 		{
@@ -52,11 +63,11 @@ public class MasterDayNight : MonoBehaviour {
 
 	void resourceSpawn(object[] a)
 	{
-		Debug.Log ("Resources Spawning at Day");
-//		foreach (object o in a)
-//		{
-//			((GameObject) o).SendMessage("SpawnWorld", SendMessageOptions.DontRequireReceiver);
-//		}
+//		Debug.Log ("Resources Spawning at Day");
+		foreach (object o in a)
+		{
+			((GameObject) o).SendMessage("SpawnWorld", SendMessageOptions.DontRequireReceiver);
+		}
 	}
 
 	void updateLights(object[] a)
@@ -69,7 +80,7 @@ public class MasterDayNight : MonoBehaviour {
 
 	void wolves(object[] a)
 	{
-		Debug.Log ("Spawn Wolves at Night");
+//		Debug.Log ("Spawn Wolves at Night");
 		spawn.SpawnWolves();
 	}
 }

@@ -10,12 +10,17 @@ public class Spawn : MonoBehaviour {
 	public GameObject ore;
 	public GameObject wolf;
 
+	public bool debug;
+
 	public int treeCount = 1000;
 	public int oreCount = 1000;
 
 	void Start()
 	{
-		SpawnWorld();
+		if (debug) 
+		{
+			SpawnWorld ();
+		}
 	}
 
 	public void SpawnWorld()
@@ -68,8 +73,9 @@ public class Spawn : MonoBehaviour {
 
 	public void SpawnWolves()
 	{
+		Debug.Log ("Wolves");
 		GameObject player = GameObject.FindWithTag("Player");
-		SpawnWolves(100, 20f, 50f, player.transform.position);
+		SpawnWolves(10, 15f, 30f, player.transform.position);
 	}
 
 	/// <summary>

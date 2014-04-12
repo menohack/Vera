@@ -79,7 +79,7 @@ public class Melee : MonoBehaviour {
 
 				//Damage
 				Health myHealth = hit.GetComponent<Health>();
-				if (myHealth != null)
+				if (myHealth != null && hit != this.gameObject)
 				{
 					myHealth.Damage(DamageValue);
 				}
