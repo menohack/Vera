@@ -1,10 +1,25 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace />
+<<<<<<< HEAD
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Hard Surface Free\HardSurface Shaders\HardSurface Free Opaque Bump.shader">
+=======
+<<<<<<< HEAD
+  <MonoDevelop.Ide.Workbench />
+=======
+<<<<<<< HEAD
+  <MonoDevelop.Ide.Workbench />
+=======
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/MasterDayNight.cs">
+>>>>>>> 1f94900efadc13be26540fe66bce5eac974bfdb6
     <Files>
       <File FileName="Assets\Hard Surface Free\HardSurface Shaders\HardSurface Free Opaque Bump.shader" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
+<<<<<<< HEAD
+=======
+>>>>>>> 34ebf0ed63baeb83b14f740f9062c1fad084c063
+>>>>>>> origin/JonsBranch
+>>>>>>> 1f94900efadc13be26540fe66bce5eac974bfdb6
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
