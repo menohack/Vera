@@ -13,7 +13,7 @@ public class SeekerAI : AIPath {
 	private bool enabled = true;
 
 	public override void OnTargetReached () {
-		gameObject.transform.LookAt (target);
+		//gameObject.transform.LookAt (target);
 		//End of path has been reached
 		//If you want custom logic for when the AI has reached it's destination
 		//add it here
