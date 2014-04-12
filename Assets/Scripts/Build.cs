@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Pathfinding;
 
 public class Build : MonoBehaviour {
 
@@ -8,6 +9,9 @@ public class Build : MonoBehaviour {
 	/// The distance of a ray in front of the character for mining and picking up objects.
 	/// </summary>
 	public static float RAYCAST_DISTANCE = 5.0f;
+
+	public bool issueGUOs = true; /** Issue a graph update object after placement */
+	public bool direct = false; /** Flush Graph Updates directly after placing. Slower, but updates are applied immidiately */
 
 	/// <summary>
 	/// The currently held item, which can be a building as well.
@@ -97,6 +101,18 @@ public class Build : MonoBehaviour {
 				spend = true;
 			else
 				return;
+		}
+
+		//update gridGraph to account for new obstacle
+		if (issueGUOs) {
+			Bounds b = itemHeld.collider.bounds;
+			//Pathfinding.Console.Write ("// Placing Object\n");
+			GraphUpdateObject guo = new GraphUpdateObject(b);
+			AstarPath.active.UpdateGraphs (guo);
+			if (direct) {
+				//Pathfinding.Console.Write ("// Flushing\n");
+				AstarPath.active.FlushGraphUpdates();
+			}
 		}
 
 		Item itemScript = itemHeld.GetComponent<Item>();
