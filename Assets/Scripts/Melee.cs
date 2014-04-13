@@ -32,8 +32,15 @@ public class Melee : MonoBehaviour {
 
 	public TimeSpan attackCooldown = new TimeSpan(0, 0, 1);
 
+	int ignoreLayerMask;
+
 	DateTime? lastAttack;
-	
+
+	void Start()
+	{
+		ignoreLayerMask = LayerMask.NameToLayer("Player");
+	}
+
 	void Update () {
 		//Hardcoded KeyCode for prelim purposes
 		if (Input.GetAxis("Fire1") == 1.0f && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
@@ -48,7 +55,7 @@ public class Melee : MonoBehaviour {
 				myDir.Normalize(); //set magnitude of vector back to 1
 
 				//get all hits in the ray
-				RaycastHit[] hits = Physics.RaycastAll(transform.position, myDir, RAYCAST_DISTANCE);
+				RaycastHit[] hits = Physics.RaycastAll(transform.position, myDir, RAYCAST_DISTANCE, ignoreLayerMask);
 				if (debug)
 				{
 					Debug.DrawLine(transform.position, transform.position + (myDir * RAYCAST_DISTANCE), Color.green);

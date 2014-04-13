@@ -36,6 +36,8 @@ public class Build : MonoBehaviour {
 
 	Transform holdPoint;
 
+	public GameObject arrowPrefab;
+
 	/// <summary>
 	/// Load the building prefabs (used for instantiating them) and the inventory.
 	/// </summary>
@@ -192,6 +194,15 @@ public class Build : MonoBehaviour {
 			else if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
 			{
 				EquipBuilding();
+			}
+			else if (Input.GetKeyDown(KeyCode.F))
+			{
+				GameObject arrow = Instantiate(arrowPrefab) as GameObject;
+				arrow.transform.position = holdPoint.position;
+				arrow.transform.rotation = transform.rotation;
+				Arrow arrowScript = arrow.GetComponent<Arrow>();
+				if (arrowScript)
+					arrowScript.Shoot(gameObject.transform.forward);
 			}
 			else if (Input.GetKeyDown(KeyCode.R))
 			{
