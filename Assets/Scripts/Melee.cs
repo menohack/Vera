@@ -38,6 +38,7 @@ public class Melee : MonoBehaviour {
 		//Hardcoded KeyCode for prelim purposes
 		if (Input.GetAxis("Fire1") == 1.0f && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
 		{
+			animation.Play("Attack");
 			HashSet<GameObject> thingsWeHit = new HashSet<GameObject>(); //store each healthcomponent we hit
 
 			for (int i = 0; i < 5; i++)

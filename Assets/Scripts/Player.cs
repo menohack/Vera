@@ -8,10 +8,19 @@ public class Player : MonoBehaviour {
 	public Texture2D healthBarBack;
 
 	public GUIStyle style;
+
+	private int daysAlive = 0;
+	public bool debug;
  
 	void Update()
 	{
 		
+	}
+
+	void DaysAlive()
+	{
+		daysAlive += 1;
+		if (debug) { Debug.Log ("It is now day: " + daysAlive); }
 	}
 
 	void OnGUI()
