@@ -38,11 +38,11 @@ public class Enemy : MonoBehaviour {
 		if (target)
 		{
 			attackStartPoint = transform.position + new Vector3(0, 1f, 0);
-			BoxCollider targetCollider = target.collider as BoxCollider;
+			CapsuleCollider targetCollider = target.collider as CapsuleCollider;
 			if (targetCollider)
-				attackEndPoint = target.transform.position + new Vector3(0f, targetCollider.size.y, 0f);
+				attackEndPoint = target.transform.position + new Vector3(0f, targetCollider.height/2.0f, 0f);
 			else
-				throw new UnityException("Enemy script expected a box collider on player");
+				throw new UnityException("Enemy script expected a capsule collider on player");
 			Attack();
 		}
 	}
