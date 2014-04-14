@@ -59,5 +59,11 @@ public class MouseLook : MonoBehaviour {
 		// Make the rigid body not change rotation
 		if (rigidbody)
 			rigidbody.freezeRotation = true;
+
+		//set mouse to center of screen and invisible
+		Screen.lockCursor = true;
+		Screen.showCursor = false;
+
+
 	}
 }
