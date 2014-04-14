@@ -32,12 +32,15 @@ public class Melee : MonoBehaviour {
 
 	public TimeSpan attackCooldown = new TimeSpan(0, 0, 1);
 
+	public Transform weapon;
+
 	DateTime? lastAttack;
 	
 	void Update () {
 		//Hardcoded KeyCode for prelim purposes
 		if (Input.GetAxis("Fire1") == 1.0f && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
 		{
+			weapon.animation.Play();
 			HashSet<GameObject> thingsWeHit = new HashSet<GameObject>(); //store each healthcomponent we hit
 
 			for (int i = 0; i < 5; i++)
