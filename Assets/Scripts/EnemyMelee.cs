@@ -39,7 +39,6 @@ public class EnemyMelee : MonoBehaviour {
 	void Update(){
 		if (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown)
 		{
-			Debug.Log ("attack");
 	//		weapon.animation.Play();
 			HashSet<GameObject> thingsWeHit = new HashSet<GameObject>();
 			

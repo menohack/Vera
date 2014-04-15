@@ -75,7 +75,7 @@ public class Spawn : MonoBehaviour {
 	{
 		GameObject player = GameObject.FindWithTag("Player");
 		if (player)
-			SpawnWolves(10, 15f, 30f, player.transform.position, player.transform);
+			SpawnWolves(10, 3f, 10f, player.transform.position, player.transform);
 		else
 			Debug.Log("Can't find player for Spawn script");
 	}
