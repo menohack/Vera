@@ -8,7 +8,7 @@ public class SeekerAI : AIPath {
 	/**
 	 *  Range at which the AI becomes alert and starts following
 	 **/
-	public float alertRange = 10;
+	public float alertRange = float.PositiveInfinity;
 	public bool DEBUG = false;
 	private bool enabled = true;
 
