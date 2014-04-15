@@ -21,7 +21,7 @@ public class Build : MonoBehaviour {
 	/// <summary>
 	/// If the player is holding ("ghosting") a potential building.
 	/// </summary>
-	bool hasBuilding = false;
+	public bool hasBuilding = false;
 
 	/// <summary>
 	/// The list of building prefabs available to the player.
@@ -175,9 +175,7 @@ public class Build : MonoBehaviour {
 				RaycastHit hit;
 				int layerMask = 1 << LayerMask.NameToLayer("Environment");
 
-
-				//TODO: destructible (buildings) and attackable (NPC/other player) tags?
-				if (Physics.Raycast(transform.position, transform.forward, out hit, RAYCAST_DISTANCE, layerMask))
+				if (Physics.Raycast(transform.position + (Vector3.up * 1.5f), transform.forward, out hit, RAYCAST_DISTANCE, layerMask))
 				{
 					if (hit.transform.tag == "Building")
 					{

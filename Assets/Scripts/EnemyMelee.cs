@@ -70,10 +70,10 @@ public class EnemyMelee : MonoBehaviour {
 			//Go through and apply damage to all things we hit
 			foreach (GameObject hit in thingsWeHit)
 			{
-				
-				//Damage
 				Health myHealth = hit.GetComponent<Health>();
-				if (myHealth != null && hit != this.gameObject)
+				//prevent from damaging self/other enemies
+				bool PorB = (hit.gameObject.tag == "Building" || hit.gameObject.tag == "Player");
+				if (myHealth != null && PorB)
 				{
 					myHealth.Damage(DamageValue);
 				}

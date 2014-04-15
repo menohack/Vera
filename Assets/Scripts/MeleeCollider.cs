@@ -15,23 +15,32 @@ public class MeleeCollider : MonoBehaviour {
 	public bool DEBUG = false;
 
 	private TimeSpan attackCooldown;
-
 	DateTime? lastAttack;
 
+	private TimeSpan delayCoolDown;
+	DateTime? buildDelay;
+	private Build b;
 
 	void Start () {
 		attackCooldown = new TimeSpan(0,0,0,0, coolDownMilli);
+		delayCoolDown = new TimeSpan (0, 0, 0, 0, 500);
+		b = GameObject.FindGameObjectWithTag ("Player").GetComponent<Build>();
 	}
 
 	void Update () {
-		//Hardcoded KeyCode for prelim purposes
-		if (Input.GetAxis("Fire1") == 1.0f && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
+		if (b.hasBuilding) 
 		{
-			transform.animation.Play();
-			lastAttack = DateTime.Now;
-
+			buildDelay = DateTime.Now;
 		}
 
+		if ((DateTime.Now - buildDelay) > delayCoolDown || buildDelay == null) 
+		{
+			if (Input.GetButtonDown("Fire1") && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
+			{
+				transform.animation.Play();
+				lastAttack = DateTime.Now;
+			}
+		}
 	}
 
 	void OnTriggerEnter(Collider other) {

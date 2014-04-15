@@ -40,7 +40,7 @@ public class LoadingScreen : MonoBehaviour {
 			if (GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game"))
 			{
 				loading = true;
-				Application.LoadLevel("Game");
+				Application.LoadLevel("Level1");
 			}
 			if (!controls && GUI.Button(new Rect(Screen.width / 2 - 150, Screen.height * 0.9f, 100, 40), "Controls"))
 			{
