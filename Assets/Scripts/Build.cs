@@ -13,6 +13,9 @@ public class Build : MonoBehaviour {
 	public bool issueGUOs = true; /** Issue a graph update object after placement */
 	public bool direct = false; /** Flush Graph Updates directly after placing. Slower, but updates are applied immidiately */
 
+	// allows you to press R to destroy all buildings, see debug statements
+	public bool DEBUG = false;
+
 	/// <summary>
 	/// The currently held item, which can be a building as well.
 	/// </summary>
@@ -140,80 +143,109 @@ public class Build : MonoBehaviour {
 	void Update () {
 		if (Time.timeScale == 0f)
 			return;
-
-		if (itemHeld != null)
-		{
-			float scroll = Input.GetAxis("Mouse ScrollWheel");
-			if (Input.GetButtonDown("Fire1"))
-			{
+		
+		if (itemHeld != null) {
+			float scroll = Input.GetAxis ("Mouse ScrollWheel");
+			if (Input.GetButtonDown ("Fire1")) {
 				//Drop the item
-				PlaceItem();
-			}
-			else if (hasBuilding && Input.GetButtonDown("Fire2"))
-			{
-				Destroy(itemHeld);
+				PlaceItem ();
+			} else if (hasBuilding && Input.GetButtonDown ("Fire2")) {
+				Destroy (itemHeld);
 				itemHeld = null;
 				hasBuilding = false;
-			}
-			else if (hasBuilding && scroll != 0.0f)
-			{
+			} else if (hasBuilding && scroll != 0.0f) {
 				int scrollIndices = (int)(scroll * 10.0f);
-				int tempBuildingIndex = ScrollBuildings(scrollIndices);
-				if (buildingIndex != tempBuildingIndex)
-				{
+				int tempBuildingIndex = ScrollBuildings (scrollIndices);
+				if (buildingIndex != tempBuildingIndex) {
 					buildingIndex = tempBuildingIndex;
-					Destroy(itemHeld);
+					Destroy (itemHeld);
 					itemHeld = null;
-					EquipBuilding();
+					EquipBuilding ();
+				}
+				//by key
+			} else if (hasBuilding && scroll == 0.0f) {
+				int tempBuildingIndex = getIndexByKey ();
+				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
+					if (buildingIndex == tempBuildingIndex) {
+						Destroy (itemHeld);
+						itemHeld = null;
+						hasBuilding = false;
+					} else {
+						buildingIndex = tempBuildingIndex;
+						Destroy (itemHeld);
+						itemHeld = null;
+						EquipBuilding ();
+					}
 				}
 			}
-		}
-		else
-		{
-			if (Input.GetButtonDown("Fire1"))
-			{
+		} else {
+			//this is the resource gathering code
+			if (Input.GetButtonDown ("Fire1")) {
 				RaycastHit hit;
-				int layerMask = 1 << LayerMask.NameToLayer("Environment");
-
-				if (Physics.Raycast(transform.position + (Vector3.up * 1.5f), transform.forward, out hit, RAYCAST_DISTANCE, layerMask))
-				{
-					if (hit.transform.tag == "Building")
-					{
+				int layerMask = 1 << LayerMask.NameToLayer ("Environment");
+				
+				if (Physics.Raycast (transform.position + (Vector3.up * 1.5f), transform.forward, out hit, RAYCAST_DISTANCE, layerMask)) {
+					if (hit.transform.tag == "Building") {
 						GameObject item = hit.transform.gameObject;
-
-						Building hp = item.GetComponent<Building>();
+						Building hp = item.GetComponent<Building> ();
 						if (hp != null)
-							hp.Damage(25);
-							hp.IsAlive();
-					}
-					else if (hit.transform.tag == "Ore" || hit.transform.tag == "Tree")
-					{
-						Resource resource = hit.transform.gameObject.GetComponent<Resource>();
-						int gatherCount = resource.Gather(1);
-
-						if (gatherCount > 0)
-						{
+							hp.Damage (25);
+						hp.IsAlive ();
+					} else if (hit.transform.tag == "Ore" || hit.transform.tag == "Tree") {
+						Resource resource = hit.transform.gameObject.GetComponent<Resource> ();
+						int gatherCount = resource.Gather (1);
+						if (gatherCount > 0) {
 							if (resource is Tree)
-								inventory.AddWood(gatherCount);
+								inventory.AddWood (gatherCount);
 							else if (resource is Ore)
-								inventory.AddOre(gatherCount);
-							else
-								Debug.Log("Error!!!!!!!11eleven!");
+								inventory.AddOre (gatherCount);
+							else 
+								Debug.LogError ("No such resource");
 						}
 					}
 				}
-			}
-			else if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
-			{
-				EquipBuilding();
-			}
-			else if (Input.GetKeyDown(KeyCode.R))
-			{
-				GameObject[] gos = GameObject.FindGameObjectsWithTag("Building");
+			} else if (buildings.Length > 0 && Input.GetButtonDown ("Fire2")) {
+				EquipBuilding ();
+			} else if (buildings.Length > 0) {
+				int tempBuildingIndex = getIndexByKey ();
+				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
+					buildingIndex = tempBuildingIndex;
+					EquipBuilding ();
+				}
+			} else if (DEBUG && Input.GetKeyDown (KeyCode.R)) {
+				GameObject[] gos = GameObject.FindGameObjectsWithTag ("Building");
 				foreach (GameObject go in gos)
-					Destroy(go);
+					Destroy (go);
 			}
-		}
-		
+		}	
+	}
+
+
+	private int getIndexByKey() {
+		int alphaNumDown = -1; //stands for none
+
+		if (Input.GetKeyDown (KeyCode.Alpha1))
+			alphaNumDown = 0;
+		else if (Input.GetKeyDown (KeyCode.Alpha2)) 
+			alphaNumDown = 1;
+		else if (Input.GetKeyDown (KeyCode.Alpha3)) 
+			alphaNumDown = 2;
+		else if (Input.GetKeyDown (KeyCode.Alpha4)) 
+			alphaNumDown = 3;
+		else if (Input.GetKeyDown (KeyCode.Alpha5)) 
+			alphaNumDown = 4;
+		else if (Input.GetKeyDown (KeyCode.Alpha6)) 
+			alphaNumDown = 5;
+		else if (Input.GetKeyDown (KeyCode.Alpha7)) 
+			alphaNumDown = 6;
+		else if (Input.GetKeyDown (KeyCode.Alpha8)) 
+			alphaNumDown = 7;
+		else if (Input.GetKeyDown (KeyCode.Alpha9)) 
+			alphaNumDown = 8;
+		else if (Input.GetKeyDown (KeyCode.Alpha0)) 
+			alphaNumDown = 9;
+
+		return 
+			alphaNumDown;
 	}
 }
