@@ -74,8 +74,12 @@ public class Spawn : MonoBehaviour {
 	public void SpawnWolves()
 	{
 		GameObject player = GameObject.FindWithTag("Player");
-		if (player)
-			SpawnWolves(10, 3f, 10f, player.transform.position, player.transform);
+		if (player) 
+		{
+			Player p = player.GetComponent<Player>();
+			int numWolves = 10 + (p.getDays() * p.getDays ());
+			SpawnWolves (numWolves, 10f, 15f, player.transform.position, player.transform);
+		}
 		else
 			Debug.Log("Can't find player for Spawn script");
 	}
@@ -107,7 +111,8 @@ public class Spawn : MonoBehaviour {
 				x = distance / Mathf.Cos(Mathf.Deg2Rad * angle);
 			} while (float.IsInfinity(x) || float.IsInfinity(z) || float.IsNaN(x) || float.IsNaN(z));
 
-			Vector3 result = new Vector3(position.x + x, terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)), position.z + z);
+			//added 8 to Y to avoid spawning under terrain. unsure why terrain.SampleHeight isn't working on the map
+			Vector3 result = new Vector3(position.x + x, terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)) + 8f, position.z + z);
 			spawn.transform.position = result;
 		}
 	}
