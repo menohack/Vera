@@ -17,6 +17,11 @@ public class Player : MonoBehaviour {
 		
 	}
 
+	public int getDays()
+	{
+		return daysAlive;
+	}
+
 	void DaysAlive()
 	{
 		daysAlive += 1;
