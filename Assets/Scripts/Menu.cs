@@ -27,6 +27,10 @@ public class Menu : MonoBehaviour {
 			Time.timeScale = 0f;
 			gameOver = true;
 
+			//set mouse to visible and free
+			Screen.lockCursor = false;
+			Screen.showCursor = true;
+
 			GameObject musicWorld = GameObject.Find("MusicWorld");
 			if (musicWorld && musicWorld.audio)
 				musicWorld.audio.Stop();
@@ -43,6 +47,11 @@ public class Menu : MonoBehaviour {
 	{
 		Time.timeScale = 1f;
 		gameOver = false;
+
+		//set mouse to visible and free
+		Screen.lockCursor = true;
+		Screen.showCursor = false;
+
 		Application.LoadLevel(0);
 	}
 
