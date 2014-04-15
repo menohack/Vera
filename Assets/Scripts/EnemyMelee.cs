@@ -25,7 +25,7 @@ public class EnemyMelee : MonoBehaviour {
 	/// </summary>
 	public bool debug = false;
 
-	public int coolDown = 1;
+	public int coolDown = 3;
 	protected TimeSpan attackCooldown = new TimeSpan(0, 0, 1);
 	
 	public Transform weapon;
@@ -39,9 +39,9 @@ public class EnemyMelee : MonoBehaviour {
 	void Update(){
 		if (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown)
 		{
-	//		weapon.animation.Play();
+			this.gameObject.audio.Play ();
 			HashSet<GameObject> thingsWeHit = new HashSet<GameObject>();
-			
+
 			for (int i = 0; i < 5; i++)
 			{
 				//Create a ray out of the player in a certain spherical radius (in lieu of cone gameObject)

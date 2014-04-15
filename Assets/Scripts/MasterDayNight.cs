@@ -21,6 +21,7 @@ public class MasterDayNight : MonoBehaviour {
 	private object[] lights;
 	private object[] spawners;
 	private object[] players;
+	public AudioSource howl;
 
 	/// <summary>
 	/// The length of the day in seconds
@@ -64,6 +65,7 @@ public class MasterDayNight : MonoBehaviour {
 			if (debug) { Debug.Log("Sunset"); }
 			nightSent = true;
 			wolves(spawners);
+			howl.audio.Play ();
 		}
 		updateLights (lights);
 	}
