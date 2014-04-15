@@ -25,18 +25,18 @@ public class MeleeCollider : MonoBehaviour {
 		if (Input.GetAxis("Fire1") == 1.0f && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
 		{
 			transform.animation.Play();
-			HashSet<GameObject> thingsWeHit = new HashSet<GameObject>(); //store each healthcomponent we hit
 
-				
-//				//Damage
-//				Health myHealth = hit.GetComponent<Health>();
-//				if (myHealth != null && hit != this.gameObject)
-//				{
-//					myHealth.Damage(DamageValue);
-//				}
-//			}
-			
 			lastAttack = DateTime.Now;
+		}
+
+	}
+
+	void OnTriggerEnter(Collider other) {
+		Health enemyHealth = other.gameObject.GetComponent<Health>();
+		if (enemyHealth != null)
+		{
+			//Debug.Log ("I just hit " + other.gameObject.name);
+			enemyHealth.Damage(DamageValue);
 		}
 	}
 }
