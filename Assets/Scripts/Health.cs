@@ -53,6 +53,15 @@ public class Health : MonoBehaviour {
 		}
 	}
 
+	void Heal(float heal)
+	{
+		if (health < maxHealth)
+		{
+			health += heal;
+			if (health > maxHealth) {health = maxHealth;}
+		}
+	}
+
 	public float GetHealth()
 	{
 		return health;

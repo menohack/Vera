@@ -56,6 +56,8 @@ public class MasterDayNight : MonoBehaviour {
 		if (theTime > Sunrise && !daySent)
 		{
 			if (debug) { Debug.Log ("Sunrise"); }
+			object[] wolves = GameObject.FindGameObjectsWithTag("Enemy");
+			foreach (object o in wolves){ Destroy((GameObject) o); }
 			daySent = true;
 			daysAlive(players);
 //			resourceSpawn(spawners);
