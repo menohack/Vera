@@ -31,8 +31,6 @@ public class MasterDayNight : MonoBehaviour {
 
 	void Start() 
 	{
-		//player(s), spawners, lights will always be instantiated on play.
-
 		//if we implement multiplayer, when a new player comes in,
 		//have them send a message to master knowing that so it can then update
 		//the days alive of that player
@@ -70,6 +68,10 @@ public class MasterDayNight : MonoBehaviour {
 		updateLights (lights);
 	}
 
+	/// <summary>
+	/// Sends message to update resources (TODO)
+	/// </summary>
+	/// <param name="a">The alpha component.</param>
 	void resourceSpawn(object[] a)
 	{
 		foreach (object o in a)
@@ -78,6 +80,10 @@ public class MasterDayNight : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Sends message to update lights.
+	/// </summary>
+	/// <param name="a">The alpha component.</param>
 	void updateLights(object[] a)
 	{
 		foreach (object o in a)
@@ -86,6 +92,10 @@ public class MasterDayNight : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Sends message to spawn wolves.
+	/// </summary>
+	/// <param name="a">The alpha component.</param>
 	void wolves(object[] a)
 	{
 		foreach (object o in a)
@@ -93,6 +103,11 @@ public class MasterDayNight : MonoBehaviour {
 			((Spawn) o).SendMessage ("SpawnWolves", SendMessageOptions.DontRequireReceiver);
 		}
 	}
+
+	/// <summary>
+	/// Updates days alive for players.
+	/// </summary>
+	/// <param name="a">The alpha component.</param>
 	void daysAlive(object[] a)
 	{
 		foreach (object o in a)
