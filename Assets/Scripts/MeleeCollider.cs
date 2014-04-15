@@ -18,6 +18,7 @@ public class MeleeCollider : MonoBehaviour {
 
 	DateTime? lastAttack;
 
+
 	void Start () {
 		attackCooldown = new TimeSpan(0,0,0,0, coolDownMilli);
 	}
@@ -27,19 +28,22 @@ public class MeleeCollider : MonoBehaviour {
 		if (Input.GetAxis("Fire1") == 1.0f && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
 		{
 			transform.animation.Play();
-
 			lastAttack = DateTime.Now;
+
 		}
 
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (DEBUG) Debug.Log ( gameObject.name + " just collided with " + other.gameObject.name);
-		Health enemyHealth = other.gameObject.GetComponent<Health>();
-		if (enemyHealth != null)
-		{
-			if (DEBUG) Debug.Log ( gameObject.name + " just did damage to " + other.gameObject.name);
-			enemyHealth.Damage(DamageValue);
-		}
+		if (this.gameObject.animation.isPlaying) {
+			if (DEBUG)
+				Debug.Log (gameObject.name + " just collided with " + other.gameObject.name);
+			Health enemyHealth = other.gameObject.GetComponent<Health> ();
+			if (enemyHealth != null) {
+				if (DEBUG)
+					Debug.Log (gameObject.name + " just did damage to " + other.gameObject.name);
+				enemyHealth.Damage (DamageValue);
+			}
+	}
 	}
 }
