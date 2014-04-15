@@ -4,11 +4,14 @@ using System;
 
 public class Arrow : MonoBehaviour {
 
-	public float SHOOT_FORCE = 10f;
+	public float MAX_SHOOT_FORCE = 1000f;
+	public float TIP_FORCE = 10f;
+
+	public Transform forcePosition;
 
 	DateTime birthTime;
 
-	TimeSpan liveTime = new TimeSpan(0, 0, 0, 5);
+	public TimeSpan liveTime = new TimeSpan(0, 0, 0, 5);
 
 	// Use this for initialization
 	void Start ()
@@ -25,13 +28,22 @@ public class Arrow : MonoBehaviour {
 	public void Shoot(Vector3 direction)
 	{
 		direction.Normalize();
-		rigidbody.AddForce(direction * SHOOT_FORCE);
+		transform.rotation = Quaternion.FromToRotation(transform.forward, direction);
+		
+		rigidbody.AddForce(direction * MAX_SHOOT_FORCE);
+		if (forcePosition)
+			rigidbody.AddForceAtPosition(Vector3.up * TIP_FORCE, forcePosition.position);
+		else
+			throw new UnityException("Arrow script cannot find forcePosition");
 	}
 
 	void OnCollisionEnter(Collision collision)
 	{
-		Debug.Log("Arrow hit");
-		rigidbody.isKinematic = true;
+		if (collision.gameObject.tag == "Player")
+		{
+			gameObject.transform.parent = collision.gameObject.transform;
+			rigidbody.isKinematic = true;
+		}
 	}
 
 	void OnCollisionExit(Collision collision)
