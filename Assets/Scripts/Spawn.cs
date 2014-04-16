@@ -112,7 +112,7 @@ public class Spawn : MonoBehaviour {
 			} while (float.IsInfinity(x) || float.IsInfinity(z) || float.IsNaN(x) || float.IsNaN(z));
 
 			//added 8 to Y to avoid spawning under terrain. unsure why terrain.SampleHeight isn't working on the map
-			Vector3 result = new Vector3(position.x + x, terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)) + 8f, position.z + z);
+			Vector3 result = new Vector3(position.x + x, terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)), position.z + z);
 			spawn.transform.position = result;
 		}
 	}
