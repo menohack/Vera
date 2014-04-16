@@ -8,12 +8,14 @@ public class HealthBar : MonoBehaviour {
 	public Texture2D healthBarBack;
 
 	public GUIStyle style;
+
+	public GameObject healthBar;
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void LateUpdate () {
+		healthBar.transform.LookAt(Camera.main.transform);
 	}
-
+	/*
 	void OnGUI()
 	{
 		Bounds bounds;
@@ -22,7 +24,7 @@ public class HealthBar : MonoBehaviour {
 				bounds = charController.bounds;
 		else
 				bounds = transform.collider.bounds;
-		Vector2 position = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0f, bounds.size.y * 1.25f, 0f));
+		Vector2 position = Camera.main.WorldToViewportPoint(transform.position + new Vector3(0f, bounds.size.y * 1.25f, 0f));
 		position += new Vector2(-healthBarFront.width/2.0f, healthBarFront.height);
 
 		float maxHealth = 0;
@@ -47,4 +49,5 @@ public class HealthBar : MonoBehaviour {
 		}
 		GUI.Box(new Rect(position.x, Screen.height - position.y, healthBarFront.width, healthBarFront.height), healthBarFront, style);
 	}
+	 * */
 }
