@@ -25,19 +25,28 @@ public class EnemyMelee : MonoBehaviour {
 	/// </summary>
 	public bool debug = false;
 
+	/// <summary>
+	/// Furthest distance an enemy will try to attack a player
+	/// </summary>
+	public float maxDist = 10f;
+
 	public int coolDown = 3;
 	protected TimeSpan attackCooldown = new TimeSpan(0, 0, 1);
 	
 	public Transform weapon;
-	
+
 	DateTime? lastAttack;
+
+	private Transform tgt;
 
 	void Start(){
 		attackCooldown = new TimeSpan (0, 0, coolDown);
+		tgt = this.gameObject.GetComponent<SeekerAI> ().target;
 	}
 
 	void Update(){
-		if (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown)
+		float distFromPlayer = Vector3.Distance (tgt.position, this.gameObject.transform.position);
+		if ((lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown) && (distFromPlayer < maxDist))
 		{
 			this.gameObject.audio.Play ();
 			HashSet<GameObject> thingsWeHit = new HashSet<GameObject>();
@@ -66,17 +75,32 @@ public class EnemyMelee : MonoBehaviour {
 					}
 				}
 			}
-			
+
+			float smallestPos = 99f;
+			Health closest = null;
 			//Go through and apply damage to all things we hit
 			foreach (GameObject hit in thingsWeHit)
 			{
-				Health myHealth = hit.GetComponent<Health>();
-				//prevent from damaging self/other enemies
 				bool PorB = (hit.gameObject.tag == "Building" || hit.gameObject.tag == "Player");
-				if (myHealth != null && PorB)
+				if (PorB)
 				{
-					myHealth.Damage(DamageValue);
+					bool getHealth = false;
+					if (Vector3.Distance(hit.transform.position, this.transform.position) < smallestPos) {
+						smallestPos = Vector3.Distance(hit.transform.position, this.transform.position);
+						getHealth = true;
+					}
+					Health myHealth = hit.GetComponent<Health>();
+					//prevent from damaging self/other enemies
+
+					if (myHealth != null && getHealth)
+					{
+						closest = myHealth;
+					}
 				}
+			}
+			if (closest != null)
+			{ 
+				closest.Damage (DamageValue);
 			}
 			lastAttack = DateTime.Now;
 		}
