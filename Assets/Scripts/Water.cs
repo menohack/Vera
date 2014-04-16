@@ -14,10 +14,8 @@ public class Water : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log("player: " + player.transform.position.y + ", water: " + meshFilter.transform.position.y);
 		if (player && player.transform.position.y < meshFilter.transform.position.y)
 		{
-			Debug.Log("To the moon!");
 			player.rigidbody.AddForce(Vector3.up * 1000f * Time.deltaTime);
 		}
 	}
