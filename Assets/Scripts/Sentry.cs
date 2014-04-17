@@ -30,13 +30,12 @@ public class Sentry : MonoBehaviour {
 		if (lastShoot == null || (DateTime.Now - lastShoot) >= shootCooldown)
 		{
 			GameObject arrow = Instantiate(arrowPrefab) as GameObject;
+			Physics.IgnoreCollision(collider, arrow.collider);
 			Arrow arrowScript = arrow.GetComponent<Arrow>();
 			arrow.transform.position = arrowSpawn.position;
 			arrow.transform.rotation = arrowSpawn.rotation;
-			Vector3 direction = target.transform.position - arrowSpawn.position;
-			direction.Normalize();
 			if (arrowScript)
-				arrowScript.Shoot(direction);
+				arrowScript.Shoot(target.transform.position);
 
 			lastShoot = DateTime.Now;
 		}

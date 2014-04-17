@@ -25,12 +25,32 @@ public class Arrow : MonoBehaviour {
 			Destroy(gameObject);
 	}
 
-	public void Shoot(Vector3 direction)
+	public void Shoot(Vector3 targetPosition)
 	{
+		Vector3 direction = targetPosition - transform.position;
 		direction.Normalize();
 		transform.rotation = Quaternion.FromToRotation(transform.forward, direction);
 		
-		rigidbody.AddForce(direction * MAX_SHOOT_FORCE);
+		float deltaX = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(targetPosition.x, targetPosition.z));
+		float deltaY = targetPosition.y - transform.position.y;
+		float vMax = 300f;
+		float g = 9.8f;
+		float t1 = 2f / (g * g) * ((vMax - g * deltaY) + Mathf.Sqrt((vMax - g * deltaY) * (vMax - g * deltaY) - g * g * (deltaX * deltaX + deltaY * deltaY)));
+		float t2 = 2f / (g * g) * ((vMax - g * deltaY) - Mathf.Sqrt((vMax - g * deltaY) * (vMax - g * deltaY) - g * g * (deltaX * deltaX + deltaY * deltaY)));
+
+		float vx = deltaX / t1;
+		float vy = Mathf.Sqrt(vMax * vMax - vx * vx);
+
+		float theta = Mathf.Asin(vy / vMax);
+		Debug.Log("theta: " + theta);
+
+		Vector3 forwardDirection = new Vector3(direction.x, 0f, direction.z);
+		forwardDirection.Normalize();
+		forwardDirection.y = Mathf.Sin(theta);
+		forwardDirection.Normalize();
+		
+
+		rigidbody.AddForce(forwardDirection * vMax, ForceMode.VelocityChange);
 		if (forcePosition)
 			rigidbody.AddForceAtPosition(Vector3.up * TIP_FORCE, forcePosition.position);
 		else
@@ -42,7 +62,13 @@ public class Arrow : MonoBehaviour {
 		if (collision.gameObject.tag == "Player")
 		{
 			gameObject.transform.parent = collision.gameObject.transform;
+			//rigidbody.isKinematic = true;
+			Destroy(rigidbody);
+		}
+		else
+		{
 			rigidbody.isKinematic = true;
+			rigidbody.detectCollisions = false;
 		}
 	}
 
