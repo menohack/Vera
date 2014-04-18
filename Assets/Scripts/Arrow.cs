@@ -36,7 +36,7 @@ public class Arrow : MonoBehaviour {
 		if (DateTime.Now - birthTime >= liveTime)
 			Destroy(gameObject);
 
-		if (chaseTarget)
+		if (target && chaseTarget)
 		{
 			transform.LookAt(target.collider.bounds.center);
 			Vector3 direction = target.collider.bounds.center - transform.position;
@@ -66,6 +66,8 @@ public class Arrow : MonoBehaviour {
 	{
 		if (shot)
 			throw new UnityException("Arrow has already been shot!");
+		if (target == null)
+			throw new UnityException("Target is null!");
 		shot = true;
 		chaseTarget = chase;
 		this.target = target;

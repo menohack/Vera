@@ -11,29 +11,35 @@ public class Sentry : MonoBehaviour {
 
 	TimeSpan shootCooldown = new TimeSpan(0, 0, 0, 0, 500);
 
-	GameObject target;
+	GameObject target = null;
 
-	// Use this for initialization
-	void Start ()
+	public float searchFrequencyMilliseconds = 500f;
+
+	TimeSpan searchFrequency;
+
+	DateTime lastSearch = DateTime.Now;
+
+	void Start()
 	{
-		target = FindTarget();
+		searchFrequency = TimeSpan.FromMilliseconds(searchFrequencyMilliseconds);
 	}
 
-	GameObject FindTarget()
-	{
-		return GameObject.FindGameObjectWithTag("Player");
-	}
-	
-	// Update is called once per frame
 	void Update()
 	{
-		if (lastShoot == null || (DateTime.Now - lastShoot) >= shootCooldown)
+		if (DateTime.Now - lastSearch < searchFrequency)
+		{
+			target = Targeting.FindClosestTarget(transform.position, "Enemy");
+			lastSearch = DateTime.Now;
+		}
+
+		if (target != null && (lastShoot == null || (DateTime.Now - lastShoot) >= shootCooldown))
 		{
 			GameObject arrow = Instantiate(arrowPrefab) as GameObject;
 			Physics.IgnoreCollision(collider, arrow.collider);
 			Arrow arrowScript = arrow.GetComponent<Arrow>();
 			arrow.transform.position = arrowSpawn.position;
 			arrow.transform.rotation = arrowSpawn.rotation;
+			Debug.Log("Shooting an arrow at " + target);
 			if (arrowScript)
 				arrowScript.Shoot(target);
 
