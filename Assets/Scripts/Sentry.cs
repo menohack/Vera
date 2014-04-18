@@ -35,7 +35,7 @@ public class Sentry : MonoBehaviour {
 			arrow.transform.position = arrowSpawn.position;
 			arrow.transform.rotation = arrowSpawn.rotation;
 			if (arrowScript)
-				arrowScript.Shoot(target.transform.position);
+				arrowScript.Shoot(target);
 
 			lastShoot = DateTime.Now;
 		}
