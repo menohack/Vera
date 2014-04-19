@@ -77,7 +77,7 @@ public class Spawn : MonoBehaviour {
 		if (player) 
 		{
 			Player p = player.GetComponent<Player>();
-			int numWolves = 10 + (p.getDays() * p.getDays ());
+			int numWolves = 5 + (p.getDays() * p.getDays ());
 			SpawnWolves (numWolves, 10f, 15f, player.transform.position, player.transform);
 		}
 		else

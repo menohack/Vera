@@ -51,13 +51,13 @@ public class MeleeCollider : MonoBehaviour {
 			Health enemyHealth = null;
 			if (other.gameObject.tag == "Enemy")
 			{
-				other.gameObject.GetComponent<Health> ();
+				enemyHealth = other.gameObject.GetComponent<Health> ();
 			}
 			if (enemyHealth != null) {
 				if (DEBUG)
 					Debug.Log (gameObject.name + " just did damage to " + other.gameObject.name);
 				enemyHealth.Damage (DamageValue);
 			}
-	}
+		}
 	}
 }
