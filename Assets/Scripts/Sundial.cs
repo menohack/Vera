@@ -39,11 +39,16 @@ public class Sundial : MonoBehaviour
 	/// </summary>
 	public float fadeOut = 1f;
 
-
 	/// <summary>
 	/// The font used for the prompt.
 	/// </summary>
 	public Font promptFont;
+
+	public Spawn spawn;
+
+	public float spawnWolvesScalar = 0.5f;
+
+	bool spawned = false;
 	
 	void Update ()
 	{
@@ -52,10 +57,17 @@ public class Sundial : MonoBehaviour
 		{
 			time = newTime - dayLengthSeconds;
 			day++;
-			//promptTime = time;
+			spawned = false;
+			spawn.DespawnWolves();
 		}
 		else
 			time = newTime;
+
+		if (time/dayLengthSeconds > spawnWolvesScalar && !spawned && spawn)
+		{
+			spawn.SpawnWolves();
+			spawned = true;
+		}
 	}
 
 	/// <summary>

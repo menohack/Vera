@@ -84,6 +84,13 @@ public class Spawn : MonoBehaviour {
 			Debug.Log("Can't find player for Spawn script");
 	}
 
+	public void DespawnWolves()
+	{
+		GameObject[] wolves = GameObject.FindGameObjectsWithTag("Enemy");
+		foreach (GameObject w in wolves)
+			Destroy(w);
+	}
+
 	/// <summary>
 	/// Spawns count wolves centered around position within minRadius and maxRadius radial distance.
 	/// </summary>
@@ -99,6 +106,7 @@ public class Spawn : MonoBehaviour {
 		for (int i = 0; i < count; i++)
 		{
 			GameObject spawn = Instantiate(wolf) as GameObject;
+			spawn.name = "Wolf";
 			SeekerAI seek = spawn.GetComponent<SeekerAI>();
 			seek.target = tgt;
 
