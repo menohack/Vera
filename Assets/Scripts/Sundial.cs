@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Sundial : MonoBehaviour
 {
-
 	/// <summary>
 	/// The day.
 	/// </summary>
@@ -49,6 +48,12 @@ public class Sundial : MonoBehaviour
 	public float spawnWolvesScalar = 0.5f;
 
 	bool spawned = false;
+
+
+	public Material daySkybox;
+	public Material nightSkybox;
+
+	public float nightScalar = 0.5f;
 	
 	void Update ()
 	{
@@ -68,6 +73,19 @@ public class Sundial : MonoBehaviour
 			spawn.SpawnWolves();
 			spawned = true;
 		}
+
+		float skyboxBlend;
+		//time:  0 middle, 0.25 day, 0.5 middle, 0.75 night, 1 == 0
+		//blend: 0.5		0			0.5			1			0.5
+		if (GetProgress() < 0.25f)
+			skyboxBlend = 0.5f - 2.0f * GetProgress();
+		else if (GetProgress() < 0.5f)
+			skyboxBlend = (GetProgress() - 0.25f) * 2.0f;
+		else if (GetProgress() < 0.75f)
+			skyboxBlend = (GetProgress() - 0.5f) * 2.0f + GetProgress();
+		else
+			skyboxBlend = 1.0f - (GetProgress() - 0.75f) * 2.0f;
+		RenderSettings.skybox.SetFloat("_Blend", skyboxBlend);
 	}
 
 	/// <summary>
