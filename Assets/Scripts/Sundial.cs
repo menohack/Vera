@@ -43,16 +43,34 @@ public class Sundial : MonoBehaviour
 	/// </summary>
 	public Font promptFont;
 
+	/// <summary>
+	/// The spawn GameObject.
+	/// </summary>
 	public Spawn spawn;
 
+	/// <summary>
+	/// The time of day between 0 and 1 at which to spawn wolves.
+	/// </summary>
 	public float spawnWolvesScalar = 0.5f;
 
+	/// <summary>
+	/// Have the wolves been spawned today?
+	/// </summary>
 	bool spawned = false;
 
-
+	/// <summary>
+	/// The day skybox.
+	/// </summary>
 	public Material daySkybox;
+
+	/// <summary>
+	/// The night skybox.
+	/// </summary>
 	public Material nightSkybox;
 
+	/// <summary>
+	/// The time of day between 0 and 1 when night falls.
+	/// </summary>
 	public float nightScalar = 0.5f;
 	
 	void Update ()
@@ -68,8 +86,9 @@ public class Sundial : MonoBehaviour
 		else
 			time = newTime;
 
-		if (time/dayLengthSeconds > spawnWolvesScalar && !spawned && spawn)
+		if (GetProgress() > spawnWolvesScalar && !spawned && spawn)
 		{
+			Debug.Log("Spawning wolves");
 			spawn.SpawnWolves();
 			spawned = true;
 		}
@@ -86,6 +105,15 @@ public class Sundial : MonoBehaviour
 		else
 			skyboxBlend = 1.0f - (GetProgress() - 0.75f) * 2.0f;
 		RenderSettings.skybox.SetFloat("_Blend", skyboxBlend);
+	}
+
+	/// <summary>
+	/// Gets the number of days that we have survived (starting at 1).
+	/// </summary>
+	/// <returns>The current day.</returns>
+	public int GetDay()
+	{
+		return day;
 	}
 
 	/// <summary>
