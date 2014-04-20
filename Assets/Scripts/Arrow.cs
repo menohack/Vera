@@ -26,13 +26,14 @@ public class Arrow : MonoBehaviour {
 	void Start ()
 	{
 		birthTime = DateTime.Now;
-		rigidbody.detectCollisions = false;
-		if (chaseTarget && rigidbody)
-			Destroy(rigidbody);
+		//if (chaseTarget && rigidbody)
+		//	Destroy(rigidbody);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (!target && chaseTarget)
+			Destroy(gameObject);
 		if (DateTime.Now - birthTime >= liveTime)
 			Destroy(gameObject);
 
@@ -119,9 +120,5 @@ public class Arrow : MonoBehaviour {
 			
 		Destroy(rigidbody);
 		hit = true;
-	}
-
-	void OnCollisionExit(Collision collision)
-	{
 	}
 }

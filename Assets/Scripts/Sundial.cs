@@ -88,7 +88,6 @@ public class Sundial : MonoBehaviour
 
 		if (GetProgress() > spawnWolvesScalar && !spawned && spawn)
 		{
-			Debug.Log("Spawning wolves");
 			spawn.SpawnWolves();
 			spawned = true;
 		}
