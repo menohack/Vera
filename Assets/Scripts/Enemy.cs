@@ -31,6 +31,7 @@ public class Enemy : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		ignoreLayerMask = ~(1 << 10 | 1 << 11);
+		Debug.Log(gameObject + " is alive");
 	}
 
 	void Update()
@@ -38,12 +39,15 @@ public class Enemy : MonoBehaviour {
 		if (target)
 		{
 			attackStartPoint = transform.position + new Vector3(0, 1f, 0);
-			CapsuleCollider targetCollider = target.collider as CapsuleCollider;
-			if (targetCollider)
-				attackEndPoint = target.transform.position + new Vector3(0f, targetCollider.height/2.0f, 0f);
-			else
-				throw new UnityException("Enemy script expected a capsule collider on player");
-			Attack();
+			if (target.collider)
+			{
+				CapsuleCollider targetCollider = target.collider as CapsuleCollider;
+				if (targetCollider)
+					attackEndPoint = target.transform.position + new Vector3(0f, targetCollider.height / 2.0f, 0f);
+				else
+					throw new UnityException("Enemy script expected a capsule collider on player");
+				Attack();
+			}
 		}
 	}
 
@@ -89,36 +93,16 @@ public class Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		GameObject[] targets = GameObject.FindGameObjectsWithTag("Player");
-		
-		if (targets.Length > 0)
-		{
-			target = targets[0];
-			float minDistance = Vector3.Distance(targets[0].gameObject.transform.position, transform.position);
-			for (int i=1; i < targets.Length; i++)
-			{
-				float distance = Vector3.Distance(targets[i].gameObject.transform.position, transform.position);
-				if (distance < minDistance )
-				{
-					minDistance = distance;
-					target = targets[i];
-				}
-			}
+		target = Targeting.FindClosestTarget(transform.position, "Player");
 
-			/*
-			Vector3 tempPosition = transform.position;
-			transform.LookAt(target.transform.position, Vector3.up);
-			transform.position = tempPosition;
-			*/
+		if (target)
+		{
+			float minDistance = Vector3.Distance(target.transform.position, transform.position);
 			
 			Vector3 direction = target.transform.position - transform.position;
 			direction.Normalize();
-			if (minDistance < maxFollowDistance && minDistance > minFollowDistance && transform.rigidbody.velocity.magnitude < MAX_SPEED)
+			if (rigidbody && minDistance < maxFollowDistance && minDistance > minFollowDistance && transform.rigidbody.velocity.magnitude < MAX_SPEED)
 				rigidbody.AddForce(direction * MOVE_FORCE * Time.fixedDeltaTime, ForceMode.VelocityChange);
-				//transform.position += transform.forward * Time.fixedDeltaTime * speed;
-				//transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.fixedDeltaTime);
-			
-		}
-			
+		}	
 	}
 }

@@ -9,25 +9,6 @@ public class Player : MonoBehaviour {
 
 	public GUIStyle style;
 
-	private int daysAlive = 0;
-	public bool debug;
- 
-	void Update()
-	{
-		
-	}
-
-	public int getDays()
-	{
-		return daysAlive;
-	}
-
-	void DaysAlive()
-	{
-		daysAlive += 1;
-		if (debug) { Debug.Log ("It is now day: " + daysAlive); }
-	}
-
 	void OnGUI()
 	{
 		float offsetFromCorner = Screen.height * 0.1f;
