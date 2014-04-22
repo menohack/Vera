@@ -24,6 +24,9 @@ public class Sentry : MonoBehaviour {
 	/// </summary>
 	public Transform arrowSpawn3;
 
+	public int shootCooldownSec = 1;
+	public int shootCooldownMilli = 500;
+
 	/// <summary>
 	/// The last time an arrow was fired.
 	/// </summary>
@@ -32,7 +35,7 @@ public class Sentry : MonoBehaviour {
 	/// <summary>
 	/// The minimum time between shots.
 	/// </summary>
-	TimeSpan shootCooldown = new TimeSpan(0, 0, 0, 0, 500);
+	TimeSpan shootCooldown;
 
 	/// <summary>
 	/// The current target.
@@ -56,6 +59,7 @@ public class Sentry : MonoBehaviour {
 
 	void Start()
 	{
+		shootCooldown = new TimeSpan (0, 0, 0, shootCooldownSec, shootCooldownMilli);
 		searchFrequency = TimeSpan.FromMilliseconds(searchFrequencyMilliseconds);
 		target = Targeting.FindClosestTarget(transform.position, "Enemy");
 		lastSearch = DateTime.Now;
