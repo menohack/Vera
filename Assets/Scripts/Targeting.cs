@@ -1,31 +1,48 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Targeting
 {
-
-	public static GameObject FindClosestTarget(Vector3 position, string tag, float range)
+	public static GameObject FindClosestTarget(Transform origin, string tag, float range=float.PositiveInfinity, float awarenessRange=-1)
 	{
-		GameObject[] targets = GameObject.FindGameObjectsWithTag(tag);
-		GameObject target = null;
+		List<GameObject> targetList = new List<GameObject>(GameObject.FindGameObjectsWithTag(tag));
+		targetList = targetList.Where (target => WithinRange(origin, target.transform, range, awarenessRange)).ToList();
 
-		if (targets.Length > 0)
-		{
-			target = targets[0];
-			float minDistance = Vector3.Distance(targets[0].gameObject.transform.position, position);
-			for (int i = 1; i < targets.Length; i++)
-			{
-				float distance = Vector3.Distance(targets[i].gameObject.transform.position, position);
-				if (distance < minDistance)
-				{
-					minDistance = distance;
-					target = targets[i];
-				}
-			}
-			if (minDistance > range) //if the closest target found is still out of range, don't target anything
-				target = null;
+		if (targetList.Count == 0)
+			return null;
+		else if (targetList.Count == 1)
+			return targetList.First ();
+		else { //returns min
+			return GetClosest(origin, targetList);
 		}
-
-		return target;
 	}
+
+	//awarenessRange is for the dot product. -1 implies all around (circle), 0 implies forward + sides (semicircle), 1 is strictly forward, and values in between are in between these areas
+	private static bool WithinRange(Transform origin, Transform target, float range=float.PositiveInfinity, float awarenessRange=0) 
+	{
+		return WithinDist (origin, target, range) && WithinAngle (origin, target, awarenessRange);
+	}
+
+	//returns true if within the distance of attack
+	private static bool WithinDist(Transform origin, Transform target, float range=float.PositiveInfinity) 
+	{
+		return Vector3.Distance (target.position, origin.position) <= range;
+	}
+
+	//awarenessRange is for the dot product. -1 implies all around (circle), 0 implies forward + sides (semicircle), 1 is strictly forward, and values in between are in between these areas
+	private static bool WithinAngle(Transform origin, Transform target, float awarenessRange=0) 
+	{
+		Vector3 heading = Vector3.Normalize(target.position - origin.position);
+		float dot = Vector3.Dot (heading, origin.forward);
+		return awarenessRange <= dot; 
+	}
+
+	//fold list to return the enemy at closest distance
+	private static GameObject GetClosest(Transform origin, List<GameObject> targetList) 
+	{
+		return targetList.Aggregate ((x, y) => Vector3.Distance (x.transform.position, origin.position) < Vector3.Distance (y.transform.position, origin.position) ? x : y);
+	}
+
 }
