@@ -8,14 +8,7 @@ public class HealthBar : MonoBehaviour {
 	public Texture2D healthBarBack;
 
 	public GUIStyle style;
-
-	public GameObject healthBar;
 	
-	// Update is called once per frame
-	void LateUpdate () {
-		healthBar.transform.LookAt(Camera.main.transform);
-	}
-	/*
 	void OnGUI()
 	{
 		Bounds bounds;
@@ -49,5 +42,4 @@ public class HealthBar : MonoBehaviour {
 		}
 		GUI.Box(new Rect(position.x, Screen.height - position.y, healthBarFront.width, healthBarFront.height), healthBarFront, style);
 	}
-	 * */
 }
