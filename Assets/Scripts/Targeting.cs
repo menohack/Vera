@@ -4,7 +4,7 @@ using System.Collections;
 public class Targeting
 {
 
-	public static GameObject FindClosestTarget(Vector3 position, string tag)
+	public static GameObject FindClosestTarget(Vector3 position, string tag, float range)
 	{
 		GameObject[] targets = GameObject.FindGameObjectsWithTag(tag);
 		GameObject target = null;
@@ -22,6 +22,8 @@ public class Targeting
 					target = targets[i];
 				}
 			}
+			if (minDistance > range) //if the closest target found is still out of range, don't target anything
+				target = null;
 		}
 
 		return target;

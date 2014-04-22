@@ -26,6 +26,7 @@ public class Sentry : MonoBehaviour {
 
 	public int shootCooldownSec = 1;
 	public int shootCooldownMilli = 500;
+	public float attackDistance = 5.0f;
 
 	/// <summary>
 	/// The last time an arrow was fired.
@@ -61,7 +62,7 @@ public class Sentry : MonoBehaviour {
 	{
 		shootCooldown = new TimeSpan (0, 0, 0, shootCooldownSec, shootCooldownMilli);
 		searchFrequency = TimeSpan.FromMilliseconds(searchFrequencyMilliseconds);
-		target = Targeting.FindClosestTarget(transform.position, "Enemy");
+		target = Targeting.FindClosestTarget(transform.position, "Enemy", attackDistance);
 		lastSearch = DateTime.Now;
 	}
 
@@ -69,7 +70,7 @@ public class Sentry : MonoBehaviour {
 	{
 		if (DateTime.Now - lastSearch > searchFrequency)
 		{
-			target = Targeting.FindClosestTarget(transform.position, "Enemy");
+			target = Targeting.FindClosestTarget(transform.position, "Enemy", attackDistance);
 			lastSearch = DateTime.Now;
 		}
 
