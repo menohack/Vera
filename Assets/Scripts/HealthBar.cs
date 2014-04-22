@@ -17,8 +17,12 @@ public class HealthBar : MonoBehaviour {
 				bounds = charController.bounds;
 		else
 				bounds = transform.collider.bounds;
-		Vector2 position = Camera.main.WorldToViewportPoint(transform.position + new Vector3(0f, bounds.size.y * 1.25f, 0f));
+		Vector2 position = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0f, bounds.size.y * 1.25f, 0f));
 		position += new Vector2(-healthBarFront.width/2.0f, healthBarFront.height);
+
+		Vector3 viewportPoint = Camera.main.WorldToViewportPoint(transform.position + new Vector3(0f, bounds.size.y * 1.25f, 0f));
+		if (viewportPoint.x < 0f || viewportPoint.x > 1f || viewportPoint.y < 0f || viewportPoint.y > 1f || viewportPoint.z < 1f)
+			return;
 
 		float maxHealth = 0;
 		float health = 0;
@@ -34,12 +38,17 @@ public class HealthBar : MonoBehaviour {
 
 		float healthPercentage = health / maxHealth;
 
+		float distance = Vector4.Distance(Camera.main.transform.position, transform.position);
+		float scale = 15f / distance;
+		if (scale > 1f)
+			scale = 1f;
+
 		if (healthPercentage >= 0)
 		{
-			GUI.BeginGroup(new Rect(position.x, Screen.height - position.y, healthBarBack.width * healthPercentage, healthBarBack.height), style);
-			GUI.Box(new Rect(0, 0, healthBarBack.width, healthBarBack.height), healthBarBack, style);
+			GUI.BeginGroup(new Rect(position.x, Screen.height - position.y, healthBarBack.width * healthPercentage * scale, healthBarBack.height * scale), style);
+			GUI.Box(new Rect(0, 0, healthBarBack.width * scale, healthBarBack.height * scale), healthBarBack, style);
 			GUI.EndGroup();
 		}
-		GUI.Box(new Rect(position.x, Screen.height - position.y, healthBarFront.width, healthBarFront.height), healthBarFront, style);
+		GUI.Box(new Rect(position.x, Screen.height - position.y, healthBarFront.width * scale, healthBarFront.height * scale), healthBarFront, style);
 	}
 }
