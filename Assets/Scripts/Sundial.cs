@@ -113,7 +113,7 @@ public class Sundial : MonoBehaviour
 		{
 			float labelWidth = 400f;
 			float labelHeight = 200f;
-			GUILayout.BeginArea(new Rect(Screen.width / 2.0f - labelWidth / 2.0f, Screen.height / 2.0f - labelHeight / 2.0f, labelWidth, labelHeight));
+			GUILayout.BeginArea(new Rect(Screen.width / 2.0f - labelWidth / 2.0f, Screen.height * 0.4f - labelHeight / 2.0f, labelWidth, labelHeight));
 
 			GUIStyle labelStyle = new GUIStyle();
 			
