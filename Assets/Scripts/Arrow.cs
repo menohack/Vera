@@ -6,7 +6,7 @@ public class Arrow : MonoBehaviour {
 
 	public float MAX_SHOOT_FORCE = 10f;
 	public float TIP_FORCE = 10f;
-	public float ARROW_DAMAGE = 5f;
+	public float ARROW_DAMAGE = 50f;
 
 	public float MAX_VELOCITY = 10f;
 
@@ -106,14 +106,16 @@ public class Arrow : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter(Collision collision)
+	void OnTriggerEnter(Collider collision)
 	{
 		if (hit)
 			return;
 
+		Debug.Log("Hit " + collision.gameObject);
 		Health health = collision.gameObject.GetComponent<Health>();
 		if (health)
 		{
+			Debug.Log("Hurt the " + collision.gameObject + " who has " + health.GetHealth() + " health");
 			gameObject.transform.parent = collision.gameObject.transform;
 			health.Damage(ARROW_DAMAGE);
 		}
