@@ -40,6 +40,9 @@ public class Menu : MonoBehaviour {
 				musicMenu.audio.time = 16.6f;
 				musicMenu.audio.Play();
 			}
+			MouseLook[] mouseLook = GameObject.FindObjectsOfType<MouseLook>();
+			foreach (MouseLook m in mouseLook)
+				Destroy(m);
 		}
 	}
 

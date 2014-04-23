@@ -111,11 +111,9 @@ public class Arrow : MonoBehaviour {
 		if (hit)
 			return;
 
-		Debug.Log("Hit " + collision.gameObject);
 		Health health = collision.gameObject.GetComponent<Health>();
-		if (health)
+		if (health && collision.gameObject.tag == "Enemy")
 		{
-			Debug.Log("Hurt the " + collision.gameObject + " who has " + health.GetHealth() + " health");
 			gameObject.transform.parent = collision.gameObject.transform;
 			health.Damage(ARROW_DAMAGE);
 		}

@@ -126,11 +126,12 @@ public abstract class Building : Item {
 		{
 			Vector3 direction = held.position - player.transform.position;
 			direction.Normalize();
-			position += collider.bounds.extents.x * direction;
+			float extents = Mathf.Max(collider.bounds.extents.x, collider.bounds.extents.z);
+			position += extents * direction;
 			position -= new Vector3(0f, collider.bounds.extents.y, 0f);
 		}
 		if (held && !placed)
-			transform.position = new Vector3(Mathf.Floor(position.x / SCALE + 0.5f) * SCALE, position.y, Mathf.Floor(position.z / SCALE + 0.5f) * SCALE);
+			transform.position = new Vector3(Mathf.Floor(position.x / SCALE) * SCALE, position.y, Mathf.Floor(position.z / SCALE) * SCALE);
 	}
 
 	/// <summary>
