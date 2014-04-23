@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class Sentry : MonoBehaviour {
+public class Sentry : Building {
 
 	/// <summary>
 	/// The arrow prefab.
@@ -66,39 +66,66 @@ public class Sentry : MonoBehaviour {
 	/// </summary>
 	DateTime lastSearch = DateTime.Now;
 
+	/// <summary>
+	/// The wood cost to build a sentry.
+	/// </summary>
+	public static int SENTRY_COST_WOOD = 4;
+
+	/// <summary>
+	/// The ore cost to build a sentry.
+	/// </summary>
+	public static int SENTRY_COST_ORE = 4;
+
+	public override int GetOreCost()
+	{
+		return SENTRY_COST_ORE;
+	}
+
+	public override int GetWoodCost()
+	{
+		return SENTRY_COST_WOOD;
+	}
+
 	void Start()
 	{
+		base.Start();
 		shootCooldown = new TimeSpan (0, 0, 0, shootCooldownSec, shootCooldownMilli);
 		searchFrequency = TimeSpan.FromMilliseconds(searchFrequencyMilliseconds);
 		target = Targeting.FindClosestTarget(transform, "Enemy", attackDistance, attackArc);
 		lastSearch = DateTime.Now;
 	}
 
-	void Update()
+
+	protected override void Update()
 	{
-		if (DateTime.Now - lastSearch > searchFrequency)
+		if (!placed)
+			base.Update();
+		else
 		{
-			target = Targeting.FindClosestTarget(transform, "Enemy", attackDistance, attackArc);
-			lastSearch = DateTime.Now;
-		}
+			if (DateTime.Now - lastSearch > searchFrequency)
+			{
+				target = Targeting.FindClosestTarget(transform, "Enemy", attackDistance, attackArc);
+				lastSearch = DateTime.Now;
+			}
 
-		if (target != null && (lastShoot == null || (DateTime.Now - lastShoot) >= shootCooldown))
-		{
-			GameObject arrow = Instantiate(arrowPrefab) as GameObject;
-			Physics.IgnoreCollision(collider, arrow.collider);
-			Arrow arrowScript = arrow.GetComponent<Arrow>();
+			if (target != null && (lastShoot == null || (DateTime.Now - lastShoot) >= shootCooldown))
+			{
+				GameObject arrow = Instantiate(arrowPrefab) as GameObject;
+				Physics.IgnoreCollision(collider, arrow.collider);
+				Arrow arrowScript = arrow.GetComponent<Arrow>();
 
-			Vector2 randomValues = new Vector2(UnityEngine.Random.value, UnityEngine.Random.value);
-			randomValues.Normalize();
-			Vector3 position = arrowSpawn1.position + randomValues.x * (arrowSpawn2.position - arrowSpawn1.position)
-				+ randomValues.y * (arrowSpawn3.position - arrowSpawn1.position);
-			arrow.transform.position = position;
+				Vector2 randomValues = new Vector2(UnityEngine.Random.value, UnityEngine.Random.value);
+				randomValues.Normalize();
+				Vector3 position = arrowSpawn1.position + randomValues.x * (arrowSpawn2.position - arrowSpawn1.position)
+					+ randomValues.y * (arrowSpawn3.position - arrowSpawn1.position);
+				arrow.transform.position = position;
 
-			arrow.transform.rotation = arrowSpawn1.rotation;
-			if (arrowScript)
-				arrowScript.Shoot(target);
+				arrow.transform.rotation = arrowSpawn1.rotation;
+				if (arrowScript)
+					arrowScript.Shoot(target);
 
-			lastShoot = DateTime.Now;
+				lastShoot = DateTime.Now;
+			}
 		}
 	}
 }

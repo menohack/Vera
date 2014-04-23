@@ -45,7 +45,7 @@ public abstract class Building : Item {
 	/// <summary>
 	/// Initialization.
 	/// </summary>
-	void Start () {
+	protected void Start () {
 		originalMaterial = renderer.material;
 		layerMask = LayerMask.NameToLayer("Environment");
 
@@ -102,7 +102,8 @@ public abstract class Building : Item {
 	/// </summary>
 	protected override void Update ()
 	{
-		UpdatePosition();
+		if (held)
+			UpdatePosition();
 
 		//If the item has not been placed make it transparent and either red or green
 		if (!placed)
@@ -114,7 +115,23 @@ public abstract class Building : Item {
 		}
 	}
 
-	protected abstract void UpdatePosition();
+	//protected abstract void UpdatePosition();
+
+	protected void UpdatePosition()
+	{
+		GameObject player = GameObject.FindWithTag("Player");
+		Collider collider = GetComponent<Collider>();
+		Vector3 position = held.position;
+		if (collider && player)
+		{
+			Vector3 direction = held.position - player.transform.position;
+			direction.Normalize();
+			position += collider.bounds.extents.x * direction;
+			position -= new Vector3(0f, collider.bounds.extents.y, 0f);
+		}
+		if (held && !placed)
+			transform.position = new Vector3(Mathf.Floor(position.x / SCALE + 0.5f) * SCALE, position.y, Mathf.Floor(position.z / SCALE + 0.5f) * SCALE);
+	}
 
 	/// <summary>
 	/// Attempts to place the object.

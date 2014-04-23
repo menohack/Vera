@@ -9,6 +9,17 @@ public class Player : MonoBehaviour {
 
 	public GUIStyle style;
 
+	void Start()
+	{
+		Screen.showCursor = false;
+	}
+
+	void Update()
+	{
+		if (Input.GetKey(KeyCode.Escape))
+			Screen.showCursor = !Screen.showCursor;
+	}
+
 //	void OnGUI()
 //	{
 //		float offsetFromCorner = Screen.height * 0.1f;
