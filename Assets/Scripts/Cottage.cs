@@ -16,11 +16,4 @@ public class Cottage : Building {
 	{
 		return COTTAGE_COST_WOOD;
 	}
-
-	protected override void UpdatePosition()
-	{
-		float xOffset = 0.0f, zOffset = 5.0f;
-		if (held && !placed)
-			transform.position = new Vector3(Mathf.Floor(held.position.x / SCALE + 0.5f) * SCALE + xOffset, held.position.y, Mathf.Floor(held.position.z / SCALE + 0.5f) * SCALE + zOffset);
-	}
 }
