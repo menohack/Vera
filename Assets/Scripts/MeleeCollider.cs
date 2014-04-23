@@ -12,8 +12,6 @@ public class MeleeCollider : MonoBehaviour {
 
 	public int coolDownMilli = 1000; //TODO change this to a float and allow for 
 
-	public bool DEBUG = false;
-
 	private TimeSpan attackCooldown;
 	DateTime? lastAttack;
 
@@ -45,8 +43,6 @@ public class MeleeCollider : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		if (this.gameObject.animation.isPlaying) {
-			if (DEBUG)
-				Debug.Log (gameObject.name + " just collided with " + other.gameObject.name);
 
 			Health enemyHealth = null;
 			if (other.gameObject.tag == "Enemy")
@@ -54,8 +50,6 @@ public class MeleeCollider : MonoBehaviour {
 				enemyHealth = other.gameObject.GetComponent<Health> ();
 			}
 			if (enemyHealth != null) {
-				if (DEBUG)
-					Debug.Log (gameObject.name + " just did damage to " + other.gameObject.name);
 				enemyHealth.Damage (DamageValue);
 			}
 		}

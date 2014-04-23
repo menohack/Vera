@@ -176,7 +176,6 @@ public class ThirdPersonController : MonoBehaviour
 			{
 				if (lastJump == null || DateTime.Now - lastJump > jumpTime)
 				{
-					Debug.Log("Jumping");
 					animator.SetTrigger("Jump");
 					lastJump = DateTime.Now;
 				}

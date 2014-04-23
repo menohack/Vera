@@ -42,6 +42,10 @@ public abstract class Building : Item {
 
 	float ghostTransparency = 0.5f;
 
+	public Material transparentMaterial;
+
+	public bool prebuilt = false;
+
 	/// <summary>
 	/// Initialization.
 	/// </summary>
@@ -49,18 +53,24 @@ public abstract class Building : Item {
 		originalMaterial = renderer.material;
 		layerMask = LayerMask.NameToLayer("Environment");
 
-		renderer.material = new Material(renderer.material);
-		renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		//This doesn't work for the build, only in the editor
+		//renderer.material = new Material(renderer.material);
+		//renderer.material.shader = Shader.Find("Transparent/Diffuse");
 
-		float weight = 0.5f;
-		red = renderer.material.color;
-		red = red * weight + Color.red * weight;
-		red.a = ghostTransparency;
+		if (!prebuilt)
+		{
+			Debug.Log("Making transparent");
+			renderer.material = transparentMaterial;
 
-		green = renderer.material.color;
-		green = green * weight + Color.green * weight;
-		green.a = ghostTransparency;
-		
+			float weight = 0.5f;
+			red = renderer.material.color;
+			red = red * weight + Color.red * weight;
+			red.a = ghostTransparency;
+
+			green = renderer.material.color;
+			green = green * weight + Color.green * weight;
+			green.a = ghostTransparency;
+		}
 	}
 
 	public abstract int GetOreCost();
