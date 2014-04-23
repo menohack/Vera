@@ -59,7 +59,6 @@ public abstract class Building : Item {
 
 		if (!prebuilt)
 		{
-			Debug.Log("Making transparent");
 			renderer.material = transparentMaterial;
 
 			float weight = 0.5f;
