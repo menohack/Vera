@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[ExecuteInEditMode()] 
 public class LoadingScreen : MonoBehaviour {
 
 	public Texture2D titleScreen, infoScreen, controlScreen;
