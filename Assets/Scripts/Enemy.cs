@@ -93,7 +93,7 @@ public class Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		target = Targeting.FindClosestTarget(transform.position, "Player");
+		target = Targeting.FindClosestTarget(transform, "Player", attackDistance);
 
 		if (target)
 		{

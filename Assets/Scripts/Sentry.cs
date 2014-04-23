@@ -24,6 +24,18 @@ public class Sentry : MonoBehaviour {
 	/// </summary>
 	public Transform arrowSpawn3;
 
+	public int shootCooldownSec = 1;
+	public int shootCooldownMilli = 500;
+
+	//attack distance is the length distance away from origin the sentry can attack
+	public float attackDistance = 5.0f;
+
+	//attack range is the arc range within which the sentry can attack
+	// all values need to be between [-1,1], as its based on the dot product
+	// an arc of 1 means *only* directly in front, and arc of 0 means a semi-circle  from the front,, an arc of -1 means a full circle
+	// by example, an arc of .5 would mean an arc from -45 to 45 degrees about the sentries origin
+	public float attackArc = 0;
+
 	/// <summary>
 	/// The last time an arrow was fired.
 	/// </summary>
@@ -32,7 +44,7 @@ public class Sentry : MonoBehaviour {
 	/// <summary>
 	/// The minimum time between shots.
 	/// </summary>
-	TimeSpan shootCooldown = new TimeSpan(0, 0, 0, 0, 500);
+	TimeSpan shootCooldown;
 
 	/// <summary>
 	/// The current target.
@@ -56,8 +68,9 @@ public class Sentry : MonoBehaviour {
 
 	void Start()
 	{
+		shootCooldown = new TimeSpan (0, 0, 0, shootCooldownSec, shootCooldownMilli);
 		searchFrequency = TimeSpan.FromMilliseconds(searchFrequencyMilliseconds);
-		target = Targeting.FindClosestTarget(transform.position, "Enemy");
+		target = Targeting.FindClosestTarget(transform, "Enemy", attackDistance, attackArc);
 		lastSearch = DateTime.Now;
 	}
 
@@ -65,7 +78,7 @@ public class Sentry : MonoBehaviour {
 	{
 		if (DateTime.Now - lastSearch > searchFrequency)
 		{
-			target = Targeting.FindClosestTarget(transform.position, "Enemy");
+			target = Targeting.FindClosestTarget(transform, "Enemy", attackDistance, attackArc);
 			lastSearch = DateTime.Now;
 		}
 
