@@ -3,9 +3,11 @@ using System.Collections;
 
 public class Ore : Resource
 {
+	public int pickaxeHits = 5;
+	public int oreGatherCount = 5;
 	void Start()
 	{
-		hits = 5;
-		gatherCount = 5;
+		hits = pickaxeHits;
+		gatherCount = oreGatherCount;
 	}
 }

@@ -3,9 +3,12 @@ using System.Collections;
 
 public class Tree : Resource {
 
+	public int axeHits = 3;
+	public int woodGatherCount = 3;
+
 	void Start()
 	{
-		hits = 3;
-		gatherCount = 3;
+		hits = axeHits;
+		gatherCount = woodGatherCount;
 	}
 }
