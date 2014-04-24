@@ -16,8 +16,8 @@ public class Player : MonoBehaviour {
 
 	void Update()
 	{
-		if (Input.GetKey(KeyCode.Escape))
-			Screen.showCursor = !Screen.showCursor;
+		if (Input.GetKey(KeyCode.Escape) && !Menu.Paused() && !Menu.GameOver())
+			Menu.Pause();
 	}
 
 //	void OnGUI()

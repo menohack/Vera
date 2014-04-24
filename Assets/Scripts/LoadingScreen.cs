@@ -21,6 +21,14 @@ public class LoadingScreen : MonoBehaviour {
 		//Application.LoadLevel(0);
 		//async.allowSceneActivation = true;
 		texture = titleScreen;
+		Screen.showCursor = true;
+		Screen.lockCursor = false;
+	}
+
+	void Update()
+	{
+		if (Input.GetKey(KeyCode.Escape))
+			Application.Quit();
 	}
 
 	void OnGUI()
@@ -55,6 +63,8 @@ public class LoadingScreen : MonoBehaviour {
 				controls = false;
 				texture = infoScreen;
 			}
+			if (GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f + 40, 100, 40), "Quit"))
+				Application.Quit();
 		}
 	}
 }

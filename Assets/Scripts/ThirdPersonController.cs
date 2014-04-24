@@ -174,7 +174,7 @@ public class ThirdPersonController : MonoBehaviour
 			if (Input.GetButton ("Jump"))
 			// Handle jumping
 			{
-				if (lastJump == null || DateTime.Now - lastJump > jumpTime)
+				if (animator && lastJump == null || DateTime.Now - lastJump > jumpTime)
 				{
 					animator.SetTrigger("Jump");
 					lastJump = DateTime.Now;

@@ -36,7 +36,6 @@ public class Melee : MonoBehaviour {
 
 	int ignoreLayerMask;
 
-
 	DateTime? lastAttack;
 
 	void Start()
