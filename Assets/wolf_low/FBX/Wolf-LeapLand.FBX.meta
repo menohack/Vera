@@ -1,0 +1,181 @@
+fileFormatVersion: 2
+guid: 1d6614b8f36cd6841bb7cee2f0645237
+labels:
+- Animator
+- animated
+- animation
+- animal
+- wolf
+- lowpoly
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Back-Hip-Controller
+    100002: Back-Left-Leg-Control
+    100004: Back-Left-Leg-END
+    100006: Back-Left-Leg-END(mirrored)
+    100008: Back-Left-Leg-Hip
+    100010: Back-Left-Leg-Paw
+    100012: Back-Left-Leg-Shin
+    100014: Back-Left-Leg-Thigh-1
+    100016: Back-Left-Leg-Thigh-2
+    100018: Back-Right-Leg-Control
+    100020: Back-Right-Leg-Hip
+    100022: Back-Right-Leg-Paw
+    100024: Back-Right-Leg-Shin
+    100026: Back-Right-Leg-Thigh-1
+    100028: Back-Right-Leg-Thigh-2
+    100030: Back-Spine
+    100032: Back-Spine-Control
+    100034: Back-TailBone-1
+    100036: Back-TailBone-2
+    100038: Back-TailBone-3
+    100040: Back-TailBone-4
+    100042: Back-TailStart
+    100044: Body-Control
+    100046: Front-EndBone
+    100048: Front-Head
+    100050: Front-Hip-Controller
+    100052: Front-Left-Leg-Control
+    100054: Front-Left-Leg-END
+    100056: Front-Left-Leg-Hip
+    100058: Front-Left-Leg-Paw
+    100060: Front-Left-Leg-Shin
+    100062: Front-Left-Leg-Thigh-1
+    100064: Front-Left-Leg-Thigh-2
+    100066: Front-Nek
+    100068: Front-Right-Leg-Control
+    100070: Front-Right-Leg-END
+    100072: Front-Right-Leg-Hip
+    100074: Front-Right-Leg-Paw
+    100076: Front-Right-Leg-Shin
+    100078: Front-Right-Leg-Thigh-1
+    100080: Front-Right-Leg-Thigh-2
+    100082: Front-Spine
+    100084: Front-Spine-Control
+    100086: Head-Angle-Control
+    100088: Head-Control
+    100090: IK Chain001
+    100092: IK Chain002
+    100094: IK Chain003
+    100096: IK Chain004
+    100098: IK Chain005
+    100100: IK Chain006
+    100102: Root-Node
+    100104: Tail-Angle-Control
+    100106: Tail-Control
+    100108: Wolf
+    100110: //RootNode
+    400000: Back-Hip-Controller
+    400002: Back-Left-Leg-Control
+    400004: Back-Left-Leg-END
+    400006: Back-Left-Leg-END(mirrored)
+    400008: Back-Left-Leg-Hip
+    400010: Back-Left-Leg-Paw
+    400012: Back-Left-Leg-Shin
+    400014: Back-Left-Leg-Thigh-1
+    400016: Back-Left-Leg-Thigh-2
+    400018: Back-Right-Leg-Control
+    400020: Back-Right-Leg-Hip
+    400022: Back-Right-Leg-Paw
+    400024: Back-Right-Leg-Shin
+    400026: Back-Right-Leg-Thigh-1
+    400028: Back-Right-Leg-Thigh-2
+    400030: Back-Spine
+    400032: Back-Spine-Control
+    400034: Back-TailBone-1
+    400036: Back-TailBone-2
+    400038: Back-TailBone-3
+    400040: Back-TailBone-4
+    400042: Back-TailStart
+    400044: Body-Control
+    400046: Front-EndBone
+    400048: Front-Head
+    400050: Front-Hip-Controller
+    400052: Front-Left-Leg-Control
+    400054: Front-Left-Leg-END
+    400056: Front-Left-Leg-Hip
+    400058: Front-Left-Leg-Paw
+    400060: Front-Left-Leg-Shin
+    400062: Front-Left-Leg-Thigh-1
+    400064: Front-Left-Leg-Thigh-2
+    400066: Front-Nek
+    400068: Front-Right-Leg-Control
+    400070: Front-Right-Leg-END
+    400072: Front-Right-Leg-Hip
+    400074: Front-Right-Leg-Paw
+    400076: Front-Right-Leg-Shin
+    400078: Front-Right-Leg-Thigh-1
+    400080: Front-Right-Leg-Thigh-2
+    400082: Front-Spine
+    400084: Front-Spine-Control
+    400086: Head-Angle-Control
+    400088: Head-Control
+    400090: IK Chain001
+    400092: IK Chain002
+    400094: IK Chain003
+    400096: IK Chain004
+    400098: IK Chain005
+    400100: IK Chain006
+    400102: Root-Node
+    400104: Tail-Angle-Control
+    400106: Tail-Control
+    400108: Wolf
+    400110: //RootNode
+    4300000: Wolf
+    7400000: wolf-Animation-LeapLand
+    9500000: //RootNode
+    13700000: Wolf
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
