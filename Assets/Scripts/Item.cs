@@ -41,7 +41,7 @@ public abstract class Item : MonoBehaviour
 
 	public virtual string Serialize()
 	{
-		return gameObject.name + " " + gameObject.transform.position + " " + gameObject.transform.rotation;
+		return "Item " + gameObject.name + " " + gameObject.transform.position + " " + gameObject.transform.rotation;
 	}
 
 	protected virtual void Update()

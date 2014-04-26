@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
-using System.Net;
 using System;
 using System.Net.Sockets;
-using System.IO;
-using System.Xml;
 using System.Text;
 
 public class Networking
@@ -45,7 +42,10 @@ public class Networking
 		return true;
 	}
 
-
+	/// <summary>
+	/// Sends a message to the server.
+	/// </summary>
+	/// <param name="text"></param>
 	void SendMessage(string text)
 	{
 		NetworkStream stream = client.GetStream();
