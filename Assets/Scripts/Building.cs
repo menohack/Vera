@@ -42,25 +42,34 @@ public abstract class Building : Item {
 
 	float ghostTransparency = 0.5f;
 
+	public Material transparentMaterial;
+
+	public bool prebuilt = false;
+
 	/// <summary>
 	/// Initialization.
 	/// </summary>
-	void Start () {
+	protected void Start () {
 		originalMaterial = renderer.material;
 		layerMask = LayerMask.NameToLayer("Environment");
 
-		renderer.material = new Material(renderer.material);
-		renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		//This doesn't work for the build, only in the editor
+		//renderer.material = new Material(renderer.material);
+		//renderer.material.shader = Shader.Find("Transparent/Diffuse");
 
-		float weight = 0.5f;
-		red = renderer.material.color;
-		red = red * weight + Color.red * weight;
-		red.a = ghostTransparency;
+		if (!prebuilt)
+		{
+			renderer.material = transparentMaterial;
 
-		green = renderer.material.color;
-		green = green * weight + Color.green * weight;
-		green.a = ghostTransparency;
-		
+			float weight = 0.5f;
+			red = renderer.material.color;
+			red = red * weight + Color.red * weight;
+			red.a = ghostTransparency;
+
+			green = renderer.material.color;
+			green = green * weight + Color.green * weight;
+			green.a = ghostTransparency;
+		}
 	}
 
 	public abstract int GetOreCost();
@@ -102,7 +111,8 @@ public abstract class Building : Item {
 	/// </summary>
 	protected override void Update ()
 	{
-		UpdatePosition();
+		if (held)
+			UpdatePosition();
 
 		//If the item has not been placed make it transparent and either red or green
 		if (!placed)
@@ -114,7 +124,24 @@ public abstract class Building : Item {
 		}
 	}
 
-	protected abstract void UpdatePosition();
+	//protected abstract void UpdatePosition();
+
+	protected void UpdatePosition()
+	{
+		GameObject player = GameObject.FindWithTag("Player");
+		Collider collider = GetComponent<Collider>();
+		Vector3 position = held.position;
+		if (collider && player)
+		{
+			Vector3 direction = held.position - player.transform.position;
+			direction.Normalize();
+			float extents = Mathf.Max(collider.bounds.extents.x, collider.bounds.extents.z);
+			position += extents * direction;
+			position -= new Vector3(0f, collider.bounds.extents.y, 0f);
+		}
+		if (held && !placed)
+			transform.position = new Vector3(Mathf.Floor(position.x / SCALE) * SCALE, position.y, Mathf.Floor(position.z / SCALE) * SCALE);
+	}
 
 	/// <summary>
 	/// Attempts to place the object.

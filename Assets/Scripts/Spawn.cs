@@ -10,18 +10,14 @@ public class Spawn : MonoBehaviour {
 	public GameObject ore;
 	public GameObject wolf;
 
-	public bool debug;
-
 	public int treeCount = 1000;
 	public int oreCount = 1000;
 
-	void Start()
-	{
-		if (debug) 
-		{
-			SpawnWorld ();
-		}
-	}
+	public AudioSource howl;
+
+	public Sundial sundial;
+
+	public int wolfStartingCount = 5;
 
 	public void SpawnWorld()
 	{
@@ -67,21 +63,28 @@ public class Spawn : MonoBehaviour {
 		}
 	}
 
-	void MovePlayer(Vector3 size)
-	{
-	}
-
 	public void SpawnWolves()
 	{
 		GameObject player = GameObject.FindWithTag("Player");
-		if (player) 
+		if (player && sundial) 
 		{
-			Player p = player.GetComponent<Player>();
-			int numWolves = 10 + (p.getDays() * p.getDays ());
+			int numWolves = wolfStartingCount + sundial.GetDay() * sundial.GetDay();
 			SpawnWolves (numWolves, 10f, 15f, player.transform.position, player.transform);
+
+			if (howl)
+				howl.audio.Play();
+			else
+				Debug.Log("Howl audio source missing");
 		}
 		else
-			Debug.Log("Can't find player for Spawn script");
+			Debug.Log("Can't find player or sundial for Spawn script");
+	}
+
+	public void DespawnWolves()
+	{
+		GameObject[] wolves = GameObject.FindGameObjectsWithTag("Enemy");
+		foreach (GameObject w in wolves)
+			Destroy(w);
 	}
 
 	/// <summary>
@@ -99,6 +102,7 @@ public class Spawn : MonoBehaviour {
 		for (int i = 0; i < count; i++)
 		{
 			GameObject spawn = Instantiate(wolf) as GameObject;
+			spawn.name = "Wolf";
 			SeekerAI seek = spawn.GetComponent<SeekerAI>();
 			seek.target = tgt;
 

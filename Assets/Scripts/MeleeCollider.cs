@@ -12,14 +12,15 @@ public class MeleeCollider : MonoBehaviour {
 
 	public int coolDownMilli = 1000; //TODO change this to a float and allow for 
 
-	public bool DEBUG = false;
-
 	private TimeSpan attackCooldown;
 	DateTime? lastAttack;
 
 	private TimeSpan delayCoolDown;
 	DateTime? buildDelay;
 	private Build b;
+
+
+	public Animator animator;
 
 	void Start () {
 		attackCooldown = new TimeSpan(0,0,0,0, coolDownMilli);
@@ -37,27 +38,24 @@ public class MeleeCollider : MonoBehaviour {
 		{
 			if (Input.GetButtonDown("Fire1") && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
 			{
-				transform.animation.Play();
+				if (animator)
+					animator.SetTrigger("Attack");
 				lastAttack = DateTime.Now;
 			}
 		}
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (this.gameObject.animation.isPlaying) {
-			if (DEBUG)
-				Debug.Log (gameObject.name + " just collided with " + other.gameObject.name);
+		if (animator && animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
 
 			Health enemyHealth = null;
 			if (other.gameObject.tag == "Enemy")
 			{
-				other.gameObject.GetComponent<Health> ();
+				enemyHealth = other.gameObject.GetComponent<Health> ();
 			}
 			if (enemyHealth != null) {
-				if (DEBUG)
-					Debug.Log (gameObject.name + " just did damage to " + other.gameObject.name);
 				enemyHealth.Damage (DamageValue);
 			}
-	}
+		}
 	}
 }

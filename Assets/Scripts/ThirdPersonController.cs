@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public delegate void JumpDelegate ();
 
@@ -63,7 +64,11 @@ public class ThirdPersonController : MonoBehaviour
 			target = GetComponent<Rigidbody> ();
 		}
 	}
-	
+
+	Animator animator;
+	DateTime? lastJump;
+	float jumpTimeMilliseconds = 1000f;
+	TimeSpan jumpTime;
 		
 	void Start ()
 	// Verify setup, configure rigidbody
@@ -85,6 +90,10 @@ public class ThirdPersonController : MonoBehaviour
 		jumpCheck = gameObject.GetComponentInChildren<JumpCheck>();
 		if (!jumpCheck)
 			Debug.LogError("Unable to find JumpCheck");
+
+		jumpTime = TimeSpan.FromMilliseconds(jumpTimeMilliseconds);
+		animator = GetComponentInChildren<Animator>();
+		animator.SetFloat("Speed", 0f);
 	}
 	
 	
@@ -165,6 +174,11 @@ public class ThirdPersonController : MonoBehaviour
 			if (Input.GetButton ("Jump"))
 			// Handle jumping
 			{
+				if (animator && lastJump == null || DateTime.Now - lastJump > jumpTime)
+				{
+					animator.SetTrigger("Jump");
+					lastJump = DateTime.Now;
+				}
 				target.AddForce (
 					jumpSpeed * target.transform.up +
 						target.velocity.normalized * directionalJumpFactor,
@@ -197,11 +211,13 @@ public class ThirdPersonController : MonoBehaviour
 				// Only apply movement if we have sufficient input
 				{
 					target.AddForce (movement.normalized * appliedSpeed, ForceMode.VelocityChange);
+					animator.SetFloat("Speed", target.velocity.magnitude);
 				}
 				else
 				// If we are grounded and don't have significant input, just stop horizontal movement
 				{
 					target.velocity = new Vector3 (0.0f, target.velocity.y, 0.0f);
+					animator.SetFloat("Speed", 0f);
 					return;
 				}
 			}

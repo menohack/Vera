@@ -13,7 +13,8 @@ public class Water : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		if (player && player.transform.position.y < meshFilter.transform.position.y)
 		{
 			player.rigidbody.AddForce(Vector3.up * 1000f * Time.deltaTime);
