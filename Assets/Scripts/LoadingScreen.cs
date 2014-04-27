@@ -12,14 +12,6 @@ public class LoadingScreen : MonoBehaviour {
 
 	void Start()
 	{
-		/*
-		GUITexture texture = gameObject.AddComponent<GUITexture>();
-		texture.texture = loadingScreen;
-		transform.position = new Vector3(0.5f, 0.5f, 0.0f);
-		texture.enabled = true;
-		*/
-		//Application.LoadLevel(0);
-		//async.allowSceneActivation = true;
 		texture = titleScreen;
 		Screen.showCursor = true;
 		Screen.lockCursor = false;
@@ -65,6 +57,28 @@ public class LoadingScreen : MonoBehaviour {
 			}
 			if (GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f + 40, 100, 40), "Quit"))
 				Application.Quit();
+		}
+
+		NetworkController nc = GetComponent<NetworkController>();
+
+		if (nc != null && !Network.isClient && !Network.isServer)
+		{
+			if (GUI.Button(new Rect(100, 100, 250, 100), "Start Server"))
+				nc.StartServer();
+
+			if (GUI.Button(new Rect(100, 250, 250, 100), "Refresh Hosts"))
+				nc.RefreshHostList();
+
+			if (nc.hostList != null)
+			{
+				GUI.BeginScrollView(new Rect(400, 100, 300, 400), Vector2.zero, new Rect(0, 0, 300, 300));
+				for (int i = 0; i < nc.hostList.Length; i++)
+				{
+					if (GUI.Button(new Rect(0, 110 * i, 300, 100), nc.hostList[i].gameName))
+						nc.JoinServer(nc.hostList[i]);
+				}
+				GUI.EndScrollView();
+			}
 		}
 	}
 }

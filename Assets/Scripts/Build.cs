@@ -81,7 +81,8 @@ public class Build : MonoBehaviour {
 	/// </summary>
 	void EquipBuilding()
 	{
-		GameObject wall = Instantiate(buildings[buildingIndex]) as GameObject;
+		//GameObject wall = Instantiate(buildings[buildingIndex]) as GameObject;
+		GameObject wall = Network.Instantiate(buildings[buildingIndex], holdPoint.position, holdPoint.rotation,0) as GameObject;
 		Item i = wall.GetComponent<Item>();
 		if (i != null)
 			i.SetGhostPosition(holdPoint);
