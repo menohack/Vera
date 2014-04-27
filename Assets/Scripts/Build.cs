@@ -267,4 +267,8 @@ public class Build : MonoBehaviour {
 		return 
 			alphaNumDown;
 	}
+
+	public GameObject GetItemHeld(){
+		return itemHeld;
+	}
 }
