@@ -8,6 +8,13 @@ public class NetworkController : MonoBehaviour {
 
 	public HostData[] hostList;
 
+	bool connected = false;
+
+	public bool Connected()
+	{
+		return connected;
+	}
+
 	public void StartServer()
 	{
 		Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
@@ -35,8 +42,35 @@ public class NetworkController : MonoBehaviour {
 		Network.Connect(hostData);
 	}
 
+	int playerCount = 0;
+
+	void OnPlayerConnected(NetworkPlayer player)
+	{
+		Debug.Log("Player " + playerCount + " connected from " + player.ipAddress + ":" + player.port);
+		connected = true;
+	}
+
+	void OnPlayerDisconnected(NetworkPlayer player)
+	{
+		Debug.Log("Clean up after player " + player);
+		Network.RemoveRPCs(player);
+		Network.DestroyPlayerObjects(player);
+		if (playerCount == 0)
+		{
+			connected = false;
+			Network.Disconnect();
+		}
+	}
+
 	void OnConnectedToServer()
 	{
-		Debug.Log("Server Joined");
+		Debug.Log("Connected to server");
+		connected = true;
+	}
+
+	void OnDisconnectedFromServer(NetworkDisconnection info)
+	{
+		Debug.Log("Disconnected from server: " + info);
+		connected = false;
 	}
 }

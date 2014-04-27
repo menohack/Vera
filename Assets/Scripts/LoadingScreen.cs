@@ -23,6 +23,13 @@ public class LoadingScreen : MonoBehaviour {
 			Application.Quit();
 	}
 
+	[RPC]
+	public void StartGame()
+	{
+		loading = true;
+		Application.LoadLevel("Level1");
+	}
+
 	void OnGUI()
 	{
 
@@ -36,12 +43,16 @@ public class LoadingScreen : MonoBehaviour {
 		if (loading)
 			GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height * 0.9f, 200, 100), "LOADING", labelStyle);
 
+		NetworkController nc = GetComponent<NetworkController>();
+
 		if (!loading)
 		{
-			if (GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game"))
+			if ((!nc.Connected() || Network.isServer) && GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game"))
 			{
-				loading = true;
-				Application.LoadLevel("Level1");
+				if (Network.isServer)
+					networkView.RPC("StartGame", RPCMode.AllBuffered);
+				else
+					StartGame();
 			}
 			if (!controls && GUI.Button(new Rect(Screen.width / 2 - 150, Screen.height * 0.9f, 100, 40), "Controls"))
 			{
@@ -59,9 +70,9 @@ public class LoadingScreen : MonoBehaviour {
 				Application.Quit();
 		}
 
-		NetworkController nc = GetComponent<NetworkController>();
+		
 
-		if (nc != null && !Network.isClient && !Network.isServer)
+		if (nc != null && !nc.Connected() && !Network.isClient && !Network.isServer)
 		{
 			if (GUI.Button(new Rect(100, 100, 250, 100), "Start Server"))
 				nc.StartServer();
