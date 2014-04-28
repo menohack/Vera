@@ -10,12 +10,13 @@ public class MeleeCollider : MonoBehaviour {
 	/// </summary>
 	public int DamageValue = 10;
 
-	public int coolDownMilli = 1000; //TODO change this to a float and allow for 
+	public float coolDownMillis = 1000f;
 
 	private TimeSpan attackCooldown;
 	DateTime? lastAttack;
 
 	private TimeSpan delayCoolDown;
+	public float delayCooldownMillis = 500f;
 	DateTime? buildDelay;
 	private Build b;
 
@@ -23,8 +24,9 @@ public class MeleeCollider : MonoBehaviour {
 	public Animator animator;
 
 	void Start () {
-		attackCooldown = new TimeSpan(0,0,0,0, coolDownMilli);
-		delayCoolDown = new TimeSpan (0, 0, 0, 0, 500);
+		attackCooldown = TimeSpan.FromMilliseconds(coolDownMillis);
+		delayCoolDown = TimeSpan.FromMilliseconds(delayCooldownMillis);
+		//This needs to be fixed for networking
 		b = GameObject.FindGameObjectWithTag ("Player").GetComponent<Build>();
 	}
 

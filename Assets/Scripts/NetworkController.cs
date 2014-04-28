@@ -44,6 +44,7 @@ public class NetworkController : MonoBehaviour {
 
 	public void JoinServer(HostData hostData)
 	{
+		Debug.Log("Attempting to connect to server");
 		Network.Connect(hostData);
 	}
 

@@ -87,10 +87,7 @@ public class Build : MonoBehaviour {
 	{
 		GameObject wall;
 		if (nc != null && nc.Connected())
-		{
-			Debug.Log("This should print");
 			wall = Network.Instantiate(buildings[buildingIndex], holdPoint.position, holdPoint.rotation, 0) as GameObject;
-		}
 		else
 			wall = Instantiate(buildings[buildingIndex]) as GameObject;
 			

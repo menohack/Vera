@@ -59,22 +59,6 @@ public class Spawn : MonoBehaviour {
 			Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation);
 	}
 
-	/// <summary>
-	/// Remove keyboard and mouse controls locally from other players.
-	/// </summary>
-	void OnNetworkInstantiate(NetworkMessageInfo info)
-	{
-		GameObject g = info.networkView.gameObject;
-		ThirdPersonController controller =  gameObject.GetComponent<ThirdPersonController>();
-		if (controller != null && !info.networkView.isMine)
-		{
-			Debug.Log("Removing ThirdPersonController and MouseLook scripts from " + info.sender);
-			Destroy(g.GetComponent<ThirdPersonController>());
-			Destroy(g.GetComponent<MouseLook>());
-			Destroy(g.GetComponentInChildren<MouseLook>());
-		}
-	}
-
 	void SpawnTrees(int count, Vector3 size)
 	{
 		GameObject[] trees = { tree1, tree2, tree3 };
