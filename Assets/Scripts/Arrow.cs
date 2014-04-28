@@ -22,20 +22,17 @@ public class Arrow : MonoBehaviour {
 
 	GameObject target;
 
-	// Use this for initialization
 	void Start ()
 	{
 		birthTime = DateTime.Now;
-		//if (chaseTarget && rigidbody)
-		//	Destroy(rigidbody);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (!target && chaseTarget)
-			Destroy(gameObject);
+			Utility.DestroyHelper(gameObject);
 		if (DateTime.Now - birthTime >= liveTime)
-			Destroy(gameObject);
+			Utility.DestroyHelper(gameObject);
 
 		if (target && chaseTarget)
 		{

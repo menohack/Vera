@@ -119,7 +119,7 @@ public class Sundial : MonoBehaviour
 			float timeW = time;
 			int dayW = day;
 			stream.Serialize(ref timeW);
-			stream.Serialize(ref timeW);
+			stream.Serialize(ref dayW);
 		}
 		else
 		{

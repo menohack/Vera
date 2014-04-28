@@ -68,21 +68,23 @@ public class Health : MonoBehaviour {
 			health = 0f;
 			if (gameObject.tag == "Player")
 				Menu.EndGame();
-			else if (gameObject.layer == LayerMask.NameToLayer("Obstacle")) {
+			else if (gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+			{
 				//Pathfinding.Console.Write ("// Placing Object\n");
-				if (issueGUOs) {
+				if (issueGUOs)
+				{
 					GraphUpdateObject guo = new GraphUpdateObject(gameObject.collider.bounds);
-					AstarPath.active.UpdateGraphs (guo,0.0f);
-					if (direct) {
+					AstarPath.active.UpdateGraphs(guo, 0.0f);
+					if (direct)
+					{
 						//Pathfinding.Console.Write ("// Flushing\n");
 						AstarPath.active.FlushGraphUpdates();
 					}
 				}
-				Destroy(this.gameObject);
+				Utility.DestroyHelper(this.gameObject);
 			}
-
 			else
-				Destroy(this.gameObject);
+				Utility.DestroyHelper(this.gameObject);
 		}
 	}
 

@@ -161,7 +161,7 @@ public class Build : MonoBehaviour {
 				//Drop the item
 				PlaceItem ();
 			} else if (hasBuilding && Input.GetButtonDown ("Fire2")) {
-				DestroyHelper(itemHeld);
+				Utility.DestroyHelper(itemHeld);
 				itemHeld = null;
 				hasBuilding = false;
 			} else if (hasBuilding && scroll != 0.0f) {
@@ -169,7 +169,7 @@ public class Build : MonoBehaviour {
 				int tempBuildingIndex = ScrollBuildings (scrollIndices);
 				if (buildingIndex != tempBuildingIndex) {
 					buildingIndex = tempBuildingIndex;
-					DestroyHelper(itemHeld);
+					Utility.DestroyHelper(itemHeld);
 					itemHeld = null;
 					EquipBuilding ();
 				}
@@ -178,12 +178,12 @@ public class Build : MonoBehaviour {
 				int tempBuildingIndex = getIndexByKey ();
 				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
 					if (buildingIndex == tempBuildingIndex) {
-						DestroyHelper(itemHeld);
+						Utility.DestroyHelper(itemHeld);
 						itemHeld = null;
 						hasBuilding = false;
 					} else {
 						buildingIndex = tempBuildingIndex;
-						DestroyHelper(itemHeld);
+						Utility.DestroyHelper(itemHeld);
 						itemHeld = null;
 						EquipBuilding ();
 					}
@@ -249,19 +249,10 @@ public class Build : MonoBehaviour {
 				GameObject[] gos = GameObject.FindGameObjectsWithTag("Building");
 				foreach (GameObject go in gos)
 					if (nc != null && nc.Connected())
-					DestroyHelper(go);
+					Utility.DestroyHelper(go);
 			}
 		}	
 	}
-
-	void DestroyHelper(GameObject gameObject)
-	{
-		if (nc != null && nc.Connected())
-			Network.Destroy(gameObject);
-		else
-			Destroy(gameObject);
-	}
-
 
 	private int getIndexByKey() {
 		int alphaNumDown = -1; //stands for none
