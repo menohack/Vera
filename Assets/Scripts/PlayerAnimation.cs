@@ -29,7 +29,7 @@ public class PlayerAnimation : MonoBehaviour {
 	public void Jump()
 	{
 		if (Network.connections.Length > 0)
-			networkView.RPC("Jump", RPCMode.AllBuffered);
+			networkView.RPC("JumpRPC", RPCMode.AllBuffered);
 		else
 			JumpRPC();
 	}
