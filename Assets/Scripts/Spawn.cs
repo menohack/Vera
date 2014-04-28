@@ -23,22 +23,14 @@ public class Spawn : MonoBehaviour {
 
 	public int wolfStartingCount = 5;
 
+	public float minWolfSpawnRadius = 10f;
+	public float maxWolfSpawnRadius = 15f;
+
 	void Awake()
 	{
 		SpawnPlayer();
 	}
 
-	public void SpawnWorld()
-	{
-		Vector3 terrainSize = terrain.terrainData.size;
-
-		//Spawn the player randomly
-		//MovePlayer(terrainSize);
-
-		//Spawn resources randomly
-		SpawnTrees(treeCount, terrainSize);
-		SpawnOre(oreCount, terrainSize);
-	}
 
 	Vector3 GetRandomPlayerSpawn()
 	{
@@ -59,45 +51,13 @@ public class Spawn : MonoBehaviour {
 			Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation);
 	}
 
-	void SpawnTrees(int count, Vector3 size)
-	{
-		GameObject[] trees = { tree1, tree2, tree3 };
-		SpawnObjects(count, size, trees);
-	}
-
-	void SpawnOre(int count, Vector3 size)
-	{
-		GameObject[] ores = { ore };
-		SpawnObjects(count, size, ores);
-	}
-
-	void SpawnObjects(int count, Vector3 size, GameObject[] types)
-	{
-		for (int i = 0; i < count; i++)
-		{
-			//Type of tree
-			GameObject spawnType = types[Mathf.FloorToInt(Random.value * types.Length)];
-			GameObject spawn = Instantiate(spawnType) as GameObject;
-
-			//Position
-			Vector3 randomPosition = new Vector3(terrain.transform.position.y + Random.value * size.x, 0, terrain.transform.position.z + Random.value * size.z);
-
-			randomPosition.y = terrain.SampleHeight(randomPosition);
-			spawn.transform.position = randomPosition;
-
-			//Rotation
-			//Trees need to be default unrotated for this to work
-			//spawn.transform.eulerAngles = new Vector3(0,0, Random.Range(0, 360));
-		}
-	}
-
 	public void SpawnWolves()
 	{
 		GameObject player = GameObject.FindWithTag("Player");
 		if (player && sundial) 
 		{
 			int numWolves = wolfStartingCount + sundial.GetDay() * sundial.GetDay();
-			SpawnWolves (numWolves, 10f, 15f, player.transform.position, player.transform);
+			SpawnWolves (numWolves, minWolfSpawnRadius, maxWolfSpawnRadius, player.transform.position, player.transform);
 
 			if (howl)
 				howl.audio.Play();
@@ -129,11 +89,6 @@ public class Spawn : MonoBehaviour {
 
 		for (int i = 0; i < count; i++)
 		{
-			GameObject spawn = Instantiate(wolf) as GameObject;
-			spawn.name = "Wolf";
-			SeekerAI seek = spawn.GetComponent<SeekerAI>();
-			seek.target = tgt;
-
 			float x, z;
 			do
 			{
@@ -145,7 +100,13 @@ public class Spawn : MonoBehaviour {
 
 			//added 8 to Y to avoid spawning under terrain. unsure why terrain.SampleHeight isn't working on the map
 			Vector3 result = new Vector3(position.x + x, terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)), position.z + z);
-			spawn.transform.position = result;
+
+			GameObject spawn;
+			if (Network.connections.Length > 0)
+				spawn = Network.Instantiate(wolf, result, wolf.transform.rotation, 0) as GameObject;
+			else
+				spawn = Instantiate(wolf, result, wolf.transform.rotation) as GameObject;
+			spawn.name = "Wolf";
 		}
 	}
 }

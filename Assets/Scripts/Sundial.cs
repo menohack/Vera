@@ -90,7 +90,8 @@ public class Sundial : MonoBehaviour
 
 		if (GetProgress() > spawnWolvesScalar && !spawned && spawn)
 		{
-			spawn.SpawnWolves();
+			if (Network.isServer || Network.connections.Length == 0)
+				spawn.SpawnWolves();
 			spawned = true;
 		}
 
