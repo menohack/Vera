@@ -21,7 +21,7 @@ public class MeleeCollider : MonoBehaviour {
 	private Build b;
 
 
-	public Animator animator;
+	public PlayerAnimation animation;
 
 	void Start () {
 		attackCooldown = TimeSpan.FromMilliseconds(coolDownMillis);
@@ -40,15 +40,15 @@ public class MeleeCollider : MonoBehaviour {
 		{
 			if (Input.GetButtonDown("Fire1") && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
 			{
-				if (animator)
-					animator.SetTrigger("Attack");
+				if (animation)
+					animation.Attack();
 				lastAttack = DateTime.Now;
 			}
 		}
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (animator && animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
+		if (animation != null && animation.GetAttacking()) {
 
 			Health enemyHealth = null;
 			if (other.gameObject.tag == "Enemy")
