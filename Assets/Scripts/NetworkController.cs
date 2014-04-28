@@ -78,5 +78,7 @@ public class NetworkController : MonoBehaviour {
 	{
 		Debug.Log("Disconnected from server: " + info);
 		connected = false;
+
+		//We should delete other player's RPCs and objects here
 	}
 }

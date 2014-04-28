@@ -27,17 +27,7 @@ public class Menu : MonoBehaviour {
 	/// </summary>
 	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
 	{
-		if (stream.isWriting)
-		{
-			bool pausedW = paused;
-			stream.Serialize(ref pausedW);
-		}
-		else
-		{
-			bool pausedR = paused;
-			stream.Serialize(ref pausedR);
-			paused = pausedR;
-		}
+		
 	}
 
 	public static bool GameOver()
@@ -76,6 +66,7 @@ public class Menu : MonoBehaviour {
 		return paused;
 	}
 
+	[RPC]
 	public static void Pause()
 	{
 		if (!paused)
@@ -99,6 +90,7 @@ public class Menu : MonoBehaviour {
 
 	}
 
+	[RPC]
 	public static void Resume()
 	{
 		if (paused)
@@ -156,8 +148,13 @@ public class Menu : MonoBehaviour {
 			GUILayout.BeginVertical(verticalStyle);
 			GUILayout.FlexibleSpace();
 			GUILayout.Label("Paused", labelStyle);
-			if (GUILayout.Button("Continue"))
-				Resume();
+			if ((Network.isServer || Network.connections.Length == 0) && GUILayout.Button("Continue"))
+			{
+				if (Network.isServer)
+					networkView.RPC("Resume", RPCMode.AllBuffered);
+				else if (Network.connections.Length == 0)
+					Resume();
+			}
 			if (GUILayout.Button("New Game"))
 				StartGame();
 			if (GUILayout.Button("Quit"))

@@ -16,9 +16,23 @@ public class Player : MonoBehaviour {
 
 	void Update()
 	{
-		if (Network.isServer || Network.connections.Length == 0)
-			if (Input.GetKey(KeyCode.Escape) && !Menu.Paused() && !Menu.GameOver())
-				Menu.Pause();
+		if (Input.GetButtonDown("Escape") && !Menu.GameOver())
+		{
+			if (Menu.Paused())
+			{
+				if (Network.isServer)
+					networkView.RPC("Resume", RPCMode.AllBuffered);
+				else if (Network.connections.Length == 0)
+					Menu.Resume();
+			}
+			else
+			{
+				if (Network.isServer)
+					networkView.RPC("Pause", RPCMode.AllBuffered);
+				else if (Network.connections.Length == 0)
+					Menu.Pause();
+			}
+		}
 	}
 
 	/// <summary>
