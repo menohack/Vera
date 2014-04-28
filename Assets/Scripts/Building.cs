@@ -44,7 +44,7 @@ public abstract class Building : Item {
 	/// <summary>
 	/// Initialization.
 	/// </summary>
-	protected void Start () {
+	protected virtual void Start () {
 		originalMaterial = renderer.material;
 		layerMask = LayerMask.NameToLayer("Environment");
 

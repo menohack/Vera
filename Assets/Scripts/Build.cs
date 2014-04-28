@@ -85,11 +85,7 @@ public class Build : MonoBehaviour {
 	/// </summary>
 	void EquipBuilding()
 	{
-		GameObject wall;
-		if (nc != null && nc.Connected())
-			wall = Network.Instantiate(buildings[buildingIndex], holdPoint.position, holdPoint.rotation, 0) as GameObject;
-		else
-			wall = Instantiate(buildings[buildingIndex]) as GameObject;
+		GameObject wall = Utility.InstantiateHelper(buildings[buildingIndex] as GameObject, holdPoint.position, holdPoint.rotation);
 			
 		Item i = wall.GetComponent<Item>();
 		if (i != null)
