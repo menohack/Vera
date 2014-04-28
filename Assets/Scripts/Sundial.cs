@@ -109,6 +109,29 @@ public class Sundial : MonoBehaviour
 	}
 
 	/// <summary>
+	/// Serializes and deserializes the Sundial script across the network.
+	/// </summary>
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+		if (stream.isWriting)
+		{
+			float timeW = time;
+			int dayW = day;
+			stream.Serialize(ref timeW);
+			stream.Serialize(ref timeW);
+		}
+		else
+		{
+			float timeR = time;
+			int dayR = day;
+			stream.Serialize(ref timeR);
+			stream.Serialize(ref dayR);
+			time = timeR;
+			day = dayR;
+		}
+	}
+
+	/// <summary>
 	/// Gets the number of days that we have survived (starting at 1).
 	/// </summary>
 	/// <returns>The current day.</returns>

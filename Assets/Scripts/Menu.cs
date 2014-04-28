@@ -22,6 +22,24 @@ public class Menu : MonoBehaviour {
 		verticalStyle.padding.left = verticalStyle.padding.right = 10;
 	}
 
+	/// <summary>
+	/// Serializes and deserializes the Menu script across the network.
+	/// </summary>
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+		if (stream.isWriting)
+		{
+			bool pausedW = paused;
+			stream.Serialize(ref pausedW);
+		}
+		else
+		{
+			bool pausedR = paused;
+			stream.Serialize(ref pausedR);
+			paused = pausedR;
+		}
+	}
+
 	public static bool GameOver()
 	{
 		return gameOver;

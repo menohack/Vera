@@ -10,6 +10,10 @@ public class Spawn : MonoBehaviour {
 	public GameObject ore;
 	public GameObject wolf;
 
+	public Transform playerSpawn1, playerSpawn2, playerSpawn3;
+
+	public GameObject playerPrefab;
+
 	public int treeCount = 1000;
 	public int oreCount = 1000;
 
@@ -18,6 +22,11 @@ public class Spawn : MonoBehaviour {
 	public Sundial sundial;
 
 	public int wolfStartingCount = 5;
+
+	void Awake()
+	{
+		SpawnPlayer();
+	}
 
 	public void SpawnWorld()
 	{
@@ -29,6 +38,41 @@ public class Spawn : MonoBehaviour {
 		//Spawn resources randomly
 		SpawnTrees(treeCount, terrainSize);
 		SpawnOre(oreCount, terrainSize);
+	}
+
+	Vector3 GetRandomPlayerSpawn()
+	{
+		Vector2 random = new Vector2(Random.value, Random.value);
+		random.Normalize();
+		return playerSpawn1.position + random.x * (playerSpawn2.position - playerSpawn1.position)
+			+ random.y * (playerSpawn3.position - playerSpawn1.position);
+	}
+
+	/// <summary>
+	/// Spawn your player.
+	/// </summary>
+	void SpawnPlayer()
+	{
+		if (Network.connections.Length > 0)
+			Network.Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation, 0);
+		else
+			Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation);
+	}
+
+	/// <summary>
+	/// Remove keyboard and mouse controls locally from other players.
+	/// </summary>
+	void OnNetworkInstantiate(NetworkMessageInfo info)
+	{
+		GameObject g = info.networkView.gameObject;
+		ThirdPersonController controller =  gameObject.GetComponent<ThirdPersonController>();
+		if (controller != null && !info.networkView.isMine)
+		{
+			Debug.Log("Removing ThirdPersonController and MouseLook scripts from " + info.sender);
+			Destroy(g.GetComponent<ThirdPersonController>());
+			Destroy(g.GetComponent<MouseLook>());
+			Destroy(g.GetComponentInChildren<MouseLook>());
+		}
 	}
 
 	void SpawnTrees(int count, Vector3 size)

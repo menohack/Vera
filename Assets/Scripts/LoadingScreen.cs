@@ -10,11 +10,15 @@ public class LoadingScreen : MonoBehaviour {
 
 	Texture2D texture;
 
+	NetworkController nc;
+
 	void Start()
 	{
 		texture = titleScreen;
 		Screen.showCursor = true;
 		Screen.lockCursor = false;
+
+		nc = FindObjectOfType<NetworkController>();
 	}
 
 	void Update()
@@ -42,8 +46,6 @@ public class LoadingScreen : MonoBehaviour {
 
 		if (loading)
 			GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height * 0.9f, 200, 100), "LOADING", labelStyle);
-
-		NetworkController nc = GetComponent<NetworkController>();
 
 		if (!loading)
 		{

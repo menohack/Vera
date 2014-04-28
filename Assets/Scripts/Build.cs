@@ -45,6 +45,8 @@ public class Build : MonoBehaviour {
 
 	public GameObject arrowPrefab;
 
+	NetworkController nc;
+
 	/// <summary>
 	/// Load the building prefabs (used for instantiating them) and the inventory.
 	/// </summary>
@@ -56,6 +58,8 @@ public class Build : MonoBehaviour {
 
 		GameObject hp = GameObject.Find("HoldPoint");
 		holdPoint = hp.transform;
+
+		nc = FindObjectOfType<NetworkController>();
 	}
 
 
@@ -81,8 +85,15 @@ public class Build : MonoBehaviour {
 	/// </summary>
 	void EquipBuilding()
 	{
-		//GameObject wall = Instantiate(buildings[buildingIndex]) as GameObject;
-		GameObject wall = Network.Instantiate(buildings[buildingIndex], holdPoint.position, holdPoint.rotation,0) as GameObject;
+		GameObject wall;
+		if (nc != null && nc.Connected())
+		{
+			Debug.Log("This should print");
+			wall = Network.Instantiate(buildings[buildingIndex], holdPoint.position, holdPoint.rotation, 0) as GameObject;
+		}
+		else
+			wall = Instantiate(buildings[buildingIndex]) as GameObject;
+			
 		Item i = wall.GetComponent<Item>();
 		if (i != null)
 			i.SetGhostPosition(holdPoint);
@@ -153,7 +164,7 @@ public class Build : MonoBehaviour {
 				//Drop the item
 				PlaceItem ();
 			} else if (hasBuilding && Input.GetButtonDown ("Fire2")) {
-				Network.Destroy(itemHeld);
+				DestroyHelper(itemHeld);
 				itemHeld = null;
 				hasBuilding = false;
 			} else if (hasBuilding && scroll != 0.0f) {
@@ -161,7 +172,7 @@ public class Build : MonoBehaviour {
 				int tempBuildingIndex = ScrollBuildings (scrollIndices);
 				if (buildingIndex != tempBuildingIndex) {
 					buildingIndex = tempBuildingIndex;
-					Network.Destroy(itemHeld);
+					DestroyHelper(itemHeld);
 					itemHeld = null;
 					EquipBuilding ();
 				}
@@ -170,12 +181,12 @@ public class Build : MonoBehaviour {
 				int tempBuildingIndex = getIndexByKey ();
 				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
 					if (buildingIndex == tempBuildingIndex) {
-						Network.Destroy (itemHeld);
+						DestroyHelper(itemHeld);
 						itemHeld = null;
 						hasBuilding = false;
 					} else {
 						buildingIndex = tempBuildingIndex;
-						Network.Destroy (itemHeld);
+						DestroyHelper(itemHeld);
 						itemHeld = null;
 						EquipBuilding ();
 					}
@@ -192,10 +203,9 @@ public class Build : MonoBehaviour {
 					if (hit.transform.tag == "Building")
 					{
 						GameObject item = hit.transform.gameObject;
-						Building hp = item.GetComponent<Building>();
+						Health hp = item.GetComponent<Health>();
 						if (hp != null)
 							hp.Damage(25);
-						hp.IsAlive();
 					}
 					else if (hit.transform.tag == "Ore" || hit.transform.tag == "Tree")
 					{
@@ -217,9 +227,15 @@ public class Build : MonoBehaviour {
 				EquipBuilding();
 			else if (Input.GetKeyDown(KeyCode.F))
 			{
-				GameObject arrow = Instantiate(arrowPrefab) as GameObject;
-				arrow.transform.position = holdPoint.position;
-				arrow.transform.rotation = transform.rotation;
+				GameObject arrow;
+				if (nc != null && nc.Connected())
+					arrow = Network.Instantiate(arrowPrefab, holdPoint.position, transform.rotation, 0) as GameObject;
+				else
+				{
+					arrow = Instantiate(arrowPrefab) as GameObject;
+					arrow.transform.position = holdPoint.position;
+					arrow.transform.rotation = transform.rotation;
+				}
 				Arrow arrowScript = arrow.GetComponent<Arrow>();
 				if (arrowScript)
 					arrowScript.Shoot(gameObject.transform.forward);
@@ -235,9 +251,18 @@ public class Build : MonoBehaviour {
 			{
 				GameObject[] gos = GameObject.FindGameObjectsWithTag("Building");
 				foreach (GameObject go in gos)
-					Network.Destroy (go);
+					if (nc != null && nc.Connected())
+					DestroyHelper(go);
 			}
 		}	
+	}
+
+	void DestroyHelper(GameObject gameObject)
+	{
+		if (nc != null && nc.Connected())
+			Network.Destroy(gameObject);
+		else
+			Destroy(gameObject);
 	}
 
 

@@ -10,6 +10,11 @@ public class NetworkController : MonoBehaviour {
 
 	bool connected = false;
 
+	void Awake()
+	{
+		DontDestroyOnLoad(transform.gameObject);
+	}
+
 	public bool Connected()
 	{
 		return connected;

@@ -24,6 +24,39 @@ public class Health : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Serializes and deserializes the Health script for network communication.
+	/// </summary>
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+		if (stream.isWriting)
+		{
+			float healthC = health;
+			float maxHealthC = maxHealth;
+			bool directC = direct;
+			bool issueGUOsC = issueGUOs;
+			stream.Serialize(ref healthC);
+			stream.Serialize(ref maxHealthC);
+			stream.Serialize(ref directC);
+			stream.Serialize(ref issueGUOsC);
+		}
+		else
+		{
+			float healthZ = 100f;
+			float maxHealthZ = 100f;
+			bool directZ = false;
+			bool issueGUOsZ = true;
+			stream.Serialize(ref healthZ);
+			stream.Serialize(ref maxHealthZ);
+			stream.Serialize(ref directZ);
+			stream.Serialize(ref issueGUOsZ);
+			health = healthZ;
+			maxHealth = maxHealthZ;
+			direct = directZ;
+			issueGUOs = issueGUOsZ;
+		}
+	}
+
+	/// <summary>
 	/// Gets damaged by the input amount.
 	/// </summary>
 	/// <param name="dmg">Dmg.</param>
