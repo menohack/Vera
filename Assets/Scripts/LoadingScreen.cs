@@ -12,6 +12,8 @@ public class LoadingScreen : MonoBehaviour {
 
 	NetworkController nc;
 
+	string ipFieldString = "Server IP";
+
 	void Start()
 	{
 		texture = titleScreen;
@@ -81,6 +83,10 @@ public class LoadingScreen : MonoBehaviour {
 
 			if (GUI.Button(new Rect(100, 250, 250, 100), "Refresh Hosts"))
 				nc.RefreshHostList();
+
+			ipFieldString = GUI.TextField(new Rect(100, 400, 250, 50), ipFieldString);
+			if (GUI.Button(new Rect(350, 400, 80, 50), "Connect"))
+ 				nc.JoinServer(ipFieldString);
 
 			if (nc.hostList != null)
 			{

@@ -6,6 +6,8 @@ public class NetworkController : MonoBehaviour {
 	private const string typeName = "Vera Online";
 	private const string gameName = "Vera Game";
 
+	public static int DEFAULT_PORT = 25000;
+
 	public HostData[] hostList;
 
 	bool connected = false;
@@ -22,7 +24,7 @@ public class NetworkController : MonoBehaviour {
 
 	public void StartServer()
 	{
-		Network.InitializeServer(4, 25000, !Network.HavePublicAddress());
+		Network.InitializeServer(4, DEFAULT_PORT, !Network.HavePublicAddress());
 		MasterServer.RegisterHost(typeName, gameName);
 	}
 
@@ -46,6 +48,12 @@ public class NetworkController : MonoBehaviour {
 	{
 		Debug.Log("Attempting to connect to server");
 		Network.Connect(hostData);
+	}
+
+	public void JoinServer(string ip)
+	{
+		Debug.Log("Attempting to connect to server");
+		Network.Connect(ip, DEFAULT_PORT);
 	}
 
 	int playerCount = 0;
