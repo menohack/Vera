@@ -24,7 +24,7 @@ public class NetworkController : MonoBehaviour {
 
 	public void StartServer()
 	{
-		Network.InitializeServer(4, DEFAULT_PORT, !Network.HavePublicAddress());
+		Network.InitializeServer(32, DEFAULT_PORT, !Network.HavePublicAddress());
 		MasterServer.RegisterHost(typeName, gameName);
 	}
 
