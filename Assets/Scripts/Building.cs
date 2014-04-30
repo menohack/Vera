@@ -124,15 +124,28 @@ public abstract class Building : Item {
 	{
 		if (CanPlace())
 		{
-			placed = true;
-			renderer.material = originalMaterial;
-			transform.parent = null;
-			
-			collider.isTrigger = false;
+			if (Network.connections.Length > 0)
+				networkView.RPC("PlaceRPC", RPCMode.AllBuffered);
+			else
+				PlaceRPC();
 			return true;
 		}
 		else
 			return false;
+	}
+
+	[RPC]
+	public void PlaceRPC()
+	{
+		placed = true;
+		renderer.material = originalMaterial;
+		transform.parent = null;
+
+		collider.isTrigger = false;
+
+		if (rigidbody)
+			rigidbody.isKinematic = false;
+		collider.enabled = true;
 	}
 
 	/// <summary>

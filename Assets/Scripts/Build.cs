@@ -85,7 +85,8 @@ public class Build : MonoBehaviour {
 	/// </summary>
 	void EquipBuilding()
 	{
-		GameObject wall = Utility.InstantiateHelper(buildings[buildingIndex] as GameObject, holdPoint.position, holdPoint.rotation);
+		GameObject buildingPrefab = buildings[buildingIndex] as GameObject;
+		GameObject wall = Utility.InstantiateHelper(buildingPrefab, buildingPrefab.transform.position, buildingPrefab.transform.rotation);
 			
 		Item i = wall.GetComponent<Item>();
 		if (i != null)
@@ -134,10 +135,6 @@ public class Build : MonoBehaviour {
 				inventory.RemoveOre(buildingScript.GetOreCost());
 				inventory.RemoveWood(buildingScript.GetWoodCost());
 			}
-			if (itemHeld.rigidbody)
-				itemHeld.rigidbody.isKinematic = false;
-			itemHeld.collider.enabled = true;
-
 
 			hasBuilding = false;
 			itemHeld = null;
