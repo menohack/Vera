@@ -27,7 +27,7 @@ public class Hints : MonoBehaviour {
 	/// Time to fade out a hint.
 	/// </summary>
 	public float fadeOut = 1f;
-
+	
 	/// <summary>
 	/// Number of seconds between hints showing.
 	/// </summary>
@@ -48,30 +48,29 @@ public class Hints : MonoBehaviour {
 			if (timer >= delay) 
 			{
 				this.guiTexture.enabled = true;
-				fadeHint();
-				timer = -fadeIn - fadeOut - pause;
+				fadeHint(timer);
+				if (timer > delay + fadeIn + fadeOut + pause)
+				{
+					this.guiTexture.texture = chooseTexture ();
+					timer = 0;
+					this.guiTexture.enabled = false;
+				}
 			}
 		}
 	}
 
-	void fadeHint(){
-		float time = 0f;
-		this.guiTexture.texture = chooseTexture ();
+	void fadeHint(float time){
+		float t = time - delay;
 		Color textureColor = this.guiTexture.color;
 		float fadeAlpha;
-		do 
-		{
-			time += Time.deltaTime;
-			if (time < fadeIn)
-				fadeAlpha = time / fadeIn;
-			else if (time < fadeIn + pause)
-				fadeAlpha = 1f;
-			else
-				fadeAlpha = (fadeOut - (time - (fadeIn + pause))) / fadeOut;
-			textureColor.a = fadeAlpha;
-			this.guiTexture.color = textureColor;
-		} while ( time < (pause + fadeOut + fadeIn) );
-		this.guiTexture.enabled = false;
+		if (t < fadeIn)
+			fadeAlpha = time / fadeIn;
+		else if (t < fadeIn + pause)
+			fadeAlpha = 1f;
+		else
+			fadeAlpha = (fadeOut - (t - (fadeIn + pause))) / fadeOut;
+		textureColor.a = fadeAlpha;
+		this.guiTexture.color = textureColor;
 	}
 
 	Texture chooseTexture() {
