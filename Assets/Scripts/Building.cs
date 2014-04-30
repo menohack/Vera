@@ -133,6 +133,8 @@ public abstract class Building : Item {
 		Vector3 position = held.position;
 		if (collider && player)
 		{
+			//Move the building forward by half its size and upwards half its size for better positioning
+			//The size of the building comes from the extents of its collider
 			Vector3 direction = held.position - player.transform.position;
 			direction.Normalize();
 			float extents = Mathf.Max(collider.bounds.extents.x, collider.bounds.extents.z);

@@ -39,6 +39,16 @@ public class Sundial : MonoBehaviour
 	public Font promptFont;
 
 	/// <summary>
+	/// The size of the day prompt font.
+	/// </summary>
+	public int fontSize = 48;
+
+	/// <summary>
+	/// The color of the day prompt font.
+	/// </summary>
+	public Color fontColor = Color.black;
+
+	/// <summary>
 	/// The spawn GameObject.
 	/// </summary>
 	public Spawn spawn;
@@ -52,6 +62,18 @@ public class Sundial : MonoBehaviour
 	/// Have the wolves been spawned today?
 	/// </summary>
 	bool spawned = false;
+
+	GUIStyle labelStyle;
+
+	void Start()
+	{
+		labelStyle = new GUIStyle();
+
+		labelStyle.font = promptFont;
+		labelStyle.fontStyle = FontStyle.Bold;
+		labelStyle.fontSize = fontSize;
+		labelStyle.alignment = TextAnchor.UpperCenter;
+	}
 
 	void Update ()
 	{
@@ -111,15 +133,13 @@ public class Sundial : MonoBehaviour
 	{
 		if (time < fadeIn + pause + fadeOut && promptFont)
 		{
-			float labelWidth = 400f;
-			float labelHeight = 200f;
+			//float labelWidth = 400f;
+			//float labelHeight = 200f;
+			string dayString = "Day " + day;
+			Vector2 size = labelStyle.CalcSize(new GUIContent(dayString));
+			float labelWidth = size.x;
+			float labelHeight = size.y;
 			GUILayout.BeginArea(new Rect(Screen.width / 2.0f - labelWidth / 2.0f, Screen.height * 0.4f - labelHeight / 2.0f, labelWidth, labelHeight));
-
-			GUIStyle labelStyle = new GUIStyle();
-			
-			labelStyle.fontStyle = FontStyle.Bold;
-			labelStyle.fontSize = 48;
-			labelStyle.alignment = TextAnchor.UpperCenter;
 
 			//Fade the prompt in for fadeIn seconds, pause for pause seconds, then fade out over fadeOut seconds
 			float fadeAlpha;
@@ -130,10 +150,9 @@ public class Sundial : MonoBehaviour
 			else
 				fadeAlpha = (fadeOut - (time - (fadeIn + pause))) / fadeOut;
 
-			labelStyle.font = promptFont;
-			GUI.color = new Color(0f, 0f, 0f, fadeAlpha);
+			GUI.color = new Color(fontColor.r, fontColor.g, fontColor.b, fadeAlpha);
 
-			GUILayout.Label("Day " + day, labelStyle);
+			GUILayout.Label(dayString, labelStyle);
 			GUILayout.EndArea();
 		}
 	}
