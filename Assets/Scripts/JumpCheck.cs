@@ -29,7 +29,7 @@ public class JumpCheck : MonoBehaviour
 
 	void Start()
 	{
-		layerMask = LayerMask.NameToLayer("Environment");
+		layerMask = LayerMask.NameToLayer("Environment") | LayerMask.NameToLayer("Player") | LayerMask.NameToLayer("Enemy");
 	}
 
 	/// <summary>
@@ -38,7 +38,7 @@ public class JumpCheck : MonoBehaviour
 	/// <param name="other">The other collider.</param>
 	void OnTriggerStay(Collider other)
 	{
-		if (other.gameObject.layer == layerMask)
+		if ((other.gameObject.layer & layerMask) == other.gameObject.layer)
 			lastTriggerStay = DateTime.Now;
 	}
 }

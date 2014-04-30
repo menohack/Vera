@@ -48,17 +48,36 @@ public class EnemyMelee : MonoBehaviour {
 	/// Minimum distance for being "idle" per frame.
 	/// </summary>
 	public float minIdleDist = 0.05f;
+
+	SeekerAI seeker;
 	
 	private Vector3 lastPos;
 	private float timeSinceLastMovement = 0f;
 
+	DateTime lastTargetSearch;
+	float targetSearchFrequencyMillis = 500f;
+	TimeSpan targetSearchFrequency;
+
 	void Start(){
 		attackCooldown = new TimeSpan (0, 0, coolDown);
-		tgt = this.gameObject.GetComponent<SeekerAI> ().target;
+		seeker = GetComponent<SeekerAI>();
+		FindTarget();
 		lastPos = this.gameObject.transform.position;
+		targetSearchFrequency = TimeSpan.FromMilliseconds(targetSearchFrequencyMillis);
+	}
+
+	void FindTarget()
+	{
+		tgt = Targeting.FindClosestTarget(transform, "Player").transform;
+		if (seeker)
+			seeker.target = tgt;
+		lastTargetSearch = DateTime.Now;
 	}
 
 	void Update(){
+		if (lastTargetSearch == null || DateTime.Now - lastTargetSearch > targetSearchFrequency)
+			FindTarget();
+
 		float distFromPlayer = Vector3.Distance (tgt.position, this.gameObject.transform.position);
 		//when far away and has not moved enough, start the idle counter
 		if (Vector3.Distance(lastPos, this.gameObject.transform.position) <  minIdleDist && distFromPlayer > maxDist)

@@ -4,11 +4,6 @@ using System.Collections;
 public abstract class Building : Item {
 
 	/// <summary>
-	/// The hit points of the building.
-	/// </summary>
-	private float health = 100f;
-
-	/// <summary>
 	/// Counts the number of intersections with the environment. Zero means no intersection.
 	/// </summary>
 	protected int overlapCount = 0;
@@ -49,7 +44,7 @@ public abstract class Building : Item {
 	/// <summary>
 	/// Initialization.
 	/// </summary>
-	protected void Start () {
+	protected virtual void Start () {
 		originalMaterial = renderer.material;
 		layerMask = LayerMask.NameToLayer("Environment");
 
@@ -80,30 +75,6 @@ public abstract class Building : Item {
 	{
 		held = heldPosition;
 		UpdatePosition();
-	}
-
-	/// <summary>
-	/// Damages the building for dmg damage.
-	/// </summary>
-	/// <param name="dmg">The positive number of damage points to inflict.</param>
-	public void Damage(float dmg)
-	{
-		health -= dmg;
-	}
-
-	/// <summary>
-	/// Checks if the building is alive. If it is not it destroys it.
-	/// </summary>
-	/// <returns>True if the building is alive.</returns>
-	public bool IsAlive()
-	{
-		if (health <= 0)
-		{
-			Destroy(gameObject);
-			return false;
-		}
-		else
-			return true;
 	}
 
 	/// <summary>
@@ -153,15 +124,28 @@ public abstract class Building : Item {
 	{
 		if (CanPlace())
 		{
-			placed = true;
-			renderer.material = originalMaterial;
-			transform.parent = null;
-			
-			collider.isTrigger = false;
+			if (Network.connections.Length > 0)
+				networkView.RPC("PlaceRPC", RPCMode.AllBuffered);
+			else
+				PlaceRPC();
 			return true;
 		}
 		else
 			return false;
+	}
+
+	[RPC]
+	public void PlaceRPC()
+	{
+		placed = true;
+		renderer.material = originalMaterial;
+		transform.parent = null;
+
+		collider.isTrigger = false;
+
+		if (rigidbody)
+			rigidbody.isKinematic = false;
+		collider.enabled = true;
 	}
 
 	/// <summary>

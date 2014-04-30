@@ -22,6 +22,14 @@ public class Menu : MonoBehaviour {
 		verticalStyle.padding.left = verticalStyle.padding.right = 10;
 	}
 
+	/// <summary>
+	/// Serializes and deserializes the Menu script across the network.
+	/// </summary>
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+		
+	}
+
 	public static bool GameOver()
 	{
 		return gameOver;
@@ -58,6 +66,7 @@ public class Menu : MonoBehaviour {
 		return paused;
 	}
 
+	[RPC]
 	public static void Pause()
 	{
 		if (!paused)
@@ -81,6 +90,7 @@ public class Menu : MonoBehaviour {
 
 	}
 
+	[RPC]
 	public static void Resume()
 	{
 		if (paused)
@@ -138,8 +148,13 @@ public class Menu : MonoBehaviour {
 			GUILayout.BeginVertical(verticalStyle);
 			GUILayout.FlexibleSpace();
 			GUILayout.Label("Paused", labelStyle);
-			if (GUILayout.Button("Continue"))
-				Resume();
+			if ((Network.isServer || Network.connections.Length == 0) && GUILayout.Button("Continue"))
+			{
+				if (Network.isServer)
+					networkView.RPC("Resume", RPCMode.AllBuffered);
+				else if (Network.connections.Length == 0)
+					Resume();
+			}
 			if (GUILayout.Button("New Game"))
 				StartGame();
 			if (GUILayout.Button("Quit"))

@@ -86,7 +86,7 @@ public class Sentry : Building {
 		return SENTRY_COST_WOOD;
 	}
 
-	void Start()
+	protected override void Start()
 	{
 		base.Start();
 		shootCooldown = new TimeSpan (0, 0, 0, shootCooldownSec, shootCooldownMilli);
@@ -110,7 +110,7 @@ public class Sentry : Building {
 
 			if (target != null && (lastShoot == null || (DateTime.Now - lastShoot) >= shootCooldown))
 			{
-				GameObject arrow = Instantiate(arrowPrefab) as GameObject;
+				GameObject arrow = Utility.InstantiateHelper(arrowPrefab);
 				Physics.IgnoreCollision(collider, arrow.collider);
 				Arrow arrowScript = arrow.GetComponent<Arrow>();
 

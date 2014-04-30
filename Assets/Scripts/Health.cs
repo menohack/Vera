@@ -24,6 +24,39 @@ public class Health : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Serializes and deserializes the Health script for network communication.
+	/// </summary>
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+		if (stream.isWriting)
+		{
+			float healthC = health;
+			float maxHealthC = maxHealth;
+			bool directC = direct;
+			bool issueGUOsC = issueGUOs;
+			stream.Serialize(ref healthC);
+			stream.Serialize(ref maxHealthC);
+			stream.Serialize(ref directC);
+			stream.Serialize(ref issueGUOsC);
+		}
+		else
+		{
+			float healthZ = 100f;
+			float maxHealthZ = 100f;
+			bool directZ = false;
+			bool issueGUOsZ = true;
+			stream.Serialize(ref healthZ);
+			stream.Serialize(ref maxHealthZ);
+			stream.Serialize(ref directZ);
+			stream.Serialize(ref issueGUOsZ);
+			health = healthZ;
+			maxHealth = maxHealthZ;
+			direct = directZ;
+			issueGUOs = issueGUOsZ;
+		}
+	}
+
+	/// <summary>
 	/// Gets damaged by the input amount.
 	/// </summary>
 	/// <param name="dmg">Dmg.</param>
@@ -35,21 +68,23 @@ public class Health : MonoBehaviour {
 			health = 0f;
 			if (gameObject.tag == "Player")
 				Menu.EndGame();
-			else if (gameObject.layer == LayerMask.NameToLayer("Obstacle")) {
+			else if (gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+			{
 				//Pathfinding.Console.Write ("// Placing Object\n");
-				if (issueGUOs) {
+				if (issueGUOs)
+				{
 					GraphUpdateObject guo = new GraphUpdateObject(gameObject.collider.bounds);
-					AstarPath.active.UpdateGraphs (guo,0.0f);
-					if (direct) {
+					AstarPath.active.UpdateGraphs(guo, 0.0f);
+					if (direct)
+					{
 						//Pathfinding.Console.Write ("// Flushing\n");
 						AstarPath.active.FlushGraphUpdates();
 					}
 				}
-				Destroy(this.gameObject);
+				Utility.DestroyHelper(this.gameObject);
 			}
-
 			else
-				Destroy(this.gameObject);
+				Utility.DestroyHelper(this.gameObject);
 		}
 	}
 

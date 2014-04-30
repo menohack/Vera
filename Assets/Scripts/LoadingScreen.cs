@@ -10,25 +10,30 @@ public class LoadingScreen : MonoBehaviour {
 
 	Texture2D texture;
 
+	NetworkController nc;
+
+	string ipFieldString = "Server IP";
+
 	void Start()
 	{
-		/*
-		GUITexture texture = gameObject.AddComponent<GUITexture>();
-		texture.texture = loadingScreen;
-		transform.position = new Vector3(0.5f, 0.5f, 0.0f);
-		texture.enabled = true;
-		*/
-		//Application.LoadLevel(0);
-		//async.allowSceneActivation = true;
 		texture = titleScreen;
 		Screen.showCursor = true;
 		Screen.lockCursor = false;
+
+		nc = FindObjectOfType<NetworkController>();
 	}
 
 	void Update()
 	{
 		if (Input.GetKey(KeyCode.Escape))
 			Application.Quit();
+	}
+
+	[RPC]
+	public void StartGame()
+	{
+		loading = true;
+		Application.LoadLevel("Level1");
 	}
 
 	void OnGUI()
@@ -46,10 +51,12 @@ public class LoadingScreen : MonoBehaviour {
 
 		if (!loading)
 		{
-			if (GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game"))
+			if ((!nc.Connected() || Network.isServer) && GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game"))
 			{
-				loading = true;
-				Application.LoadLevel("Level1");
+				if (Network.isServer)
+					networkView.RPC("StartGame", RPCMode.AllBuffered);
+				else
+					StartGame();
 			}
 			if (!controls && GUI.Button(new Rect(Screen.width / 2 - 150, Screen.height * 0.9f, 100, 40), "Controls"))
 			{
@@ -65,6 +72,32 @@ public class LoadingScreen : MonoBehaviour {
 			}
 			if (GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f + 40, 100, 40), "Quit"))
 				Application.Quit();
+		}
+
+		
+
+		if (nc != null && !nc.Connected() && !Network.isClient && !Network.isServer)
+		{
+			if (GUI.Button(new Rect(100, 100, 250, 100), "Start Server"))
+				nc.StartServer();
+
+			if (GUI.Button(new Rect(100, 250, 250, 100), "Refresh Hosts"))
+				nc.RefreshHostList();
+
+			ipFieldString = GUI.TextField(new Rect(100, 400, 250, 50), ipFieldString);
+			if (GUI.Button(new Rect(350, 400, 80, 50), "Connect"))
+ 				nc.JoinServer(ipFieldString);
+
+			if (nc.hostList != null)
+			{
+				GUI.BeginScrollView(new Rect(400, 100, 300, 400), Vector2.zero, new Rect(0, 0, 300, 300));
+				for (int i = 0; i < nc.hostList.Length; i++)
+				{
+					if (GUI.Button(new Rect(0, 110 * i, 300, 100), nc.hostList[i].gameName))
+						nc.JoinServer(nc.hostList[i]);
+				}
+				GUI.EndScrollView();
+			}
 		}
 	}
 }

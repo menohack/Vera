@@ -2,88 +2,127 @@
 using System;
 using System.Net.Sockets;
 using System.Text;
+using VeraLibrary;
 
-public class Networking
+public class Networking : MonoBehaviour
 {
-	static Networking instance;
+	
+	DateTime? serverStartTime = null;
+	TimeSpan serverWaitBeforeConnectionTime;
+	public float serverWaitBeforeConnectionTimeMillis = 5000f;
 
-	private Networking()
+	void Start()
 	{
-		Connect();
+		serverWaitBeforeConnectionTime = TimeSpan.FromMilliseconds(serverWaitBeforeConnectionTimeMillis);
+
+		//NetworkConnectionError initializeError = Network.InitializeServer(32, 1337, !Network.HavePublicAddress());
+		//MasterServer.RegisterHost("Vera Online", "Game");
+		clientWaitForServerTime = TimeSpan.FromMilliseconds(clientWaitForServerTimeMillis);
+		hostPollStartTime = DateTime.Now;
+		MasterServer.ClearHostList();
+		MasterServer.RequestHostList("Vera Game");
 	}
 
-	public static Networking Instance
+	DateTime? hostPollStartTime;
+	TimeSpan clientWaitForServerTime;
+	public float clientWaitForServerTimeMillis = 5000f;
+
+	void StartMasterServer()
 	{
-		get
+		serverStartTime = DateTime.Now;
+		NetworkConnectionError initializeError = Network.InitializeServer(32, 1337, !Network.HavePublicAddress());
+		MasterServer.RegisterHost("Vera Online", "Game");
+	}
+
+	void Update()
+	{
+		if (hostPollStartTime != null && DateTime.Now - hostPollStartTime > clientWaitForServerTime)
 		{
-			if (instance == null)
-				instance = new Networking();
-			return instance;
+			
 		}
-		private set {}
+		else if (MasterServer.PollHostList().Length != 0)
+		{
+			HostData[] hostData = MasterServer.PollHostList();
+			int i = 0;
+			while (i < hostData.Length)
+			{
+				Debug.Log("Game name: " + hostData[i].gameName);
+				i++;
+			}
+			MasterServer.ClearHostList();
+		}
+	}
+	 
+
+	void OnFailedToConnect(NetworkConnectionError error)
+	{
+		Debug.Log("Failed to connect to server: " + error);
+		/*
+		Debug.Log("Failed to connect to server, attempting to host server...");
+		bool useNAT = !Network.HavePublicAddress();
+		NetworkConnectionError initializeError = Network.InitializeServer(32, 1337, useNAT);
+		if (initializeError != NetworkConnectionError.NoError)
+			Connect();
+		*/
 	}
 
-	TcpClient client;
-	static int READ_BUFFER_SIZE = 256;
-	static int WRITE_BUFFER_SIZE = 256;
-	byte[] readBuffer = new byte[READ_BUFFER_SIZE];
-	byte[] writeBuffer = new byte[WRITE_BUFFER_SIZE];
+	
+	void OnConnectedToServer()
+	{
+		Debug.Log("Connected to server");
+	}
+
+	int playerCount = 0;
+
+	void OnPlayerConnected(NetworkPlayer player)
+	{
+		Debug.Log("Player " + playerCount++ + " connected from " + player.ipAddress + ":" + player.port);
+	}
+
+	void OnPlayerDisconnected(NetworkPlayer player)
+	{
+		Debug.Log("Clean up after player " + player);
+		playerCount--;
+		//Network.RemoveRPCs(player);
+		//Network.DestroyPlayerObjects(player);
+	}
+
+	void OnDisconnectedFromServer(NetworkDisconnection info)
+	{
+		if (Network.isServer)
+			Debug.Log("Local server connection disconnected: " + info);
+		else
+			if (info == NetworkDisconnection.LostConnection)
+				Debug.Log("Lost connection to the server");
+			else
+				Debug.Log("Successfully diconnected from the server");
+	}
+
+	void OnServerInitialized()
+	{
+		Debug.Log("Server initialized and ready");
+		serverStartTime = DateTime.Now;
+	}
+
+	/*
+	void Update()
+	{
+		
+		if (playerCount == 0 && serverStartTime != null && ((DateTime.Now - serverStartTime) > serverWaitBeforeConnectionTime))
+		{
+			serverStartTime = null;
+			Network.Disconnect();
+			Debug.Log("Server timed out, attempting to find a server as a client...");
+			Connect();
+		}
+		
+	}
+*/
 
 	void Connect()
 	{
-		client = new TcpClient("127.0.0.1", 11000);
+		NetworkConnectionError error = Network.Connect("127.0.0.1", 1337);
+		if (error != NetworkConnectionError.NoError)
+			throw new UnityException(error.ToString());
 	}
-
-	public bool GetMap()
-	{
-		//Debug.Log("Result from server: " + web.DownloadString("http://127.0.0.1:11000"));
-		//client = new TcpClient("127.0.0.1",11000);
-		SendMessage("Map plz\n");
-		return true;
-	}
-
-	/// <summary>
-	/// Sends a message to the server.
-	/// </summary>
-	/// <param name="text"></param>
-	void SendMessage(string text)
-	{
-		NetworkStream stream = client.GetStream();
-		byte[] message = Encoding.ASCII.GetBytes(text);
-		Buffer.BlockCopy(message, 0, writeBuffer, 0, message.Length);
-		stream.BeginWrite(writeBuffer, 0, message.Length, new AsyncCallback(Write), null);
-	}
-
-	/// <summary>
-	/// Updates the server with a new item.
-	/// </summary>
-	/// <param name="item"></param>
-	/// <returns></returns>
-	public bool SendItem(Item item)
-	{
-		SendMessage(item.Serialize());
-
-		return true;
-	}
-
-	void Write(IAsyncResult result)
-	{
-		client.GetStream().EndWrite(result);
-		Debug.Log("Finished writing");
-
-		client.GetStream().BeginRead(readBuffer, 0, READ_BUFFER_SIZE, new AsyncCallback(Read), null);
-	}
-
-	void Read(IAsyncResult result)
-	{
-		int bytesRead = client.GetStream().EndRead(result);
-		Debug.Log(bytesRead + " bytes read");
-		if (bytesRead < 1)
-			return;
-		string message = Encoding.ASCII.GetString(readBuffer, 0, bytesRead);
-		Debug.Log("Message: " + message);
-
-		client.GetStream().BeginRead(readBuffer, 0, READ_BUFFER_SIZE, new AsyncCallback(Read), null);
-	}
-
 }

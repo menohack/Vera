@@ -10,21 +10,23 @@ public class MeleeCollider : MonoBehaviour {
 	/// </summary>
 	public int DamageValue = 10;
 
-	public int coolDownMilli = 1000; //TODO change this to a float and allow for 
+	public float coolDownMillis = 1000f;
 
 	private TimeSpan attackCooldown;
 	DateTime? lastAttack;
 
 	private TimeSpan delayCoolDown;
+	public float delayCooldownMillis = 500f;
 	DateTime? buildDelay;
 	private Build b;
 
 
-	public Animator animator;
+	public PlayerAnimation animation;
 
 	void Start () {
-		attackCooldown = new TimeSpan(0,0,0,0, coolDownMilli);
-		delayCoolDown = new TimeSpan (0, 0, 0, 0, 500);
+		attackCooldown = TimeSpan.FromMilliseconds(coolDownMillis);
+		delayCoolDown = TimeSpan.FromMilliseconds(delayCooldownMillis);
+		//This needs to be fixed for networking
 		b = GameObject.FindGameObjectWithTag ("Player").GetComponent<Build>();
 	}
 
@@ -38,15 +40,15 @@ public class MeleeCollider : MonoBehaviour {
 		{
 			if (Input.GetButtonDown("Fire1") && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
 			{
-				if (animator)
-					animator.SetTrigger("Attack");
+				if (animation)
+					animation.Attack();
 				lastAttack = DateTime.Now;
 			}
 		}
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (animator && animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
+		if (animation != null && animation.GetAttacking()) {
 
 			Health enemyHealth = null;
 			if (other.gameObject.tag == "Enemy")

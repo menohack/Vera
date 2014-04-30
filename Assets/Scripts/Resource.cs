@@ -33,7 +33,7 @@ public class Resource : MonoBehaviour {
 		if (hits <= 0)
 		{
 			hits = 0;
-			Destroy(gameObject);
+			Utility.DestroyHelper(gameObject);
 			return gatherCount;
 		}
 		else

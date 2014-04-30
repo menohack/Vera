@@ -90,7 +90,8 @@ public class Sundial : MonoBehaviour
 
 		if (GetProgress() > spawnWolvesScalar && !spawned && spawn)
 		{
-			spawn.SpawnWolves();
+			if (Network.isServer || Network.connections.Length == 0)
+				spawn.SpawnWolves();
 			spawned = true;
 		}
 
@@ -106,6 +107,29 @@ public class Sundial : MonoBehaviour
 		else
 			skyboxBlend = 1.0f - (GetProgress() - 0.75f) * 2.0f;
 		RenderSettings.skybox.SetFloat("_Blend", skyboxBlend);
+	}
+
+	/// <summary>
+	/// Serializes and deserializes the Sundial script across the network.
+	/// </summary>
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+		if (stream.isWriting)
+		{
+			float timeW = time;
+			int dayW = day;
+			stream.Serialize(ref timeW);
+			stream.Serialize(ref dayW);
+		}
+		else
+		{
+			float timeR = time;
+			int dayR = day;
+			stream.Serialize(ref timeR);
+			stream.Serialize(ref dayR);
+			time = timeR;
+			day = dayR;
+		}
 	}
 
 	/// <summary>
