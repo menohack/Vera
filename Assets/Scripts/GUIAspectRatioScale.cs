@@ -23,6 +23,7 @@
 using UnityEngine;
 using System.Collections;
 
+[ExecuteInEditMode()] 
 public class GUIAspectRatioScale : MonoBehaviour 
 {
 	public Vector2 scaleOnRatio1 = new Vector2(0.1f, 0.1f);
