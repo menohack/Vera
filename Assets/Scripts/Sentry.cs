@@ -128,4 +128,9 @@ public class Sentry : Building {
 			}
 		}
 	}
+
+	protected override float HeightSpawnOffset()
+	{
+		return -0.8f * collider.bounds.extents.y;
+	}
 }

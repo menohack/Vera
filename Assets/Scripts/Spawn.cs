@@ -53,19 +53,22 @@ public class Spawn : MonoBehaviour {
 
 	public void SpawnWolves()
 	{
-		GameObject player = GameObject.FindWithTag("Player");
-		if (player && sundial) 
+		if (Network.isServer || Network.connections.Length == 0)
 		{
-			int numWolves = wolfStartingCount + sundial.GetDay() * sundial.GetDay();
-			SpawnWolves (numWolves, minWolfSpawnRadius, maxWolfSpawnRadius, player.transform.position, player.transform);
+			GameObject player = GameObject.FindWithTag("Player");
+			if (player && sundial)
+			{
+				int numWolves = wolfStartingCount + sundial.GetDay() * sundial.GetDay();
+				SpawnWolves(numWolves, minWolfSpawnRadius, maxWolfSpawnRadius, player.transform.position, player.transform);
 
-			if (howl)
-				howl.audio.Play();
+				if (howl)
+					howl.audio.Play();
+				else
+					Debug.Log("Howl audio source missing");
+			}
 			else
-				Debug.Log("Howl audio source missing");
+				Debug.Log("Can't find player or sundial for Spawn script");
 		}
-		else
-			Debug.Log("Can't find player or sundial for Spawn script");
 	}
 
 	public void DespawnWolves()

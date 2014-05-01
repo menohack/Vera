@@ -1,17 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public abstract class Building : Item {
 
 	/// <summary>
-	/// Counts the number of intersections with the environment. Zero means no intersection.
+	/// The last time that OnTriggerStay was called.
 	/// </summary>
-	protected int overlapCount = 0;
+	DateTime? lastTerrainTriggerStay = null;
 
 	/// <summary>
-	/// The layer of the environment.
+	/// The last time that OnTriggerStay was called.
 	/// </summary>
-	int layerMask;
+	DateTime? lastBuildingTriggerStay = null;
+
+	/// <summary>
+	/// The layer of the terrain.
+	/// </summary>
+	int terrainLayerMask;
+
+	/// <summary>
+	/// The layer of the buildings.
+	/// </summary>
+	int buildingLayerMask;
 
 	/// <summary>
 	/// The minimum distance two buildings that are not connected may be.
@@ -28,7 +39,7 @@ public abstract class Building : Item {
 	/// </summary>
 	Color red, green;
 
-	public float SCALE = 2f;
+	public float SCALE = 4f;
 
 	/// <summary>
 	/// The transform about which the building is held.
@@ -46,7 +57,8 @@ public abstract class Building : Item {
 	/// </summary>
 	protected virtual void Start () {
 		originalMaterial = renderer.material;
-		layerMask = LayerMask.NameToLayer("Environment");
+		terrainLayerMask = LayerMask.NameToLayer("Environment");
+		buildingLayerMask = LayerMask.NameToLayer("Obstacle");
 
 		//This doesn't work for the build, only in the editor
 		//renderer.material = new Material(renderer.material);
@@ -70,6 +82,8 @@ public abstract class Building : Item {
 	public abstract int GetOreCost();
 
 	public abstract int GetWoodCost();
+
+	protected abstract float HeightSpawnOffset();
 
 	public override void SetGhostPosition(Transform heldPosition)
 	{
@@ -110,7 +124,7 @@ public abstract class Building : Item {
 			direction.Normalize();
 			float extents = Mathf.Max(collider.bounds.extents.x, collider.bounds.extents.z);
 			position += extents * direction;
-			position -= new Vector3(0f, collider.bounds.extents.y, 0f);
+			position += new Vector3(0f, HeightSpawnOffset(), 0f);
 		}
 		if (held && !placed)
 			transform.position = new Vector3(Mathf.Floor(position.x / SCALE) * SCALE, position.y, Mathf.Floor(position.z / SCALE) * SCALE);
@@ -143,8 +157,8 @@ public abstract class Building : Item {
 
 		collider.isTrigger = false;
 
-		if (rigidbody)
-			rigidbody.isKinematic = false;
+		//if (rigidbody)
+		//	rigidbody.isKinematic = false;
 		collider.enabled = true;
 	}
 
@@ -154,50 +168,36 @@ public abstract class Building : Item {
 	/// <returns>True if the item can be placed.</returns>
 	protected override bool CanPlace()
 	{
-		foreach (GameObject g in GameObject.FindGameObjectsWithTag("Building"))
-			if (g != gameObject && Vector3.Distance(g.transform.position, transform.position) < minBuildingDistance)
-				return false;
-
-		//This is broken, no idea why
-		return true;
-		return IntersectingTerrain();
-	}
-
-	protected bool IntersectingTerrain()
-	{
-		return overlapCount != 0;
-	}
-
-	void OnGUI()
-	{
-		/*
-		GUIStyle style = new GUIStyle();
-		style.fontSize = 32;
-		GUI.Label(new Rect(Screen.width - 200, 200, 200, 200), "overlap: " + overlapCount, style);
-		 * */
+		return IntersectingTerrain() && !IntersectingBuilding();
 	}
 
 	/// <summary>
-	/// Called when the item intersects an Environment GameObject.
+	/// Called on each frame while the trigger is overlapping another collider.
 	/// </summary>
-	/// <param name="other">The collider that is being intersected.</param>
-	void OnTriggerEnter(Collider other)
+	/// <param name="other">The other collider.</param>
+	void OnTriggerStay(Collider other)
 	{
-		//Debug.Log(overlapCount);
-		//If the item overlaps a terrain object
-		if (other.gameObject.layer == layerMask)
-			overlapCount++;
+		if (other.gameObject.layer == terrainLayerMask)
+			lastTerrainTriggerStay = DateTime.Now;
+		if (other.gameObject.layer == buildingLayerMask)
+			lastBuildingTriggerStay = DateTime.Now;
+	}
+
+	public bool IntersectingBuilding()
+	{
+		if (lastBuildingTriggerStay == null)
+			return false;
+		return DateTime.Now - lastBuildingTriggerStay < TimeSpan.FromSeconds(1.5f * Time.deltaTime);
 	}
 
 	/// <summary>
-	/// Called when the item no longer intersects an Environment GameObject.
+	/// Returns true if the building is intersecting the terrain.
 	/// </summary>
-	/// <param name="other">The collider that is no longer being intersected.</param>
-	void OnTriggerExit(Collider other)
+	/// <returns>True if the building is grounded.</returns>
+	public bool IntersectingTerrain()
 	{
-		//Debug.Log(overlapCount);
-		//If the item no longer overlaps a terrain object
-		if (other.gameObject.layer == layerMask)
-			overlapCount--;
+		if (lastTerrainTriggerStay == null)
+			return false;
+		return DateTime.Now - lastTerrainTriggerStay < TimeSpan.FromSeconds(1.5f * Time.deltaTime);
 	}
 }

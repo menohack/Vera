@@ -16,4 +16,9 @@ public class Cottage : Building {
 	{
 		return COTTAGE_COST_WOOD;
 	}
+
+	protected override float HeightSpawnOffset()
+	{
+		return -1f * collider.bounds.extents.y;
+	}
 }
