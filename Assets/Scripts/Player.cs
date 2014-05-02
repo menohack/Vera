@@ -51,7 +51,7 @@ public class Player : MonoBehaviour {
 			{
 				Debug.Log("Respawning player");
 				spawn.RespawnPlayer();
-				Destroy(this);
+				Utility.DestroyHelper(gameObject);
 			}
 			else
 				Debug.Log("Unable to find Spawn in Player");
