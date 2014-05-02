@@ -58,7 +58,7 @@ public class Arrow : MonoBehaviour {
 
 	void OnTriggerEnter(Collider collision)
 	{
-		if (hit)
+		if (hit || collision.collider.isTrigger)
 			return;
 
 		Health health = collision.gameObject.GetComponent<Health>();

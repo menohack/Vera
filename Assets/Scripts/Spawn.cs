@@ -51,6 +51,27 @@ public class Spawn : MonoBehaviour {
 			Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation);
 	}
 
+	/// <summary>
+	/// Respawns the player after a death.
+	/// </summary>
+	public void RespawnPlayer()
+	{
+		GameObject player;
+		if (Network.connections.Length > 0)
+			player = Network.Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation, 0) as GameObject;
+		else
+			player = Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation) as GameObject;
+		/*
+		Transform camLookPoint = player.transform.FindChild("CamLookPoint");
+		if (camLookPoint)
+		{
+			Transform newCamera = camLookPoint.transform.FindChild("Main Camera");
+			if (newCamera && newCamera.camera)
+				newCamera.camera.
+		}
+		*/
+	}
+
 	public void SpawnWolves()
 	{
 		if (Network.isServer || Network.connections.Length == 0)

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Player : MonoBehaviour {
 
@@ -9,9 +10,17 @@ public class Player : MonoBehaviour {
 
 	public GUIStyle style;
 
+	bool alive;
+
+	DateTime deathTime;
+	float deathCameraTimeMillis = 5000f;
+	TimeSpan deathCameraTime;
+
 	void Start()
 	{
 		Screen.showCursor = false;
+		deathCameraTime = TimeSpan.FromMilliseconds(deathCameraTimeMillis);
+		alive = true;
 	}
 
 	void Update()
@@ -33,6 +42,71 @@ public class Player : MonoBehaviour {
 					Menu.Pause();
 			}
 		}
+
+		if (!alive && deathTime != null && DateTime.Now - deathTime > deathCameraTime)
+		{
+			alive = true;
+			Spawn spawn = FindObjectOfType<Spawn>();
+			if (spawn)
+			{
+				Debug.Log("Respawning player");
+				spawn.RespawnPlayer();
+				Destroy(this);
+			}
+			else
+				Debug.Log("Unable to find Spawn in Player");
+		}
+	}
+
+	/// <summary>
+	/// Returns true if the player is alive.
+	/// </summary>
+	/// <returns>True if the player is alive.</returns>
+	public bool Alive()
+	{
+		return alive;
+	}
+
+	/// <summary>
+	/// Murders the player. Gruesomely.
+	/// </summary>
+	public void Murder()
+	{
+		alive = false;
+		rigidbody.isKinematic = false;
+
+		//Destroy the input controllers
+		ThirdPersonController controller = GetComponent<ThirdPersonController>();
+		if (controller)
+			Destroy(controller);
+		MouseLook mouseLook = GetComponent<MouseLook>();
+		if (mouseLook)
+			Destroy(mouseLook);
+		mouseLook = GetComponentInChildren<MouseLook>();
+		if (mouseLook)
+			Destroy(mouseLook);
+
+		//And lock the camera
+		Transform child = transform.FindChild("CamLookPoint");
+		if (child)
+		{
+			child = child.FindChild("Main Camera");
+			if (child)
+			{
+				child.parent = null;
+				AudioListener listener = child.gameObject.GetComponent<AudioListener>();
+				if (listener)
+					Destroy(listener);
+				else
+					Debug.Log("Could not find AudioListener on Main Camera");
+			}
+			else
+				Debug.Log("Could not find Main Camera in player");
+		}
+		else
+			Debug.Log("Could not find CamLookPoint");
+
+		deathTime = DateTime.Now;
 	}
 
 	/// <summary>

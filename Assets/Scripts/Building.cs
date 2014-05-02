@@ -76,6 +76,8 @@ public abstract class Building : Item {
 			green = renderer.material.color;
 			green = green * weight + Color.green * weight;
 			green.a = ghostTransparency;
+
+			UpdateColor();
 		}
 	}
 
@@ -100,6 +102,14 @@ public abstract class Building : Item {
 			UpdatePosition();
 
 		//If the item has not been placed make it transparent and either red or green
+		UpdateColor();
+	}
+
+	/// <summary>
+	/// Changes the color to green for valid placement or red for invalid placement.
+	/// </summary>
+	protected void UpdateColor()
+	{
 		if (!placed)
 		{
 			if (CanPlace())
@@ -108,8 +118,6 @@ public abstract class Building : Item {
 				renderer.material.color = red;
 		}
 	}
-
-	//protected abstract void UpdatePosition();
 
 	protected void UpdatePosition()
 	{

@@ -66,8 +66,9 @@ public class Health : MonoBehaviour {
 		if (health <= 0)
 		{
 			health = 0f;
-			if (gameObject.tag == "Player")
-				Menu.EndGame();
+			Player player = GetComponent<Player>();
+			if (player != null && gameObject.networkView.isMine)
+				player.Murder();
 			else if (gameObject.layer == LayerMask.NameToLayer("Obstacle"))
 			{
 				//Pathfinding.Console.Write ("// Placing Object\n");

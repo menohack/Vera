@@ -8,16 +8,26 @@ public class Water : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		player = GameObject.FindWithTag("Player");
+		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+		foreach (GameObject p in players)
+		{
+			if (p.networkView.isMine)
+			{
+				player = p;
+				break;
+			}
+		}
 		meshFilter = GetComponent<MeshFilter>();
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		if (player && player.transform.position.y < meshFilter.transform.position.y)
+		if (player && meshFilter && player.transform.position.y < meshFilter.transform.position.y)
 		{
-			player.rigidbody.AddForce(Vector3.up * 1000f * Time.deltaTime);
+			Player playerScript = player.GetComponent<Player>();
+			if (playerScript != null && playerScript.Alive())
+				playerScript.Murder();
 		}
 	}
 }
