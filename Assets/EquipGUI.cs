@@ -8,11 +8,6 @@ public class EquipGUI : MonoBehaviour {
 	/// </summary>
 	public Texture[] equipment;
 
-	/// <summary>
-	/// Is this the center item?
-	/// </summary>
-	public bool central;
-
 	RightHandToolSelector t;
 
 	// Use this for initialization
