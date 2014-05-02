@@ -43,8 +43,6 @@ public class Build : MonoBehaviour {
 
 	Transform holdPoint;
 
-	public GameObject arrowPrefab;
-
 	NetworkController nc;
 
 	/// <summary>
@@ -215,21 +213,6 @@ public class Build : MonoBehaviour {
 			}
 			else if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
 				EquipBuilding();
-			else if (Input.GetKeyDown(KeyCode.F))
-			{
-				GameObject arrow;
-				if (nc != null && nc.Connected())
-					arrow = Network.Instantiate(arrowPrefab, holdPoint.position, transform.rotation, 0) as GameObject;
-				else
-				{
-					arrow = Instantiate(arrowPrefab) as GameObject;
-					arrow.transform.position = holdPoint.position;
-					arrow.transform.rotation = transform.rotation;
-				}
-				Arrow arrowScript = arrow.GetComponent<Arrow>();
-				if (arrowScript)
-					arrowScript.Shoot(gameObject.transform.forward);
-			}
 			else if (buildings.Length > 0) {
 				int tempBuildingIndex = getIndexByKey ();
 				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
