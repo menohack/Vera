@@ -176,7 +176,7 @@ public abstract class Building : Item {
 
 		//This is broken, no idea why
 		return true;
-		return IntersectingTerrain();
+//		return IntersectingTerrain();
 	}
 
 	protected bool IntersectingTerrain()
