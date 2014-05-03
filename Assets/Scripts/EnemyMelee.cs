@@ -72,7 +72,10 @@ public class EnemyMelee : MonoBehaviour {
 		if (player != null)
 			target = player.transform;
 		if (seeker)
+		{
+			Debug.Log("Setting seeker target to " + target);
 			seeker.target = target;
+		}
 		lastTargetSearch = DateTime.Now;
 	}
 
