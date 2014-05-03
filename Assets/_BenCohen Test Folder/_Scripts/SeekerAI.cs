@@ -24,15 +24,21 @@ public class SeekerAI : AIPath {
 	public override void Update () {
 		//check distance, if too far, disable, otherwise enable
 		base.Update ();
-		float dist = getDistToTarget (); 
-		if (dist <= alertRange && enabled == false) {
-			if (DEBUG) Debug.Log ("dist is " + dist + ". Path reenabled.");
-			OnEnable ();
-			enabled = true;
-		} else if (dist > alertRange && enabled == true) {
-			if (DEBUG) Debug.Log ("dist is " + dist + ". Path disabled.");
-			OnDisable ();
-			enabled = false;
+		if (target != null)
+		{
+			float dist = getDistToTarget();
+			if (dist <= alertRange && enabled == false)
+			{
+				if (DEBUG) Debug.Log("dist is " + dist + ". Path reenabled.");
+				OnEnable();
+				enabled = true;
+			}
+			else if (dist > alertRange && enabled == true)
+			{
+				if (DEBUG) Debug.Log("dist is " + dist + ". Path disabled.");
+				OnDisable();
+				enabled = false;
+			}
 		}
 
 	}
