@@ -181,38 +181,7 @@ public class Build : MonoBehaviour {
 				}
 			}
 		} else {
-			//this is the resource gathering code
-			if (Input.GetButtonDown ("Fire1")) {
-				RaycastHit hit;
-				int layerMask = 1 << LayerMask.NameToLayer ("Environment");
-
-				if (Physics.Raycast(transform.position + (Vector3.up * 1.5f), transform.forward, out hit, RAYCAST_DISTANCE, layerMask))
-				{
-					if (hit.transform.tag == "Building")
-					{
-						GameObject item = hit.transform.gameObject;
-						Building hp = item.GetComponent<Building>();
-						if (hp != null)
-							hp.Damage(25);
-						hp.IsAlive();
-					}
-					else if (hit.transform.tag == "Ore" || hit.transform.tag == "Tree")
-					{
-						Resource resource = hit.transform.gameObject.GetComponent<Resource>();
-						int gatherCount = resource.Gather(1);
-						if (gatherCount > 0)
-						{
-							if (resource is Tree)
-								inventory.AddWood(gatherCount);
-							else if (resource is Ore)
-								inventory.AddOre(gatherCount);
-							else
-								Debug.LogError("No such resource");
-						}
-					}
-				}
-			}
-			else if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
+			if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
 				EquipBuilding();
 			else if (Input.GetKeyDown(KeyCode.F))
 			{
