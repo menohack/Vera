@@ -74,11 +74,10 @@ public class Spawn : MonoBehaviour {
 	/// </summary>
 	public void RespawnPlayer()
 	{
-		GameObject player;
 		if (Network.connections.Length > 0)
-			player = Network.Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation, 0) as GameObject;
+			myPlayer = Network.Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation, 0) as GameObject;
 		else
-			player = Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation) as GameObject;
+			myPlayer = Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation) as GameObject;
 	}
 
 	public void SpawnWolves()
