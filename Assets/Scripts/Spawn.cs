@@ -26,9 +26,27 @@ public class Spawn : MonoBehaviour {
 	public float minWolfSpawnRadius = 10f;
 	public float maxWolfSpawnRadius = 15f;
 
+	public static Spawn instance;
+
+	GameObject myPlayer;
+
 	void Awake()
 	{
-		SpawnPlayer();
+		if (instance == null)
+		{
+			instance = this;
+			SpawnPlayer();
+		}
+		else
+		{
+			Debug.Log("There should be only one Spawn object in the scene");
+			Destroy(this);
+		}
+	}
+
+	public static GameObject GetMyPlayer()
+	{
+		return instance.myPlayer;
 	}
 
 
@@ -46,9 +64,9 @@ public class Spawn : MonoBehaviour {
 	void SpawnPlayer()
 	{
 		if (Network.connections.Length > 0)
-			Network.Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation, 0);
+			myPlayer = Network.Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation, 0) as GameObject;
 		else
-			Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation);
+			myPlayer = Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation) as GameObject;
 	}
 
 	/// <summary>

@@ -8,32 +8,20 @@ public class InvNum : MonoBehaviour {
 	/// </summary>
 	public bool isWood = true;
 
-	private GameObject player;
-	private Inventory inv;
-
-	// Use this for initialization
-	void Start () {
-		player = GameObject.FindGameObjectWithTag ("Player");
-		inv = player.gameObject.GetComponent<Inventory> ();
-		if (isWood) 
-		{
-			guiText.text = "" + inv.GetWood ();
-		}
-		else
-		{
-			guiText.text = "" + inv.GetOre ();
-		}
-	}
-	
 	// Update is called once per frame
 	void Update () {
-		if (isWood) 
+
+		GameObject player = Spawn.GetMyPlayer();
+		Inventory inventory = null;
+		if (player != null)
+			inventory = player.GetComponent<Inventory>();
+
+		if (inventory != null)
 		{
-			guiText.text = "" + inv.GetWood ();
-		}
-		else
-		{
-			guiText.text = "" + inv.GetOre ();
+			if (isWood)
+				guiText.text = "" + inventory.GetWood();
+			else
+				guiText.text = "" + inventory.GetOre();
 		}
 	}
 }
