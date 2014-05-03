@@ -176,7 +176,15 @@ public abstract class Building : Item {
 	/// <returns>True if the item can be placed.</returns>
 	protected override bool CanPlace()
 	{
-		return IntersectingTerrain() && !IntersectingBuilding();
+		bool canAfford = false;
+		GameObject myPlayer = Spawn.GetMyPlayer();
+		if (myPlayer)
+		{
+			Inventory inventory = myPlayer.GetComponent<Inventory>();
+			if (inventory && inventory.GetOre() >= GetOreCost() && inventory.GetWood() >= GetWoodCost())
+				canAfford = true;
+		}
+		return canAfford && IntersectingTerrain() && !IntersectingBuilding();
 	}
 
 	/// <summary>

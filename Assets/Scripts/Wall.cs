@@ -5,12 +5,12 @@ public class Wall : Building
 	/// <summary>
 	/// The wood cost to build a wall.
 	/// </summary>
-	public static int WALL_COST_WOOD = 1;
+	public static int WALL_COST_WOOD = 2;
 
 	/// <summary>
 	/// The ore cost to build a wall.
 	/// </summary>
-	public static int WALL_COST_ORE = 1;
+	public static int WALL_COST_ORE = 0;
 
 	public override int GetOreCost()
 	{
