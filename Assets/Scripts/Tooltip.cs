@@ -21,7 +21,6 @@ public class Tooltip : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		p = GameObject.FindGameObjectWithTag("Player");
 		t [0] = torch;
 		t [1] = campfire;
 		t [2] = gate;
@@ -33,7 +32,7 @@ public class Tooltip : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (toolTip) {
-			Build b = p.GetComponent<Build>();
+			Build b = Spawn.GetMyPlayer().GetComponent<Build>();
 			GameObject item = b.GetItemHeld();
 			if (item != null){
 				//draw something

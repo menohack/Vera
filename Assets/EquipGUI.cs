@@ -10,14 +10,9 @@ public class EquipGUI : MonoBehaviour {
 
 	RightHandToolSelector t;
 
-	// Use this for initialization
-	void Start () {
-		GameObject g = GameObject.FindGameObjectWithTag ("Player");
-		t = g.GetComponent<RightHandToolSelector>();
-	}
-	
 	// Update is called once per frame
 	void Update () {
+		t = Spawn.GetMyPlayer ().GetComponent<RightHandToolSelector> ();
 		changeTexture ();
 	}
 
