@@ -49,7 +49,6 @@ public class Player : MonoBehaviour {
 			Spawn spawn = FindObjectOfType<Spawn>();
 			if (spawn)
 			{
-				Debug.Log("Respawning player");
 				spawn.RespawnPlayer();
 				Utility.DestroyHelper(gameObject);
 			}

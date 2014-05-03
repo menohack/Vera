@@ -42,6 +42,8 @@ public class MeleeCollider : MonoBehaviour {
 			{
 				if (anime)
 					anime.Attack();
+				else
+					Debug.Log("Animation missing from Player");
 				lastAttack = DateTime.Now;
 			}
 		}

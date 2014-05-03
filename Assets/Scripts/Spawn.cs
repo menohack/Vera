@@ -61,15 +61,6 @@ public class Spawn : MonoBehaviour {
 			player = Network.Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation, 0) as GameObject;
 		else
 			player = Instantiate(playerPrefab, GetRandomPlayerSpawn(), playerPrefab.transform.rotation) as GameObject;
-		/*
-		Transform camLookPoint = player.transform.FindChild("CamLookPoint");
-		if (camLookPoint)
-		{
-			Transform newCamera = camLookPoint.transform.FindChild("Main Camera");
-			if (newCamera && newCamera.camera)
-				newCamera.camera.
-		}
-		*/
 	}
 
 	public void SpawnWolves()
