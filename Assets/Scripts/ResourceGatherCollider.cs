@@ -24,11 +24,11 @@ public class ResourceGatherCollider : MonoBehaviour {
 	void Start () {
 		attackCooldown = new TimeSpan(0,0,0,0, coolDownMilli);
 		delayCoolDown = new TimeSpan (0, 0, 0, 0, 500);
-		b = GameObject.FindGameObjectWithTag ("Player").GetComponent<Build>();
-		inventory = GameObject.FindGameObjectWithTag ("Player").GetComponent<Inventory>();
 	}
 	
 	void Update () {
+		b = Spawn.GetMyPlayer().GetComponent<Build>();
+		inventory = Spawn.GetMyPlayer().GetComponent<Inventory>();
 		if (b.hasBuilding) 
 		{
 			buildDelay = DateTime.Now;
