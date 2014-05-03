@@ -1,22 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public abstract class Building : Item {
 
 	/// <summary>
-	/// The hit points of the building.
+	/// The last time that OnTriggerStay was called.
 	/// </summary>
-	private float health = 100f;
+	DateTime? lastTerrainTriggerStay = null;
 
 	/// <summary>
-	/// Counts the number of intersections with the environment. Zero means no intersection.
+	/// The last time that OnTriggerStay was called.
 	/// </summary>
-	protected int overlapCount = 0;
+	DateTime? lastBuildingTriggerStay = null;
 
 	/// <summary>
-	/// The layer of the environment.
+	/// The layer of the terrain.
 	/// </summary>
-	int layerMask;
+	int terrainLayerMask;
+
+	/// <summary>
+	/// The layer of the buildings.
+	/// </summary>
+	int buildingLayerMask;
 
 	/// <summary>
 	/// The minimum distance two buildings that are not connected may be.
@@ -33,7 +39,7 @@ public abstract class Building : Item {
 	/// </summary>
 	Color red, green;
 
-	public float SCALE = 2f;
+	public float SCALE = 4f;
 
 	/// <summary>
 	/// The transform about which the building is held.
@@ -49,9 +55,10 @@ public abstract class Building : Item {
 	/// <summary>
 	/// Initialization.
 	/// </summary>
-	protected void Start () {
+	protected virtual void Start () {
 		originalMaterial = renderer.material;
-		layerMask = LayerMask.NameToLayer("Environment");
+		terrainLayerMask = LayerMask.NameToLayer("Environment");
+		buildingLayerMask = LayerMask.NameToLayer("Obstacle");
 
 		//This doesn't work for the build, only in the editor
 		//renderer.material = new Material(renderer.material);
@@ -69,6 +76,8 @@ public abstract class Building : Item {
 			green = renderer.material.color;
 			green = green * weight + Color.green * weight;
 			green.a = ghostTransparency;
+
+			UpdateColor();
 		}
 	}
 
@@ -76,34 +85,12 @@ public abstract class Building : Item {
 
 	public abstract int GetWoodCost();
 
+	protected abstract float HeightSpawnOffset();
+
 	public override void SetGhostPosition(Transform heldPosition)
 	{
 		held = heldPosition;
 		UpdatePosition();
-	}
-
-	/// <summary>
-	/// Damages the building for dmg damage.
-	/// </summary>
-	/// <param name="dmg">The positive number of damage points to inflict.</param>
-	public void Damage(float dmg)
-	{
-		health -= dmg;
-	}
-
-	/// <summary>
-	/// Checks if the building is alive. If it is not it destroys it.
-	/// </summary>
-	/// <returns>True if the building is alive.</returns>
-	public bool IsAlive()
-	{
-		if (health <= 0)
-		{
-			Destroy(gameObject);
-			return false;
-		}
-		else
-			return true;
 	}
 
 	/// <summary>
@@ -115,6 +102,14 @@ public abstract class Building : Item {
 			UpdatePosition();
 
 		//If the item has not been placed make it transparent and either red or green
+		UpdateColor();
+	}
+
+	/// <summary>
+	/// Changes the color to green for valid placement or red for invalid placement.
+	/// </summary>
+	protected void UpdateColor()
+	{
 		if (!placed)
 		{
 			if (CanPlace())
@@ -123,8 +118,6 @@ public abstract class Building : Item {
 				renderer.material.color = red;
 		}
 	}
-
-	//protected abstract void UpdatePosition();
 
 	protected void UpdatePosition()
 	{
@@ -139,7 +132,7 @@ public abstract class Building : Item {
 			direction.Normalize();
 			float extents = Mathf.Max(collider.bounds.extents.x, collider.bounds.extents.z);
 			position += extents * direction;
-			position -= new Vector3(0f, collider.bounds.extents.y, 0f);
+			position += new Vector3(0f, HeightSpawnOffset(), 0f);
 		}
 		if (held && !placed)
 			transform.position = new Vector3(Mathf.Floor(position.x / SCALE) * SCALE, position.y, Mathf.Floor(position.z / SCALE) * SCALE);
@@ -153,15 +146,28 @@ public abstract class Building : Item {
 	{
 		if (CanPlace())
 		{
-			placed = true;
-			renderer.material = originalMaterial;
-			transform.parent = null;
-			
-			collider.isTrigger = false;
+			if (Network.connections.Length > 0)
+				networkView.RPC("PlaceRPC", RPCMode.AllBuffered);
+			else
+				PlaceRPC();
 			return true;
 		}
 		else
 			return false;
+	}
+
+	[RPC]
+	public void PlaceRPC()
+	{
+		placed = true;
+		renderer.material = originalMaterial;
+		transform.parent = null;
+
+		collider.isTrigger = false;
+
+		//if (rigidbody)
+		//	rigidbody.isKinematic = false;
+		collider.enabled = true;
 	}
 
 	/// <summary>
@@ -170,50 +176,36 @@ public abstract class Building : Item {
 	/// <returns>True if the item can be placed.</returns>
 	protected override bool CanPlace()
 	{
-		foreach (GameObject g in GameObject.FindGameObjectsWithTag("Building"))
-			if (g != gameObject && Vector3.Distance(g.transform.position, transform.position) < minBuildingDistance)
-				return false;
-
-		//This is broken, no idea why
-		return true;
-		return IntersectingTerrain();
-	}
-
-	protected bool IntersectingTerrain()
-	{
-		return overlapCount != 0;
-	}
-
-	void OnGUI()
-	{
-		/*
-		GUIStyle style = new GUIStyle();
-		style.fontSize = 32;
-		GUI.Label(new Rect(Screen.width - 200, 200, 200, 200), "overlap: " + overlapCount, style);
-		 * */
+		return IntersectingTerrain() && !IntersectingBuilding();
 	}
 
 	/// <summary>
-	/// Called when the item intersects an Environment GameObject.
+	/// Called on each frame while the trigger is overlapping another collider.
 	/// </summary>
-	/// <param name="other">The collider that is being intersected.</param>
-	void OnTriggerEnter(Collider other)
+	/// <param name="other">The other collider.</param>
+	void OnTriggerStay(Collider other)
 	{
-		//Debug.Log(overlapCount);
-		//If the item overlaps a terrain object
-		if (other.gameObject.layer == layerMask)
-			overlapCount++;
+		if (other.gameObject.layer == terrainLayerMask)
+			lastTerrainTriggerStay = DateTime.Now;
+		if (other.gameObject.layer == buildingLayerMask)
+			lastBuildingTriggerStay = DateTime.Now;
+	}
+
+	public bool IntersectingBuilding()
+	{
+		if (lastBuildingTriggerStay == null)
+			return false;
+		return DateTime.Now - lastBuildingTriggerStay < TimeSpan.FromSeconds(1.5f * Time.deltaTime);
 	}
 
 	/// <summary>
-	/// Called when the item no longer intersects an Environment GameObject.
+	/// Returns true if the building is intersecting the terrain.
 	/// </summary>
-	/// <param name="other">The collider that is no longer being intersected.</param>
-	void OnTriggerExit(Collider other)
+	/// <returns>True if the building is grounded.</returns>
+	public bool IntersectingTerrain()
 	{
-		//Debug.Log(overlapCount);
-		//If the item no longer overlaps a terrain object
-		if (other.gameObject.layer == layerMask)
-			overlapCount--;
+		if (lastTerrainTriggerStay == null)
+			return false;
+		return DateTime.Now - lastTerrainTriggerStay < TimeSpan.FromSeconds(1.5f * Time.deltaTime);
 	}
 }

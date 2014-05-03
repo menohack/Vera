@@ -37,7 +37,7 @@ public class EnemyMelee : MonoBehaviour {
 	protected TimeSpan attackCooldown = new TimeSpan(0, 0, 1);
 
 	DateTime? lastAttack;
-	private Transform tgt;
+	private Transform target;
 
 	/// <summary>
 	/// Max idle time before attacking.
@@ -48,39 +48,61 @@ public class EnemyMelee : MonoBehaviour {
 	/// Minimum distance for being "idle" per frame.
 	/// </summary>
 	public float minIdleDist = 0.05f;
+
+	SeekerAI seeker;
 	
 	private Vector3 lastPos;
 	private float timeSinceLastMovement = 0f;
 
+	DateTime lastTargetSearch;
+	float targetSearchFrequencyMillis = 500f;
+	TimeSpan targetSearchFrequency;
+
 	void Start(){
 		attackCooldown = new TimeSpan (0, 0, coolDown);
-		tgt = this.gameObject.GetComponent<SeekerAI> ().target;
+		seeker = GetComponent<SeekerAI>();
+		FindTarget();
 		lastPos = this.gameObject.transform.position;
+		targetSearchFrequency = TimeSpan.FromMilliseconds(targetSearchFrequencyMillis);
+	}
+
+	void FindTarget()
+	{
+		target = Targeting.FindClosestTarget(transform, "Player").transform;
+		if (seeker)
+			seeker.target = target;
+		lastTargetSearch = DateTime.Now;
 	}
 
 	void Update(){
-		float distFromPlayer = Vector3.Distance (tgt.position, this.gameObject.transform.position);
-		//when far away and has not moved enough, start the idle counter
-		if (Vector3.Distance(lastPos, this.gameObject.transform.position) <  minIdleDist && distFromPlayer > maxDist)
-		{
-			timeSinceLastMovement += Time.deltaTime;
-			if (debug)
-			{
-				Debug.Log("Idling for: " + timeSinceLastMovement); 
-			}
-			if (timeSinceLastMovement > idleAttackTime)
-			{
-				Attack ();
-				timeSinceLastMovement = 0f;
-			}
-		}
-		else { timeSinceLastMovement = 0f; }
-		lastPos = transform.position;
+		if (target == null || lastTargetSearch == null || DateTime.Now - lastTargetSearch > targetSearchFrequency)
+			FindTarget();
 
-		//when in range
-		if ((lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown) && (distFromPlayer < maxDist))
+		if (target != null)
 		{
-			Attack ();
+			float distFromPlayer = Vector3.Distance(target.position, this.gameObject.transform.position);
+			//when far away and has not moved enough, start the idle counter
+			if (Vector3.Distance(lastPos, this.gameObject.transform.position) < minIdleDist && distFromPlayer > maxDist)
+			{
+				timeSinceLastMovement += Time.deltaTime;
+				if (debug)
+				{
+					Debug.Log("Idling for: " + timeSinceLastMovement);
+				}
+				if (timeSinceLastMovement > idleAttackTime)
+				{
+					Attack();
+					timeSinceLastMovement = 0f;
+				}
+			}
+			else { timeSinceLastMovement = 0f; }
+			lastPos = transform.position;
+
+			//when in range
+			if ((lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown) && (distFromPlayer < maxDist))
+			{
+				Attack();
+			}
 		}
 	}
 

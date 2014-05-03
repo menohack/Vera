@@ -65,7 +65,7 @@ public class ThirdPersonController : MonoBehaviour
 		}
 	}
 
-	Animator animator;
+	PlayerAnimation playerAnimation;
 	DateTime? lastJump;
 	float jumpTimeMilliseconds = 1000f;
 	TimeSpan jumpTime;
@@ -92,8 +92,8 @@ public class ThirdPersonController : MonoBehaviour
 			Debug.LogError("Unable to find JumpCheck");
 
 		jumpTime = TimeSpan.FromMilliseconds(jumpTimeMilliseconds);
-		animator = GetComponentInChildren<Animator>();
-		animator.SetFloat("Speed", 0f);
+		playerAnimation = GetComponentInChildren<PlayerAnimation>();
+		playerAnimation.SetWalkSpeed(0f);
 	}
 	
 	
@@ -174,9 +174,9 @@ public class ThirdPersonController : MonoBehaviour
 			if (Input.GetButton ("Jump"))
 			// Handle jumping
 			{
-				if (animator && lastJump == null || DateTime.Now - lastJump > jumpTime)
+				if (playerAnimation != null && (lastJump == null || DateTime.Now - lastJump > jumpTime))
 				{
-					animator.SetTrigger("Jump");
+					playerAnimation.Jump();
 					lastJump = DateTime.Now;
 				}
 				target.AddForce (
@@ -211,13 +211,13 @@ public class ThirdPersonController : MonoBehaviour
 				// Only apply movement if we have sufficient input
 				{
 					target.AddForce (movement.normalized * appliedSpeed, ForceMode.VelocityChange);
-					animator.SetFloat("Speed", target.velocity.magnitude);
+					playerAnimation.SetWalkSpeed(target.velocity.magnitude);
 				}
 				else
 				// If we are grounded and don't have significant input, just stop horizontal movement
 				{
 					target.velocity = new Vector3 (0.0f, target.velocity.y, 0.0f);
-					animator.SetFloat("Speed", 0f);
+					playerAnimation.SetWalkSpeed(0f);
 					return;
 				}
 			}

@@ -43,7 +43,7 @@ public class Build : MonoBehaviour {
 
 	Transform holdPoint;
 
-	public GameObject arrowPrefab;
+	NetworkController nc;
 
 	/// <summary>
 	/// Load the building prefabs (used for instantiating them) and the inventory.
@@ -56,6 +56,8 @@ public class Build : MonoBehaviour {
 
 		GameObject hp = GameObject.Find("HoldPoint");
 		holdPoint = hp.transform;
+
+		nc = FindObjectOfType<NetworkController>();
 	}
 
 
@@ -81,7 +83,9 @@ public class Build : MonoBehaviour {
 	/// </summary>
 	void EquipBuilding()
 	{
-		GameObject wall = Instantiate(buildings[buildingIndex]) as GameObject;
+		GameObject buildingPrefab = buildings[buildingIndex] as GameObject;
+		GameObject wall = Utility.InstantiateHelper(buildingPrefab, buildingPrefab.transform.position, buildingPrefab.transform.rotation);
+			
 		Item i = wall.GetComponent<Item>();
 		if (i != null)
 			i.SetGhostPosition(holdPoint);
@@ -129,10 +133,6 @@ public class Build : MonoBehaviour {
 				inventory.RemoveOre(buildingScript.GetOreCost());
 				inventory.RemoveWood(buildingScript.GetWoodCost());
 			}
-			if (itemHeld.rigidbody)
-				itemHeld.rigidbody.isKinematic = false;
-			itemHeld.collider.enabled = true;
-
 
 			hasBuilding = false;
 			itemHeld = null;
@@ -152,7 +152,7 @@ public class Build : MonoBehaviour {
 				//Drop the item
 				PlaceItem ();
 			} else if (hasBuilding && Input.GetButtonDown ("Fire2")) {
-				Destroy (itemHeld);
+				Utility.DestroyHelper(itemHeld);
 				itemHeld = null;
 				hasBuilding = false;
 			} else if (hasBuilding && scroll != 0.0f) {
@@ -160,7 +160,7 @@ public class Build : MonoBehaviour {
 				int tempBuildingIndex = ScrollBuildings (scrollIndices);
 				if (buildingIndex != tempBuildingIndex) {
 					buildingIndex = tempBuildingIndex;
-					Destroy (itemHeld);
+					Utility.DestroyHelper(itemHeld);
 					itemHeld = null;
 					EquipBuilding ();
 				}
@@ -169,12 +169,12 @@ public class Build : MonoBehaviour {
 				int tempBuildingIndex = getIndexByKey ();
 				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
 					if (buildingIndex == tempBuildingIndex) {
-						Destroy (itemHeld);
+						Utility.DestroyHelper(itemHeld);
 						itemHeld = null;
 						hasBuilding = false;
 					} else {
 						buildingIndex = tempBuildingIndex;
-						Destroy (itemHeld);
+						Utility.DestroyHelper(itemHeld);
 						itemHeld = null;
 						EquipBuilding ();
 					}
@@ -191,10 +191,9 @@ public class Build : MonoBehaviour {
 					if (hit.transform.tag == "Building")
 					{
 						GameObject item = hit.transform.gameObject;
-						Building hp = item.GetComponent<Building>();
+						Health hp = item.GetComponent<Health>();
 						if (hp != null)
 							hp.Damage(25);
-						hp.IsAlive();
 					}
 					else if (hit.transform.tag == "Ore" || hit.transform.tag == "Tree")
 					{
@@ -214,15 +213,6 @@ public class Build : MonoBehaviour {
 			}
 			else if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
 				EquipBuilding();
-			else if (Input.GetKeyDown(KeyCode.F))
-			{
-				GameObject arrow = Instantiate(arrowPrefab) as GameObject;
-				arrow.transform.position = holdPoint.position;
-				arrow.transform.rotation = transform.rotation;
-				Arrow arrowScript = arrow.GetComponent<Arrow>();
-				if (arrowScript)
-					arrowScript.Shoot(gameObject.transform.forward);
-			}
 			else if (buildings.Length > 0) {
 				int tempBuildingIndex = getIndexByKey ();
 				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
@@ -234,11 +224,11 @@ public class Build : MonoBehaviour {
 			{
 				GameObject[] gos = GameObject.FindGameObjectsWithTag("Building");
 				foreach (GameObject go in gos)
-					Destroy (go);
+					if (nc != null && nc.Connected())
+					Utility.DestroyHelper(go);
 			}
 		}	
 	}
-
 
 	private int getIndexByKey() {
 		int alphaNumDown = -1; //stands for none

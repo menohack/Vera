@@ -54,16 +54,34 @@ public class Sundial : MonoBehaviour
 	public Spawn spawn;
 
 	/// <summary>
-	/// The time of day between 0 and 1 at which to spawn wolves.
+	/// The event that fires at dawn.
 	/// </summary>
-	public float spawnWolvesScalar = 0.5f;
+	public event EventListener dawnListener;
 
 	/// <summary>
-	/// Have the wolves been spawned today?
+	/// The event that fires at dusk.
 	/// </summary>
-	bool spawned = false;
+	public event EventListener duskListener;
 
+	/// <summary>
+	/// The type function that dusk and dawn events invoke.
+	/// </summary>
+	public delegate void EventListener();
+
+	/// <summary>
+	/// Style used for the day prompt label.
+	/// </summary>
 	GUIStyle labelStyle;
+
+	/// <summary>
+	/// Whether dawn events have been invoked for today.
+	/// </summary>
+	bool invokedDawnEvents = false;
+
+	/// <summary>
+	/// Whether dusk events have been invoked for today.
+	/// </summary>
+	bool invokedDuskEvents = false;
 
 	void Start()
 	{
@@ -73,6 +91,9 @@ public class Sundial : MonoBehaviour
 		labelStyle.fontStyle = FontStyle.Bold;
 		labelStyle.fontSize = fontSize;
 		labelStyle.alignment = TextAnchor.UpperCenter;
+
+		dawnListener += new EventListener(spawn.DespawnWolves);
+		duskListener += new EventListener(spawn.SpawnWolves);
 	}
 
 	void Update ()
@@ -82,18 +103,31 @@ public class Sundial : MonoBehaviour
 		{
 			time = newTime - dayLengthSeconds;
 			day++;
-			spawned = false;
-			spawn.DespawnWolves();
 		}
 		else
 			time = newTime;
 
-		if (GetProgress() > spawnWolvesScalar && !spawned && spawn)
-		{
-			spawn.SpawnWolves();
-			spawned = true;
-		}
+		SetSkyboxInterpolation();
 
+		//Trigger events at dusk and dawn
+		if (GetProgress() < 0.5f && !invokedDawnEvents)
+		{
+			invokedDawnEvents = true;
+			invokedDuskEvents = false;
+			if (dawnListener != null)
+				dawnListener.Invoke();
+		}
+		else if (GetProgress() >= 0.5f && !invokedDuskEvents)
+		{
+			invokedDuskEvents = true;
+			invokedDawnEvents = false;
+			if (duskListener != null)
+				duskListener.Invoke();
+		}
+	}
+
+	void SetSkyboxInterpolation()
+	{
 		float skyboxBlend;
 		//time:  0 middle, 0.25 day, 0.5 middle, 0.75 night, 1 == 0
 		//blend: 0.5		0			0.5			1			0.5
@@ -106,6 +140,29 @@ public class Sundial : MonoBehaviour
 		else
 			skyboxBlend = 1.0f - (GetProgress() - 0.75f) * 2.0f;
 		RenderSettings.skybox.SetFloat("_Blend", skyboxBlend);
+	}
+
+	/// <summary>
+	/// Serializes and deserializes the Sundial script across the network.
+	/// </summary>
+	void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
+	{
+		if (stream.isWriting)
+		{
+			float timeW = time;
+			int dayW = day;
+			stream.Serialize(ref timeW);
+			stream.Serialize(ref dayW);
+		}
+		else
+		{
+			float timeR = time;
+			int dayR = day;
+			stream.Serialize(ref timeR);
+			stream.Serialize(ref dayR);
+			time = timeR;
+			day = dayR;
+		}
 	}
 
 	/// <summary>

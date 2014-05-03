@@ -21,4 +21,9 @@ public class Wall : Building
 	{
 		return WALL_COST_WOOD;
 	}
+
+	protected override float HeightSpawnOffset()
+	{
+		return -1.2f * collider.bounds.extents.y;
+	}
 }

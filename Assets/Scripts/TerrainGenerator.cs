@@ -26,7 +26,6 @@ public class TerrainGenerator : MonoBehaviour {
 	
 	void Start ()
 	{
-		Networking.Instance.GetMap();
 		/* Random terrain
 		SeedGenerator();
 
