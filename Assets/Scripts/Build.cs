@@ -5,6 +5,12 @@ using Pathfinding;
 
 public class Build : MonoBehaviour {
 
+	//BC: Note: the changes introduced with this are quick fixes, and this script *really* needs to be refactored from the ground up
+	enum BuildingState {original, Rot1};
+	
+	//current 'state' of the building held
+	BuildingState currentState;
+
 	/// The distance of a ray in front of the character for mining and picking up objects.
 	public static float RAYCAST_DISTANCE = 5.0f;
 	public bool issueGUOs = true; /** Issue a graph update object after placement */
@@ -58,6 +64,7 @@ public class Build : MonoBehaviour {
 
 		hasBuilding = true;
 		itemHeld = currentBuilding;
+		currentState = BuildingState.original;
 	}
 
 	/// <summary>
@@ -119,10 +126,18 @@ public class Build : MonoBehaviour {
 			} else if (hasBuilding) {
 				int tempBuildingIndex = getIndexByKey ();
 				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
-					if (buildingIndex == tempBuildingIndex) {
+					//this is where we handle the 'rotating' functionality
+					if (buildingIndex == tempBuildingIndex && currentState == BuildingState.original) {
+						Debug.Log ("this is when we would rotate"); //just a placeholder for now
+						//move to next state
+						currentState = BuildingState.Rot1;
+						itemHeld.transform.Rotate(Vector3.up, 90, Space.World);					
+						//this is where we remove the building
+					} else if (buildingIndex == tempBuildingIndex && currentState == BuildingState.Rot1) {
 						Utility.DestroyHelper(itemHeld);
 						itemHeld = null;
 						hasBuilding = false;
+					// if a new number is selected, switch to that object
 					} else {
 						buildingIndex = tempBuildingIndex;
 						Utility.DestroyHelper(itemHeld);
