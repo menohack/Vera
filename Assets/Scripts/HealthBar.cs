@@ -8,6 +8,8 @@ public class HealthBar : MonoBehaviour {
 	public Texture2D healthBarBack;
 
 	public GUIStyle style;
+
+	public float maxDistVisible = 30.0f;
 	
 	void OnGUI()
 	{
@@ -39,16 +41,19 @@ public class HealthBar : MonoBehaviour {
 		float healthPercentage = health / maxHealth;
 
 		float distance = Vector4.Distance(Camera.main.transform.position, transform.position);
-		float scale = 15f / distance;
-		if (scale > 1f)
-			scale = 1f;
-
-		if (healthPercentage >= 0)
+		if (distance < maxDistVisible) 
 		{
-			GUI.BeginGroup(new Rect(position.x, Screen.height - position.y, healthBarBack.width * healthPercentage * scale, healthBarBack.height * scale), style);
-			GUI.Box(new Rect(0, 0, healthBarBack.width * scale, healthBarBack.height * scale), healthBarBack, style);
-			GUI.EndGroup();
+			float scale = 15f / distance;
+			if (scale > 1f)
+					scale = 1f;
+
+			if (healthPercentage >= 0) 
+			{
+				GUI.BeginGroup (new Rect (position.x, Screen.height - position.y, healthBarBack.width * healthPercentage * scale, healthBarBack.height * scale), style);
+				GUI.Box (new Rect (0, 0, healthBarBack.width * scale, healthBarBack.height * scale), healthBarBack, style);
+				GUI.EndGroup ();
+			}
+			GUI.Box (new Rect (position.x, Screen.height - position.y, healthBarFront.width * scale, healthBarFront.height * scale), healthBarFront, style);
 		}
-		GUI.Box(new Rect(position.x, Screen.height - position.y, healthBarFront.width * scale, healthBarFront.height * scale), healthBarFront, style);
 	}
 }
