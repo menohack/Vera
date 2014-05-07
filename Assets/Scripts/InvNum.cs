@@ -11,7 +11,7 @@ public class InvNum : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		GameObject player = Spawn.GetMyPlayer();
+		GameObject player = Spawn.GetCurrentPlayer();
 		Inventory inventory = null;
 		if (player != null)
 			inventory = player.GetComponent<Inventory>();

@@ -3,11 +3,23 @@ using System.Collections;
 
 public class Utility
 {
+	/// <summary>
+	/// Instantiates an object on the network if we are in a multiplayer game, otherwise instantiates normally.
+	/// </summary>
+	/// <param name="gameObject">The prefab to clone.</param>
+	/// <returns>Returns the new object.</returns>
 	public static GameObject InstantiateHelper(GameObject gameObject)
 	{
 		return InstantiateHelper(gameObject, gameObject.transform.position, gameObject.transform.rotation);
 	}
 
+	/// <summary>
+	/// Instantiates an object on the network if we are in a multiplayer game, otherwise instantiates normally.
+	/// </summary>
+	/// <param name="gameObject">The prefab to clone.</param>
+	/// <param name="position">The position of the new object.</param>
+	/// <param name="rotation">The rotation of the new object.</param>
+	/// <returns>Returns the new object.</returns>
 	public static GameObject InstantiateHelper(GameObject gameObject, Vector3 position, Quaternion rotation)
 	{
 		if (Network.peerType == NetworkPeerType.Client || Network.peerType == NetworkPeerType.Server)

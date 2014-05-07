@@ -20,31 +20,34 @@ public class Build : MonoBehaviour {
 	/// The currently held item, which can be a building as well.
 	GameObject itemHeld = null;
 	/// If the player is holding ("ghosting") a potential building.
-	public bool hasBuilding = false;
-	/// The list of building prefabs available to the player.
-	Object[] buildings;
-	/// The index of the currently selected building from buildings.
-	int buildingIndex = 0;
+	/// </summary>
+	bool hasBuilding = false;
 
-	/// The Player's inventory.
-	Inventory inventory;
+	/// <summary>
+	/// Returns true if the player is holding a building.
+	/// </summary>
+	/// <returns>True if the player is holding a building.</returns>
+	public bool HasBuilding()
+	{
+		return hasBuilding;
+	}
 
-	Transform holdPoint;
 
-	NetworkController nc;
-
-	/// Load the building prefabs (used for instantiating them) and the inventory.
-	void Start () {
-		//Load the building prefabs
-		buildings = Resources.LoadAll("Buildings");
-
-		inventory = gameObject.GetComponent<Inventory>();
-
-		GameObject hp = GameObject.Find("HoldPoint");
-		holdPoint = hp.transform;
-
-		nc = FindObjectOfType<NetworkController>();
-
+	/// <summary>
+	/// Scrolls through the array of buildings by delta positions. Delta may be negative.
+	/// </summary>
+	/// <param name="delta">A positive or negative value indicating the number of array positions to move.</param>
+	/// <returns>The new index of the array.</returns>
+	int ScrollBuildings(int delta)
+	{
+		int index;
+		if (buildingIndex + delta == 0)
+			return 0;
+		else if (buildingIndex + delta < 0)
+			index = buildings.Length - ((buildingIndex + delta) * -1) % buildings.Length -1;
+		else
+			index = (buildingIndex + delta) % buildings.Length;
+		return index;
 	}
 
 	/// <summary>

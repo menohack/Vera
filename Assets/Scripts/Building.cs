@@ -121,7 +121,7 @@ public abstract class Building : Item {
 
 	protected void UpdatePosition()
 	{
-		GameObject player = GameObject.FindWithTag("Player");
+		GameObject player = Spawn.GetCurrentPlayer();
 		Collider collider = GetComponent<Collider>();
 		Vector3 position = held.position;
 		if (collider && player)
@@ -177,7 +177,7 @@ public abstract class Building : Item {
 	protected override bool CanPlace()
 	{
 		bool canAfford = false;
-		GameObject myPlayer = Spawn.GetMyPlayer();
+		GameObject myPlayer = Spawn.GetCurrentPlayer();
 		if (myPlayer)
 		{
 			Inventory inventory = myPlayer.GetComponent<Inventory>();

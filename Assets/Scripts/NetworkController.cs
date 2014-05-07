@@ -10,11 +10,22 @@ public class NetworkController : MonoBehaviour {
 
 	public HostData[] hostList;
 
+	static bool multiplayer = false;
+
 	bool connected = false;
 
 	void Awake()
 	{
 		DontDestroyOnLoad(transform.gameObject);
+	}
+
+	/// <summary>
+	/// Returns whether we are playing a multiplayer game.
+	/// </summary>
+	/// <returns>True if we are playing multiplayer.</returns>
+	public static bool IsMultiplayerGame()
+	{
+		return multiplayer;
 	}
 
 	public bool Connected()
@@ -26,6 +37,7 @@ public class NetworkController : MonoBehaviour {
 	{
 		Network.InitializeServer(32, DEFAULT_PORT, !Network.HavePublicAddress());
 		MasterServer.RegisterHost(typeName, gameName);
+		multiplayer = true;
 	}
 
 	void OnServerInitialized()
@@ -80,6 +92,7 @@ public class NetworkController : MonoBehaviour {
 	{
 		Debug.Log("Connected to server");
 		connected = true;
+		multiplayer = true;
 	}
 
 	void OnDisconnectedFromServer(NetworkDisconnection info)

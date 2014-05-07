@@ -14,55 +14,46 @@ public class Tooltip : MonoBehaviour {
 	public Texture woodWall;
 	public Texture stoneWall;
 	public Texture sentry;
-
-	Texture[] t = new Texture[6];
-
-	GameObject p;
-
-	// Use this for initialization
-	void Start () {
-		t [0] = torch;
-		t [1] = campfire;
-		t [2] = gate;
-		t [3] = woodWall;
-		t [4] = stoneWall;
-		t [5] = sentry;
-	}
 	
-	// Update is called once per frame
-	void Update () {
-		if (toolTip) {
-			Build b = Spawn.GetMyPlayer().GetComponent<Build>();
-			GameObject item = b.GetItemHeld();
-			if (item != null){
-				//draw something
+	void Update ()
+	{
+		GameObject currentPlayer = Spawn.GetCurrentPlayer();
+		if (toolTip)
+		{
+			Build buildScript = currentPlayer.GetComponent<Build>();
+			GameObject item = buildScript.GetItemHeld();
+			if (item != null)
+			{
 				this.guiTexture.enabled = true;
 				this.guiTexture.texture = SetTexture(item);
 			}
 			else
-			{
-				//turn off component
 				this.guiTexture.enabled = false;
-			}
 		}
 	}
 
-	Texture SetTexture(GameObject item) {
+	/// <summary>
+	/// Sets the tooltip texture depending on the current item.
+	/// </summary>
+	/// <param name="item">The item by which to select the texture.</param>
+	/// <returns>The texture corresponding to the current item.</returns>
+	Texture SetTexture(GameObject item)
+	{
 		switch (item.name) {
 		case "Torch":
-			return t[0];
+			return torch;
 		case "Campfire":
-			return t[1];
+			return campfire;
 		case "WoodGate":
-			return t[2];
+			return gate;
 		case "Wall": case "Wall 2":
-			return t[3];
+			return woodWall;
 		case "StoneWall":
-			return t[4];
+			return stoneWall;
 		case "Sentry":
-			return t[5];
+			return sentry;
 		default:
-			return t[0];
+			return torch;
 		}
 	}
 }

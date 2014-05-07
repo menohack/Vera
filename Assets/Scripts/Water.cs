@@ -14,29 +14,13 @@ public class Water : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		searchFrequency = TimeSpan.FromMilliseconds(searchFrequencyMillis);
-		FindPlayer();
 		meshFilter = GetComponent<MeshFilter>();
-	}
-
-	void FindPlayer()
-	{
-		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-		foreach (GameObject p in players)
-		{
-			if (p.networkView.isMine)
-			{
-				player = p;
-				break;
-			}
-		}
-		lastSearchTime = DateTime.Now;
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		if (player == null && DateTime.Now - lastSearchTime > searchFrequency)
-			FindPlayer();
+		player = Spawn.GetCurrentPlayer();
 
 		if (player != null && meshFilter != null && player.transform.position.y < meshFilter.transform.position.y)
 		{

@@ -1,54 +1,64 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using System; //Has many data structures
 
 public class MeleeCollider : MonoBehaviour {
 
 	public bool DEBUG = false;
+
 	/// <summary>
 	/// The amount of damage done by the melee attack.
 	/// </summary>
 	public int DamageValue = 10;
 
+	/// <summary>
+	/// The attack cooldown in milliseconds.
+	/// </summary>
 	public float coolDownMillis = 1000f;
 
+	/// <summary>
+	/// The attack cooldown as a TimeSpan.
+	/// </summary>
 	private TimeSpan attackCooldown;
+
+	/// <summary>
+	/// The time of the last attack.
+	/// </summary>
 	DateTime? lastAttack;
 
-	private TimeSpan delayCoolDown;
-	public float delayCooldownMillis = 500f;
-	DateTime? buildDelay;
-	private Build b;
-
-
+	/// <summary>
+	/// The animation of the player attacking.
+	/// </summary>
 	public PlayerAnimation anime;
 
-	void Start () {
+	void Start ()
+	{
 		attackCooldown = TimeSpan.FromMilliseconds(coolDownMillis);
-		delayCoolDown = TimeSpan.FromMilliseconds(delayCooldownMillis);
 	}
 
-	void Update () {
-		b = Spawn.GetMyPlayer().GetComponent<Build>();
-		if (b.hasBuilding) 
+	void Update ()
+	{
+		GameObject player = Spawn.GetCurrentPlayer();
+		if (player != null) 
 		{
-			buildDelay = DateTime.Now;
-		}
-
-		if ((DateTime.Now - buildDelay) > delayCoolDown || buildDelay == null) 
-		{
-			if (Input.GetButtonDown("Fire1") && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
+			Build buildScript = player.GetComponent<Build>();
+			if (buildScript && !buildScript.HasBuilding())
 			{
-				if (anime)
-					anime.Attack();
-				else
-					Debug.Log("Animation missing from Player");
-				lastAttack = DateTime.Now;
+				if (Input.GetButtonDown("Fire1") && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
+				{
+					if (anime)
+						anime.Attack();
+					else
+						Debug.Log("Animation missing from Player");
+					lastAttack = DateTime.Now;
+				}
 			}
 		}
 	}
 
+	/// <summary>
+	/// Inflicts damage when the weapon collides with an enemy.
+	/// </summary>
+	/// <param name="other"></param>
 	void OnTriggerEnter(Collider other) {
 		if (anime != null && anime.GetAttacking()) {
 
