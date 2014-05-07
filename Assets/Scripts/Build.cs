@@ -23,6 +23,21 @@ public class Build : MonoBehaviour {
 	/// </summary>
 	bool hasBuilding = false;
 
+	int buildingIndex = 0;
+
+	Object[] buildings;
+
+	Inventory inventory;
+
+	Transform holdPoint;
+
+	void Start()
+	{
+		inventory = GetComponent<Inventory>();
+		holdPoint = transform.FindChild("HoldPoint");
+		buildings = Resources.LoadAll("Buildings");
+	}
+
 	/// <summary>
 	/// Returns true if the player is holding a building.
 	/// </summary>

@@ -12,7 +12,7 @@ public class EquipGUI : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		t = Spawn.GetMyPlayer ().GetComponent<RightHandToolSelector> ();
+		t = Spawn.GetCurrentPlayer ().GetComponent<RightHandToolSelector> ();
 		changeTexture ();
 	}
 

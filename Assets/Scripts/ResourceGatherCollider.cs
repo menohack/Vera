@@ -27,9 +27,9 @@ public class ResourceGatherCollider : MonoBehaviour {
 	}
 	
 	void Update () {
-		b = Spawn.GetMyPlayer().GetComponent<Build>();
-		inventory = Spawn.GetMyPlayer().GetComponent<Inventory>();
-		if (b.hasBuilding) 
+		b = Spawn.GetCurrentPlayer().GetComponent<Build>();
+		inventory = Spawn.GetCurrentPlayer().GetComponent<Inventory>();
+		if (b.HasBuilding()) 
 		{
 			buildDelay = DateTime.Now;
 		}
