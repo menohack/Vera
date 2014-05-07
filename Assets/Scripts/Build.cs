@@ -24,7 +24,7 @@ public class Build : MonoBehaviour {
 	/// <summary>
 	/// If the player is holding ("ghosting") a potential building.
 	/// </summary>
-	public bool hasBuilding = false;
+	bool hasBuilding = false;
 
 	/// <summary>
 	/// The list of building prefabs available to the player.
@@ -58,6 +58,15 @@ public class Build : MonoBehaviour {
 		holdPoint = hp.transform;
 
 		nc = FindObjectOfType<NetworkController>();
+	}
+
+	/// <summary>
+	/// Returns true if the player is holding a building.
+	/// </summary>
+	/// <returns>True if the player is holding a building.</returns>
+	public bool HasBuilding()
+	{
+		return hasBuilding;
 	}
 
 

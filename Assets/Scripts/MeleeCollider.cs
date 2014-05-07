@@ -15,36 +15,29 @@ public class MeleeCollider : MonoBehaviour {
 	private TimeSpan attackCooldown;
 	DateTime? lastAttack;
 
-	private TimeSpan delayCoolDown;
-	public float delayCooldownMillis = 500f;
-	DateTime? buildDelay;
-	private Build b;
-
 
 	public PlayerAnimation anime;
 
 	void Start () {
 		attackCooldown = TimeSpan.FromMilliseconds(coolDownMillis);
-		delayCoolDown = TimeSpan.FromMilliseconds(delayCooldownMillis);
-		//This needs to be fixed for networking
-		b = GameObject.FindGameObjectWithTag ("Player").GetComponent<Build>();
 	}
 
-	void Update () {
-		if (b.hasBuilding) 
+	void Update ()
+	{
+		GameObject player = Spawn.GetCurrentPlayer();
+		if (player != null) 
 		{
-			buildDelay = DateTime.Now;
-		}
-
-		if ((DateTime.Now - buildDelay) > delayCoolDown || buildDelay == null) 
-		{
-			if (Input.GetButtonDown("Fire1") && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
+			Build buildScript = player.GetComponent<Build>();
+			if (buildScript && !buildScript.HasBuilding())
 			{
-				if (anime)
-					anime.Attack();
-				else
-					Debug.Log("Animation missing from Player");
-				lastAttack = DateTime.Now;
+				if (Input.GetButtonDown("Fire1") && (lastAttack == null || (DateTime.Now - lastAttack) >= attackCooldown))
+				{
+					if (anime)
+						anime.Attack();
+					else
+						Debug.Log("Animation missing from Player");
+					lastAttack = DateTime.Now;
+				}
 			}
 		}
 	}
