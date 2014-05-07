@@ -10,6 +10,7 @@ public class HealthRegen : MonoBehaviour {
 	public bool DEBUG = false;
 
 	private TimeSpan regenCooldown;
+	Building parentBuilding;
 
 	DateTime? lastHeal;
 
@@ -18,10 +19,11 @@ public class HealthRegen : MonoBehaviour {
 	void Start () {
 		regenCooldown = new TimeSpan(0,0,0,0, coolDownMilli);
 		players = new HashSet<GameObject>();
+		parentBuilding = gameObject.transform.parent.gameObject.GetComponent<Building>();
 	}
 	
 	void Update () {
-		if (lastHeal == null || (DateTime.Now - lastHeal) >= regenCooldown)
+		if (lastHeal == null || (DateTime.Now - lastHeal) >= regenCooldown && parentBuilding != null && parentBuilding.placed)
 		{
 			foreach (GameObject p in players)
 			{
@@ -49,6 +51,8 @@ public class HealthRegen : MonoBehaviour {
 			players.Remove(whoami);
 		}
 	}
+
+
 
 
 }

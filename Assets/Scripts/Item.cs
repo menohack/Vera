@@ -6,7 +6,7 @@ public abstract class Item : MonoBehaviour
 	/// <summary>
 	/// Whether this item has been placed yet.
 	/// </summary>
-	protected bool placed = false;
+	public bool placed = false;
 
 	public virtual void SetGhostPosition(Transform heldPosition)
 	{

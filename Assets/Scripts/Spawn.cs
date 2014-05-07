@@ -164,17 +164,17 @@ public class Spawn : MonoBehaviour
 
 		for (int i = 0; i < count; i++)
 		{
-			float x, z;
+			float x, y, z;
 			do
 			{
 				float angle = Random.Range(0, 360);
 				float distance = Random.Range(minRadius, maxRadius);
 				z = distance / Mathf.Sin(Mathf.Deg2Rad * angle);
 				x = distance / Mathf.Cos(Mathf.Deg2Rad * angle);
-			} while (float.IsInfinity(x) || float.IsInfinity(z) || float.IsNaN(x) || float.IsNaN(z));
+				y = terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)); //water level 16.3
+			} while (float.IsInfinity(x) || float.IsInfinity(z) || float.IsNaN(x) || float.IsNaN(z) || (y < 16.3) );
 
-			//added 8 to Y to avoid spawning under terrain. unsure why terrain.SampleHeight isn't working on the map
-			Vector3 result = new Vector3(position.x + x, terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)), position.z + z);
+			Vector3 result = new Vector3(position.x + x, y, position.z + z);
 
 			GameObject spawn;
 			if (Network.connections.Length > 0)

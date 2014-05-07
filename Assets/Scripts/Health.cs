@@ -67,7 +67,7 @@ public class Health : MonoBehaviour {
 		{
 			health = 0f;
 			Player player = GetComponent<Player>();
-			if (player != null && gameObject.networkView.isMine)
+			if (player != null && (!NetworkController.IsMultiplayerGame() || networkView.isMine))
 				player.Murder();
 			else if (gameObject.layer == LayerMask.NameToLayer("Obstacle"))
 			{

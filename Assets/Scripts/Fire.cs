@@ -13,6 +13,10 @@ public class Fire : MonoBehaviour {
 			sundial.dawnListener += new Sundial.EventListener(Extinguish);
 			sundial.duskListener += new Sundial.EventListener(Light);
 		}
+		if (sundial.GetProgress () > 0.5) 
+		{
+			flame.SetActive(true);
+		}
 	}
 
 	void Extinguish()
