@@ -63,12 +63,6 @@ public class Sundial : MonoBehaviour
 	/// </summary>
 	public event EventListener duskListener;
 
-
-	/// <summary>
-	/// Lighting fires at night.
-	/// </summary>
-	public event EventListener fireListener;
-
 	/// <summary>
 	/// The type function that dusk and dawn events invoke.
 	/// </summary>
@@ -129,12 +123,6 @@ public class Sundial : MonoBehaviour
 			invokedDawnEvents = false;
 			if (duskListener != null)
 				duskListener.Invoke();
-		}
-
-		if (GetProgress() >= 0.5f)
-		{
-			if (fireListener != null)
-				fireListener.Invoke ();
 		}
 	}
 
