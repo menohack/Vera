@@ -11,7 +11,7 @@ public class Fire : MonoBehaviour {
 		if (sundial)
 		{
 			sundial.dawnListener += new Sundial.EventListener(Extinguish);
-			sundial.duskListener += new Sundial.EventListener(Light);
+			sundial.fireListener += new Sundial.EventListener(Light);
 		}
 	}
 
