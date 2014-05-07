@@ -69,12 +69,12 @@ public class Sentry : Building {
 	/// <summary>
 	/// The wood cost to build a sentry.
 	/// </summary>
-	public static int SENTRY_COST_WOOD = 4;
+	public static int SENTRY_COST_WOOD = 5;
 
 	/// <summary>
 	/// The ore cost to build a sentry.
 	/// </summary>
-	public static int SENTRY_COST_ORE = 4;
+	public static int SENTRY_COST_ORE = 2;
 
 	public override int GetOreCost()
 	{

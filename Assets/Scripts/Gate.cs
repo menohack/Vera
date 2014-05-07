@@ -5,12 +5,12 @@ public class Gate : Building
 	/// <summary>
 	/// The wood cost to build a gate.
 	/// </summary>
-	public static int GATE_COST_WOOD = 1;
+	public static int GATE_COST_WOOD = 2;
 
 	/// <summary>
 	/// The ore cost to build a gate.
 	/// </summary>
-	public static int GATE_COST_ORE = 1;
+	public static int GATE_COST_ORE = 0;
 
 	public override int GetOreCost()
 	{

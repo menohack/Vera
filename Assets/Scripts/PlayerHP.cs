@@ -1,19 +1,30 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerHP : MonoBehaviour {
+/// <summary>
+/// Changes the health bar size on the GUI.
+/// </summary>
+public class PlayerHP : MonoBehaviour
+{
+	/// <summary>
+	/// The Health script of the current player.
+	/// </summary>
+	Health health = null;
 
-	private Health p_health;
+	/// <summary>
+	/// The max width of the player's health bar.
+	/// </summary>
 	private float maxWidth;
 
-	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		maxWidth = this.transform.localScale.y;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		p_health = Spawn.GetMyPlayer().GetComponent<Health>() ;
-		transform.localScale = new Vector3 ( (p_health.GetHealth () * maxWidth / p_health.maxHealth) , 1, 1);
+	void Update ()
+	{
+		if (health == null)
+			health = Spawn.GetCurrentPlayer().GetComponent<Health>();
+		transform.localScale = new Vector3 ( (health.GetHealth () * maxWidth / health.maxHealth) , 1, 1);
 	}
 }

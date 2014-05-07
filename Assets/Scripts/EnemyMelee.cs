@@ -71,8 +71,13 @@ public class EnemyMelee : MonoBehaviour {
 		GameObject player = Targeting.FindClosestTarget(transform, "Player");
 		if (player != null)
 			target = player.transform;
+		else
+			Debug.Log("EnemyMelee can't find Player");
 		if (seeker)
+		{
+			Debug.Log("Setting seeker target to " + target);
 			seeker.target = target;
+		}
 		lastTargetSearch = DateTime.Now;
 	}
 
