@@ -16,6 +16,8 @@ public class Player : MonoBehaviour {
 	float deathCameraTimeMillis = 5000f;
 	TimeSpan deathCameraTime;
 
+	public Texture2D deathTexture;
+
 	void Start()
 	{
 		Screen.showCursor = false;
@@ -54,6 +56,15 @@ public class Player : MonoBehaviour {
 			}
 			else
 				Debug.Log("Unable to find Spawn in Player");
+		}
+	}
+
+	void OnGUI()
+	{
+		GUI.depth = 5;
+		if (!alive)
+		{
+			GUI.DrawTexture(new Rect(0,0,Screen.width,Screen.height), deathTexture, ScaleMode.StretchToFill);
 		}
 	}
 
