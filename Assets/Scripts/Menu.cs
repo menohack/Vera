@@ -8,6 +8,9 @@ public class Menu : MonoBehaviour {
 	static bool paused = false;
 
 	public Texture2D menuTexture;
+	public Texture2D quitButton;
+	public Texture2D resumeButton;
+
 
 	GUIStyle labelStyle, verticalStyle;
 
@@ -126,39 +129,73 @@ public class Menu : MonoBehaviour {
 	{
 		if (gameOver)
 		{
-			GUILayout.BeginArea(new Rect(Screen.width / 2 - 150, Screen.height / 2 - 150, 300, 300));
+			int width = menuTexture.width;
+			int height = menuTexture.height;
+			GUIStyle buttonStyle = new GUIStyle();
+			GUILayout.BeginArea(new Rect(Screen.width / 2 - width/2, Screen.height / 2 - height/2, width, height));
 			GUILayout.BeginArea(new Rect(0,0, menuTexture.width, menuTexture.height), menuTexture);
 			GUILayout.EndArea();
 			GUILayout.BeginVertical(verticalStyle);
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("Game Over", labelStyle);
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("GAME OVER", labelStyle);
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("New Game"))
 				StartGame();
-			if (GUILayout.Button("Quit"))
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			if (GUILayout.Button(quitButton,buttonStyle,GUILayout.MaxWidth(quitButton.width)))
 				Application.Quit();
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
 			GUILayout.FlexibleSpace();
 			GUILayout.EndVertical();
 			GUILayout.EndArea();
 		}
 		else if (paused)
 		{
-			GUILayout.BeginArea(new Rect(Screen.width / 2 - 150, Screen.height / 2 - 150, 300, 300));
+			int width = menuTexture.width;
+			int height = menuTexture.height;
+			GUIStyle buttonStyle = new GUIStyle();
+			GUILayout.BeginArea(new Rect(Screen.width / 2 - width/2, Screen.height / 2 - height/2, width, height));
 			GUILayout.BeginArea(new Rect(0, 0, menuTexture.width, menuTexture.height), menuTexture);
 			GUILayout.EndArea();
 			GUILayout.BeginVertical(verticalStyle);
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("Paused", labelStyle);
-			if ((Network.isServer || Network.connections.Length == 0) && GUILayout.Button("Continue"))
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label("PAUSED", labelStyle);
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			if ((Network.isServer || Network.connections.Length == 0) && GUILayout.Button(resumeButton, buttonStyle, GUILayout.MaxWidth(resumeButton.width)))
 			{
 				if (Network.isServer)
 					networkView.RPC("Resume", RPCMode.AllBuffered);
 				else if (Network.connections.Length == 0)
 					Resume();
 			}
-			if (GUILayout.Button("New Game"))
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			GUILayout.BeginHorizontal ();
+			GUILayout.FlexibleSpace();
+			if (GUILayout.Button("New Game", buttonStyle))
 				StartGame();
-			if (GUILayout.Button("Quit"))
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			if (GUILayout.Button(quitButton, buttonStyle, GUILayout.MaxWidth(quitButton.width)))
 				Application.Quit();
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
 			GUILayout.FlexibleSpace();
 			GUILayout.EndVertical();
 			GUILayout.EndArea();
