@@ -6,6 +6,7 @@ using System; //Has many data structures
 public class ResourceGatherCollider : MonoBehaviour {
 
 	public bool DEBUG = false;
+	public int DamageValue = 50;
 
 	public int numHitsOnSwing = 1;
 	public int coolDownMilli = 1000; //TODO change this to a float and allow for 
@@ -67,6 +68,22 @@ public class ResourceGatherCollider : MonoBehaviour {
 						Debug.LogError("No such resource");
 				}
 
+			}
+			else if (other.gameObject.tag == "Building")
+			{
+				if (DEBUG) PrintCollided(other.gameObject.tag);
+				//play relevant resource gathering sound on every hit
+				gameObject.audio.Play ();
+				Health buildingHealth = other.gameObject.GetComponent<Health> ();
+				if (buildingHealth != null) {
+					buildingHealth.Damage (DamageValue);
+					// on destroyed
+					if (buildingHealth.GetHealth () <= 0) 
+					{
+						if (DEBUG) Debug.Log ("this is where we might have re-gathering code");
+						if (DEBUG) PrintSuccess(other.gameObject.tag);
+					}
+				}
 			}
 		}
 	}
