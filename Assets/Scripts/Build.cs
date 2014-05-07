@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Pathfinding;
 
-public class Build : MonoBehaviour {
+public class Build : MonoBehaviour
+{
 
 	//BC: Note: the changes introduced with this are quick fixes, and this script *really* needs to be refactored from the ground up
 	enum BuildingState {original, Rot1};
@@ -17,25 +18,40 @@ public class Build : MonoBehaviour {
 	public bool direct = false; /** Flush Graph Updates directly after placing. Slower, but updates are applied immidiately */
 	// allows you to press R to destroy all buildings, see debug statements
 	public bool DEBUG = false;
+
 	/// The currently held item, which can be a building as well.
 	GameObject itemHeld = null;
+
+	/// <summary>
 	/// If the player is holding ("ghosting") a potential building.
 	/// </summary>
 	bool hasBuilding = false;
 
+	/// <summary>
+	/// The index into the buildings array.
+	/// </summary>
 	int buildingIndex = 0;
 
-	Object[] buildings;
+	/// <summary>
+	/// The array of building prefabs from the Assets/Resources/Buildings folder.
+	/// </summary>
+	GameObject[] buildings;
 
+	/// <summary>
+	/// The player's inventory.
+	/// </summary>
 	Inventory inventory;
 
+	/// <summary>
+	/// The point at which buildings are held by the player.
+	/// </summary>
 	Transform holdPoint;
 
 	void Start()
 	{
 		inventory = GetComponent<Inventory>();
 		holdPoint = transform.FindChild("HoldPoint");
-		buildings = Resources.LoadAll("Buildings");
+		buildings = Resources.LoadAll("Buildings") as GameObject[];
 	}
 
 	/// <summary>
@@ -70,7 +86,7 @@ public class Build : MonoBehaviour {
 	/// </summary>
 	void EquipBuilding()
 	{
-		GameObject buildingPrefab = buildings[buildingIndex] as GameObject;
+		GameObject buildingPrefab = buildings[buildingIndex];
 		GameObject currentBuilding = Utility.InstantiateHelper(buildingPrefab, buildingPrefab.transform.position, buildingPrefab.transform.rotation);
 			
 		Item i = currentBuilding.GetComponent<Item>();
@@ -129,6 +145,8 @@ public class Build : MonoBehaviour {
 
 	/// <summary>
 	/// The logic for spawning objects and attacking. Part of this should be extracted to more appropriate classes.
+	/// 
+	/// This is poorly-written and needs to be refactored, but it works and we have a deadline.
 	/// </summary>
 	void Update () {
 		//BC: I'm personally unsure what this is for
@@ -175,7 +193,11 @@ public class Build : MonoBehaviour {
 		}	
 	}
 
-	private int getIndexByKey() {
+	/// <summary>
+	/// Gets the integer corresponding to the number key that is currently held down.
+	/// </summary>
+	/// <returns>The number that is held down.</returns>
+	int getIndexByKey() {
 		int alphaNumDown = -1; //stands for none
 
 		if (Input.GetKeyDown (KeyCode.Alpha1))
@@ -203,6 +225,10 @@ public class Build : MonoBehaviour {
 			alphaNumDown;
 	}
 
+	/// <summary>
+	/// Gets the currently-held item.
+	/// </summary>
+	/// <returns>The currently held item.</returns>
 	public GameObject GetItemHeld(){
 		return itemHeld;
 	}
