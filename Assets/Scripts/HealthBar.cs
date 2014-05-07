@@ -10,6 +10,8 @@ public class HealthBar : MonoBehaviour {
 	public GUIStyle style;
 
 	public float maxDistVisible = 30.0f;
+
+	public bool dontShowAtFullHealthSwitch = false;
 	
 	void OnGUI()
 	{
@@ -41,7 +43,8 @@ public class HealthBar : MonoBehaviour {
 		float healthPercentage = health / maxHealth;
 
 		float distance = Vector4.Distance(Camera.main.transform.position, transform.position);
-		if (distance < maxDistVisible) 
+		bool atFullHealth = ((dontShowAtFullHealthSwitch) ? (health == maxHealth) : false);
+		if (distance < maxDistVisible && !atFullHealth) 
 		{
 			float scale = 15f / distance;
 			if (scale > 1f)
