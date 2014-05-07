@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Pathfinding;
 
+/// <summary>
+/// The Build script is placed on the player and controls the creation of objects. It also controls
+/// more player input than it should. The entire class needs to be refactored.
+/// </summary>
 public class Build : MonoBehaviour
 {
 

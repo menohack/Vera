@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
-using System; //Has many data structures
+using System;
 
+/// <summary>
+/// MeleeCollider is placed on a weapon GameObject and handles damage to enemies from collision.
+/// </summary>
 public class MeleeCollider : MonoBehaviour {
 
 	public bool DEBUG = false;
