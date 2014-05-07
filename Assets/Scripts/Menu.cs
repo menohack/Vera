@@ -10,6 +10,7 @@ public class Menu : MonoBehaviour {
 	public Texture2D menuTexture;
 	public Texture2D quitButton;
 	public Texture2D resumeButton;
+	public Texture2D newGame;
 
 
 	GUIStyle labelStyle, verticalStyle;
@@ -139,12 +140,7 @@ public class Menu : MonoBehaviour {
 			GUILayout.FlexibleSpace();
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("GAME OVER", labelStyle);
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			if (GUILayout.Button("New Game"))
+			if (GUILayout.Button(newGame, buttonStyle, GUILayout.MaxWidth(newGame.width)))
 				StartGame();
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
@@ -170,8 +166,6 @@ public class Menu : MonoBehaviour {
 			GUILayout.FlexibleSpace();
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("PAUSED", labelStyle);
-			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
@@ -186,7 +180,7 @@ public class Menu : MonoBehaviour {
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace();
-			if (GUILayout.Button("New Game", buttonStyle))
+			if (GUILayout.Button(newGame, buttonStyle, GUILayout.MaxWidth(newGame.width)))
 				StartGame();
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
