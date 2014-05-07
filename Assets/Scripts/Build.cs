@@ -128,7 +128,6 @@ public class Build : MonoBehaviour {
 				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
 					//this is where we handle the 'rotating' functionality
 					if (buildingIndex == tempBuildingIndex && currentState == BuildingState.original) {
-						Debug.Log ("this is when we would rotate"); //just a placeholder for now
 						//move to next state
 						currentState = BuildingState.Rot1;
 						itemHeld.transform.Rotate(Vector3.up, 90, Space.World);					
