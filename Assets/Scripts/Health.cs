@@ -67,8 +67,12 @@ public class Health : MonoBehaviour {
 		{
 			health = 0f;
 			Player player = GetComponent<Player>();
-			if (player != null && (!NetworkController.IsMultiplayerGame() || networkView.isMine))
-				player.Murder();
+			if (player != null && player.Alive() && (!NetworkController.IsMultiplayerGame() || networkView.isMine))
+			{
+				Player playerScript = player.GetComponent<Player>();
+				if (playerScript != null && playerScript.Alive())
+					playerScript.Murder();
+			}
 			else if (gameObject.layer == LayerMask.NameToLayer("Obstacle"))
 			{
 				//Pathfinding.Console.Write ("// Placing Object\n");
@@ -84,7 +88,7 @@ public class Health : MonoBehaviour {
 				}
 				Utility.DestroyHelper(this.gameObject);
 			}
-			else
+			else if (gameObject.tag == "Enemy")
 				Utility.DestroyHelper(this.gameObject);
 		}
 	}
