@@ -88,7 +88,7 @@ public class Health : MonoBehaviour {
 				}
 				Utility.DestroyHelper(this.gameObject);
 			}
-			else if (gameObject.tag == "Enemy")
+			else if (gameObject.tag == "Enemy" || gameObject.tag == "Ore" || gameObject.tag == "Tree")
 				Utility.DestroyHelper(this.gameObject);
 		}
 	}
