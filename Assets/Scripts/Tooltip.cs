@@ -42,15 +42,15 @@ public class Tooltip : MonoBehaviour {
 		switch (item.name) {
 		case "Torch":
 			return torch;
-		case "Campfire":
+		case "1_Campfire":
 			return campfire;
-		case "WoodGate":
+		case "3_WoodGate":
 			return gate;
-		case "Wall": case "Wall 2":
+		case "2_Wall": case "Wall 2":
 			return woodWall;
-		case "StoneWall":
+		case "5_StoneWall":
 			return stoneWall;
-		case "Sentry":
+		case "4_Sentry":
 			return sentry;
 		default:
 			return torch;
