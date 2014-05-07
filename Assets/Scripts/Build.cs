@@ -39,7 +39,7 @@ public class Build : MonoBehaviour
 	/// <summary>
 	/// The array of building prefabs from the Assets/Resources/Buildings folder.
 	/// </summary>
-	GameObject[] buildings;
+	Object[] buildings;
 
 	/// <summary>
 	/// The player's inventory.
@@ -55,7 +55,7 @@ public class Build : MonoBehaviour
 	{
 		inventory = GetComponent<Inventory>();
 		holdPoint = transform.FindChild("HoldPoint");
-		buildings = Resources.LoadAll("Buildings") as GameObject[];
+		buildings = Resources.LoadAll("Buildings");
 	}
 
 	/// <summary>
@@ -90,7 +90,7 @@ public class Build : MonoBehaviour
 	/// </summary>
 	void EquipBuilding()
 	{
-		GameObject buildingPrefab = buildings[buildingIndex];
+		GameObject buildingPrefab = buildings[buildingIndex] as GameObject;
 		GameObject currentBuilding = Utility.InstantiateHelper(buildingPrefab, buildingPrefab.transform.position, buildingPrefab.transform.rotation);
 			
 		Item i = currentBuilding.GetComponent<Item>();
