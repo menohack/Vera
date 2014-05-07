@@ -23,6 +23,6 @@ public class RotateDialResize : MonoBehaviour
 	void SetAngle()
 	{
 		//rotation
-		myRot.angle = s.GetProgress () * 360 - 90;
+		myRot.angle = 90 - (s.GetProgress () * 360);
 	}
 }

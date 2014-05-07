@@ -5,6 +5,7 @@ using System; //Has many data structures
 
 public class MeleeCollider : MonoBehaviour {
 
+	public bool DEBUG = false;
 	/// <summary>
 	/// The amount of damage done by the melee attack.
 	/// </summary>
@@ -26,11 +27,10 @@ public class MeleeCollider : MonoBehaviour {
 	void Start () {
 		attackCooldown = TimeSpan.FromMilliseconds(coolDownMillis);
 		delayCoolDown = TimeSpan.FromMilliseconds(delayCooldownMillis);
-		//This needs to be fixed for networking
-		b = GameObject.FindGameObjectWithTag ("Player").GetComponent<Build>();
 	}
 
 	void Update () {
+		b = Spawn.GetMyPlayer().GetComponent<Build>();
 		if (b.hasBuilding) 
 		{
 			buildDelay = DateTime.Now;
@@ -55,11 +55,20 @@ public class MeleeCollider : MonoBehaviour {
 			Health enemyHealth = null;
 			if (other.gameObject.tag == "Enemy")
 			{
+				if (DEBUG) PrintCollided();
 				enemyHealth = other.gameObject.GetComponent<Health> ();
 			}
 			if (enemyHealth != null) {
 				enemyHealth.Damage (DamageValue);
+				if (DEBUG) PrintSuccess();
 			}
 		}
+	}
+
+	private void PrintCollided() {
+		Debug.Log ("Enemy collided with");
+	}
+	private void PrintSuccess() {
+		Debug.Log ("Enemy succesfully attacked");
 	}
 }

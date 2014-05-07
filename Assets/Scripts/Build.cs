@@ -5,49 +5,35 @@ using Pathfinding;
 
 public class Build : MonoBehaviour {
 
-	/// <summary>
-	/// The distance of a ray in front of the character for mining and picking up objects.
-	/// </summary>
-	public static float RAYCAST_DISTANCE = 5.0f;
+	//BC: Note: the changes introduced with this are quick fixes, and this script *really* needs to be refactored from the ground up
+	enum BuildingState {original, Rot1};
+	
+	//current 'state' of the building held
+	BuildingState currentState;
 
+	/// The distance of a ray in front of the character for mining and picking up objects.
+	public static float RAYCAST_DISTANCE = 5.0f;
 	public bool issueGUOs = true; /** Issue a graph update object after placement */
 	public bool direct = false; /** Flush Graph Updates directly after placing. Slower, but updates are applied immidiately */
-
 	// allows you to press R to destroy all buildings, see debug statements
 	public bool DEBUG = false;
-
-	/// <summary>
 	/// The currently held item, which can be a building as well.
-	/// </summary>
 	GameObject itemHeld = null;
-
-	/// <summary>
 	/// If the player is holding ("ghosting") a potential building.
-	/// </summary>
 	public bool hasBuilding = false;
-
-	/// <summary>
 	/// The list of building prefabs available to the player.
-	/// </summary>
 	Object[] buildings;
-
-	/// <summary>
 	/// The index of the currently selected building from buildings.
-	/// </summary>
 	int buildingIndex = 0;
 
-	/// <summary>
 	/// The Player's inventory.
-	/// </summary>
 	Inventory inventory;
 
 	Transform holdPoint;
 
 	NetworkController nc;
 
-	/// <summary>
 	/// Load the building prefabs (used for instantiating them) and the inventory.
-	/// </summary>
 	void Start () {
 		//Load the building prefabs
 		buildings = Resources.LoadAll("Buildings");
@@ -58,24 +44,7 @@ public class Build : MonoBehaviour {
 		holdPoint = hp.transform;
 
 		nc = FindObjectOfType<NetworkController>();
-	}
 
-
-	/// <summary>
-	/// Scrolls through the array of buildings by delta positions. Delta may be negative.
-	/// </summary>
-	/// <param name="delta">A positive or negative value indicating the number of array positions to move.</param>
-	/// <returns>The new index of the array.</returns>
-	int ScrollBuildings(int delta)
-	{
-		int index;
-		if (buildingIndex + delta == 0)
-			return 0;
-		else if (buildingIndex + delta < 0)
-			index = buildings.Length - ((buildingIndex + delta) * -1) % buildings.Length -1;
-		else
-			index = (buildingIndex + delta) % buildings.Length;
-		return index;
 	}
 
 	/// <summary>
@@ -84,17 +53,18 @@ public class Build : MonoBehaviour {
 	void EquipBuilding()
 	{
 		GameObject buildingPrefab = buildings[buildingIndex] as GameObject;
-		GameObject wall = Utility.InstantiateHelper(buildingPrefab, buildingPrefab.transform.position, buildingPrefab.transform.rotation);
+		GameObject currentBuilding = Utility.InstantiateHelper(buildingPrefab, buildingPrefab.transform.position, buildingPrefab.transform.rotation);
 			
-		Item i = wall.GetComponent<Item>();
+		Item i = currentBuilding.GetComponent<Item>();
 		if (i != null)
 			i.SetGhostPosition(holdPoint);
-		wall.name = buildings[buildingIndex].name;
-		if (wall.rigidbody)
-			wall.rigidbody.isKinematic = true;
+		currentBuilding.name = buildings[buildingIndex].name;
+		if (currentBuilding.rigidbody)
+			currentBuilding.rigidbody.isKinematic = true;
 
 		hasBuilding = true;
-		itemHeld = wall;
+		itemHeld = currentBuilding;
+		currentState = BuildingState.original;
 	}
 
 	/// <summary>
@@ -143,35 +113,30 @@ public class Build : MonoBehaviour {
 	/// The logic for spawning objects and attacking. Part of this should be extracted to more appropriate classes.
 	/// </summary>
 	void Update () {
+		//BC: I'm personally unsure what this is for
 		if (Time.timeScale == 0f)
 			return;
-		
+		//there is a currently held item
 		if (itemHeld != null) {
-			float scroll = Input.GetAxis ("Mouse ScrollWheel");
-			if (Input.GetButtonDown ("Fire1")) {
-				//Drop the item
+			//Drop the item
+			if (Input.GetButtonDown ("Fire1")) 
+			{
 				PlaceItem ();
-			} else if (hasBuilding && Input.GetButtonDown ("Fire2")) {
-				Utility.DestroyHelper(itemHeld);
-				itemHeld = null;
-				hasBuilding = false;
-			} else if (hasBuilding && scroll != 0.0f) {
-				int scrollIndices = (int)(scroll * 10.0f);
-				int tempBuildingIndex = ScrollBuildings (scrollIndices);
-				if (buildingIndex != tempBuildingIndex) {
-					buildingIndex = tempBuildingIndex;
-					Utility.DestroyHelper(itemHeld);
-					itemHeld = null;
-					EquipBuilding ();
-				}
-				//by key
-			} else if (hasBuilding && scroll == 0.0f) {
+			// unequips building
+			} else if (hasBuilding) {
 				int tempBuildingIndex = getIndexByKey ();
 				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
-					if (buildingIndex == tempBuildingIndex) {
+					//this is where we handle the 'rotating' functionality
+					if (buildingIndex == tempBuildingIndex && currentState == BuildingState.original) {
+						//move to next state
+						currentState = BuildingState.Rot1;
+						itemHeld.transform.Rotate(Vector3.up, 90, Space.World);					
+						//this is where we remove the building
+					} else if (buildingIndex == tempBuildingIndex && currentState == BuildingState.Rot1) {
 						Utility.DestroyHelper(itemHeld);
 						itemHeld = null;
 						hasBuilding = false;
+					// if a new number is selected, switch to that object
 					} else {
 						buildingIndex = tempBuildingIndex;
 						Utility.DestroyHelper(itemHeld);
@@ -181,51 +146,13 @@ public class Build : MonoBehaviour {
 				}
 			}
 		} else {
-			//this is the resource gathering code
-			if (Input.GetButtonDown ("Fire1")) {
-				RaycastHit hit;
-				int layerMask = 1 << LayerMask.NameToLayer ("Environment");
-
-				if (Physics.Raycast(transform.position + (Vector3.up * 1.5f), transform.forward, out hit, RAYCAST_DISTANCE, layerMask))
-				{
-					if (hit.transform.tag == "Building")
-					{
-						GameObject item = hit.transform.gameObject;
-						Health hp = item.GetComponent<Health>();
-						if (hp != null)
-							hp.Damage(25);
-					}
-					else if (hit.transform.tag == "Ore" || hit.transform.tag == "Tree")
-					{
-						Resource resource = hit.transform.gameObject.GetComponent<Resource>();
-						int gatherCount = resource.Gather(1);
-						if (gatherCount > 0)
-						{
-							if (resource is Tree)
-								inventory.AddWood(gatherCount);
-							else if (resource is Ore)
-								inventory.AddOre(gatherCount);
-							else
-								Debug.LogError("No such resource");
-						}
-					}
-				}
-			}
-			else if (buildings.Length > 0 && Input.GetButtonDown("Fire2"))
-				EquipBuilding();
-			else if (buildings.Length > 0) {
+			//equip a building
+			if (buildings.Length > 0) {
 				int tempBuildingIndex = getIndexByKey ();
 				if (tempBuildingIndex >= 0 && tempBuildingIndex < buildings.Length) {
 					buildingIndex = tempBuildingIndex;
 					EquipBuilding ();
 				}
-			}
-			else if (DEBUG && Input.GetKeyDown(KeyCode.R))
-			{
-				GameObject[] gos = GameObject.FindGameObjectsWithTag("Building");
-				foreach (GameObject go in gos)
-					if (nc != null && nc.Connected())
-					Utility.DestroyHelper(go);
 			}
 		}	
 	}

@@ -7,6 +7,7 @@ public class Dial : MonoBehaviour {
 	public Texture2D texture;
 	public float xpos = 0;
 	public float ypos = 0;
+	public Vector2 size = new Vector2(102, 102);
 	public float alpha = 1;
 	private Color prevColor;
 	private Rect rect;
@@ -17,7 +18,7 @@ public class Dial : MonoBehaviour {
 	}
 
 	void UpdateSettings () {
-		rect = new Rect (xpos, ypos, 100, 100);
+		rect = new Rect (xpos, ypos, size.x, size.y);
 //			GUILayout.BeginArea(new Rect(xpos, ypos, 100, 100), texture);
 //			GUILayout.Label (texture);
 //			GUILayout.EndArea();
