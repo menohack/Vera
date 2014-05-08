@@ -44,6 +44,11 @@ public class Sundial : MonoBehaviour
 	public int fontSize = 48;
 
 	/// <summary>
+	/// The image to display behind the prompt text.
+	/// </summary>
+	public Texture2D promptBackground;
+
+	/// <summary>
 	/// The color of the day prompt font.
 	/// </summary>
 	public Color fontColor = Color.black;
@@ -190,13 +195,13 @@ public class Sundial : MonoBehaviour
 	{
 		if (time < fadeIn + pause + fadeOut && promptFont)
 		{
-			//float labelWidth = 400f;
-			//float labelHeight = 200f;
 			string dayString = "Day " + day;
+
 			Vector2 size = labelStyle.CalcSize(new GUIContent(dayString));
 			float labelWidth = size.x;
 			float labelHeight = size.y;
-			GUILayout.BeginArea(new Rect(Screen.width / 2.0f - labelWidth / 2.0f, Screen.height * 0.4f - labelHeight / 2.0f, labelWidth, labelHeight));
+			float backgroundWidth = promptBackground.width;
+			float backgroundHeight = promptBackground.height;
 
 			//Fade the prompt in for fadeIn seconds, pause for pause seconds, then fade out over fadeOut seconds
 			float fadeAlpha;
@@ -207,9 +212,14 @@ public class Sundial : MonoBehaviour
 			else
 				fadeAlpha = (fadeOut - (time - (fadeIn + pause))) / fadeOut;
 
-			GUI.color = new Color(fontColor.r, fontColor.g, fontColor.b, fadeAlpha);
+			GUI.color = new Color(1f, 1f, 1f, fadeAlpha);
+
+			GUILayout.BeginArea(new Rect(Screen.width / 2f - backgroundWidth / 2f, Screen.height * 0.4f - backgroundHeight / 2f, backgroundWidth, backgroundHeight), promptBackground);
+			GUILayout.BeginArea(new Rect(backgroundWidth / 2f - labelWidth / 2f, backgroundHeight / 2f - labelHeight / 2f, labelWidth, labelHeight));
 
 			GUILayout.Label(dayString, labelStyle);
+
+			GUILayout.EndArea();
 			GUILayout.EndArea();
 		}
 	}
