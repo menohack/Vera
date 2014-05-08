@@ -2,7 +2,7 @@
 using System.Collections;
 
 [ExecuteInEditMode()] 
-public class LoadingScreen : MonoBehaviour {
+public class TitleScreen : MonoBehaviour {
 
 	public Texture2D titleScreen, infoScreen, controlScreen;
 
@@ -11,6 +11,8 @@ public class LoadingScreen : MonoBehaviour {
 	Texture2D texture;
 
 	NetworkController nc;
+
+	public Font font;
 
 	string ipFieldString = "Server IP";
 
@@ -42,6 +44,7 @@ public class LoadingScreen : MonoBehaviour {
 		//GUI.Box(new Rect(0, 0, loadingScreen.width, loadingScreen.height), loadingScreen, style);
 		GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), texture, ScaleMode.ScaleAndCrop);
 		GUIStyle labelStyle = new GUIStyle();
+		labelStyle.font = font;
 		labelStyle.fontStyle = FontStyle.Bold;
 		labelStyle.fontSize = 32;
 		labelStyle.alignment = TextAnchor.UpperCenter;
@@ -51,26 +54,26 @@ public class LoadingScreen : MonoBehaviour {
 
 		if (!loading)
 		{
-			if ((!nc.Connected() || Network.isServer) && GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game"))
+			if ((!nc.Connected() || Network.isServer) && GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game", labelStyle))
 			{
 				if (Network.isServer)
 					networkView.RPC("StartGame", RPCMode.AllBuffered);
 				else
 					StartGame();
 			}
-			if (!controls && GUI.Button(new Rect(Screen.width / 2 - 150, Screen.height * 0.9f, 100, 40), "Controls"))
+			if (!controls && GUI.Button(new Rect(Screen.width / 2 - 150, Screen.height * 0.9f, 100, 40), "Controls", labelStyle))
 			{
 				controls = true;
 				info = false;
 				texture = controlScreen;
 			}
-			if (!info && GUI.Button(new Rect(Screen.width / 2 + 50, Screen.height * 0.9f, 100, 40), "Info"))
+			if (!info && GUI.Button(new Rect(Screen.width / 2 + 50, Screen.height * 0.9f, 100, 40), "Info", labelStyle))
 			{
 				info = true;
 				controls = false;
 				texture = infoScreen;
 			}
-			if (GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f + 40, 100, 40), "Quit"))
+			if (GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height * 0.9f + 40, 100, 40), "Quit", labelStyle))
 				Application.Quit();
 		}
 
