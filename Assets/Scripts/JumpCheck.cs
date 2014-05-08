@@ -1,13 +1,13 @@
 ﻿using System;
-/// <summary>
-/// This class checks
-/// </summary>
 using UnityEngine;
 
+/// <summary>
+/// The JumpCheck class is a trigger that checks for collision with the ground to enable jumping.
+/// </summary>
 public class JumpCheck : MonoBehaviour
 {
 	/// <summary>
-	/// The layer of the environment.
+	/// The layer mask for things from which we can jump.
 	/// </summary>
 	int layerMask;
 
@@ -15,6 +15,14 @@ public class JumpCheck : MonoBehaviour
 	/// The last time that OnTriggerStay was called.
 	/// </summary>
 	DateTime? lastTriggerStay = null;
+
+	/// <summary>
+	/// Set the mask of layers on which we can jump.
+	/// </summary>
+	void Start()
+	{
+		layerMask = 1 << LayerMask.NameToLayer("Environment") | 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Enemy");
+	}
 
 	/// <summary>
 	/// Determines whether the object is standing on the ground or jumping/falling through the air.
@@ -27,18 +35,13 @@ public class JumpCheck : MonoBehaviour
 		return DateTime.Now - lastTriggerStay < TimeSpan.FromSeconds(1.5f * Time.deltaTime);
 	}
 
-	void Start()
-	{
-		layerMask = LayerMask.NameToLayer("Environment") | LayerMask.NameToLayer("Player") | LayerMask.NameToLayer("Enemy");
-	}
-
 	/// <summary>
 	/// Called on each frame while the trigger is overlapping another collider.
 	/// </summary>
 	/// <param name="other">The other collider.</param>
 	void OnTriggerStay(Collider other)
 	{
-		if ((other.gameObject.layer & layerMask) == other.gameObject.layer)
+		if ((1 << other.gameObject.layer & layerMask) == 1 << other.gameObject.layer)
 			lastTriggerStay = DateTime.Now;
 	}
 }

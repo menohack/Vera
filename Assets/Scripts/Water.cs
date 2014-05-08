@@ -2,25 +2,30 @@
 using System.Collections;
 using System;
 
-public class Water : MonoBehaviour {
-
-	GameObject player;
+/// <summary>
+/// The Water class kills the player when he touches water.
+/// </summary>
+public class Water : MonoBehaviour
+{
+	/// <summary>
+	/// The water mesh.
+	/// </summary>
 	MeshFilter meshFilter;
 
-	DateTime lastSearchTime;
-	TimeSpan searchFrequency;
-	float searchFrequencyMillis = 500f;
-
-	// Use this for initialization
-	void Start () {
-		searchFrequency = TimeSpan.FromMilliseconds(searchFrequencyMillis);
+	/// <summary>
+	/// Gets the water mesh.
+	/// </summary>
+	void Start ()
+	{
 		meshFilter = GetComponent<MeshFilter>();
 	}
 	
-	// Update is called once per frame
+	/// <summary>
+	/// Brutally murders the player if his height is below the water height.
+	/// </summary>
 	void Update ()
 	{
-		player = Spawn.GetCurrentPlayer();
+		GameObject player = Spawn.GetCurrentPlayer();
 
 		if (player != null && meshFilter != null && player.transform.position.y < meshFilter.transform.position.y)
 		{

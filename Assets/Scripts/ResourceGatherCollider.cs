@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System; //Has many data structures
+using System;
 
-public class ResourceGatherCollider : MonoBehaviour {
+public abstract class ResourceGatherCollider : MonoBehaviour
+{
 
 	public bool DEBUG = false;
 	public int DamageValue = 50;
@@ -45,10 +44,22 @@ public class ResourceGatherCollider : MonoBehaviour {
 			}
 		}
 	}
+
+	/// <summary>
+	/// Gets the tag that corresponds to the resource that this weapon can gather.
+	/// </summary>
+	/// <returns>The tag of the resource.</returns>
+	protected abstract string GetResourceTag();
+
+	/// <summary>
+	/// Returns true if this weapon can destroy buildings.
+	/// </summary>
+	/// <returns>True if this weapon can destroy buildings.</returns>
+	protected abstract bool CanDestroyBuilding();
 	
 	void OnTriggerEnter(Collider other) {
 		if (animator && animator.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
-			if (other.gameObject.tag == "Ore" || other.gameObject.tag == "Tree")
+			if (other.gameObject.tag == GetResourceTag())
 			{
 				if (DEBUG) PrintCollided(other.gameObject.tag);
 				//play relevant resource gathering sound on every hit
@@ -69,7 +80,7 @@ public class ResourceGatherCollider : MonoBehaviour {
 				}
 
 			}
-			else if (other.gameObject.tag == "Building")
+			else if (other.gameObject.tag == "Building" && CanDestroyBuilding())
 			{
 				if (DEBUG) PrintCollided(other.gameObject.tag);
 				//play relevant resource gathering sound on every hit

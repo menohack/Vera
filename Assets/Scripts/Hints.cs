@@ -1,17 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class Hints : MonoBehaviour {
-
+/// <summary>
+/// The Hints class handles the display of hints on the GUI at the start of the game.
+/// </summary>
+public class Hints : MonoBehaviour
+{
 	/// <summary>
-	/// Show hints.
+	/// Whether to show hints.
 	/// </summary>
 	public bool hints = true;
 
 	/// <summary>
 	/// List of images for hints.
 	/// </summary>
-	public Texture[] hintList;
+	public List<Texture> hintList;
 
 	/// <summary>
 	/// Time to fade in a hint.
@@ -31,27 +35,35 @@ public class Hints : MonoBehaviour {
 	/// <summary>
 	/// Number of seconds between hints showing.
 	/// </summary>
-	public float delay = 10f;
+	public float delay = 15f;
 
 	float timer;
 
-	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		timer = 0;
 		this.guiTexture.enabled = false;
+		this.guiTexture.texture = ChooseTexture();
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		if (hints){
+	void Update ()
+	{
+		if (hintList.Count < 1)
+		{
+			Destroy(this);
+			return;
+		}
+
+		if (hints && hintList.Count > 0)
+		{
 			timer += Time.deltaTime;
 			if (timer >= delay) 
 			{
+				FadeHint(timer - delay);
 				this.guiTexture.enabled = true;
-				fadeHint(timer);
 				if (timer > delay + fadeIn + fadeOut + pause)
 				{
-					this.guiTexture.texture = chooseTexture ();
+					this.guiTexture.texture = ChooseTexture();
 					timer = 0;
 					this.guiTexture.enabled = false;
 				}
@@ -59,22 +71,33 @@ public class Hints : MonoBehaviour {
 		}
 	}
 
-	void fadeHint(float time){
-		float t = time - delay;
+	/// <summary>
+	/// Fades a hint in and out by setting its transparency.
+	/// </summary>
+	/// <param name="time">The time since this hint started.</param>
+	void FadeHint(float time)
+	{
 		Color textureColor = this.guiTexture.color;
 		float fadeAlpha;
-		if (t < fadeIn)
+		if (time < fadeIn)
 			fadeAlpha = time / fadeIn;
-		else if (t < fadeIn + pause)
+		else if (time < fadeIn + pause)
 			fadeAlpha = 1f;
 		else
-			fadeAlpha = (fadeOut - (t - (fadeIn + pause))) / fadeOut;
+			fadeAlpha = (fadeOut - (time - (fadeIn + pause))) / fadeOut;
 		textureColor.a = fadeAlpha;
 		this.guiTexture.color = textureColor;
 	}
 
-	Texture chooseTexture() {
-		int choice = Random.Range (0, hintList.Length);
-		return hintList[choice];
+	/// <summary>
+	/// Randomly choose a hint to display, then removes it from the list.
+	/// </summary>
+	/// <returns></returns>
+	Texture ChooseTexture()
+	{
+		int choice = Random.Range (0, hintList.Count);
+		Texture result = hintList[choice];
+		hintList.Remove(result);
+		return result;
 	}
 }

@@ -37,7 +37,8 @@ public class PlayerAnimation : MonoBehaviour {
 	[RPC]
 	void JumpRPC()
 	{
-		animator.SetTrigger("Jump");
+		//animator.SetTrigger("Jump");
+		animator.Play("Jump");
 	}
 
 	[RPC]
