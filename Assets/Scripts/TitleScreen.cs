@@ -7,8 +7,9 @@ public class TitleScreen : MonoBehaviour {
 
 	public Texture2D titleScreen, singleplayerScreen, multiplayerScreen, infoScreen, controlScreen;
 	public Texture2D arrowLeft, arrowRight, multiplayerTexture, singleplayerTexture, quitTexture;
+	public Texture2D infoButton, controlsButton;
 
-	bool loading = false, controls = false, info = false;
+	bool loading = false;
 
 	Texture2D texture;
 
@@ -244,7 +245,11 @@ public class TitleScreen : MonoBehaviour {
 				networkView.RPC("StartGame", RPCMode.AllBuffered);
 			if (Network.peerType == NetworkPeerType.Disconnected && GUI.Button(new Rect(screenOffset + -Screen.width + Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game", labelStyle))
 				StartGame();
-			
+
+			if (GUI.Button(new Rect(screenOffset + Screen.width / 2 - infoButton.width / 2, Screen.height - quitTexture.height - controlsButton.height - infoButton.height, infoButton.width, infoButton.height), infoButton, labelStyle))
+				Application.LoadLevel("Info");
+			if (GUI.Button(new Rect(screenOffset + Screen.width / 2 - controlsButton.width / 2, Screen.height - quitTexture.height - controlsButton.height, controlsButton.width, controlsButton.height), controlsButton, labelStyle))
+				Application.LoadLevel("Controls");
 			if (GUI.Button(new Rect(screenOffset + Screen.width / 2 - quitTexture.width/2, Screen.height - quitTexture.height, quitTexture.width, quitTexture.height), quitTexture, labelStyle))
 				Application.Quit();
 		}
