@@ -4,7 +4,6 @@ using System.Collections;
 public class NetworkController : MonoBehaviour {
 
 	private const string typeName = "Vera Online";
-	private const string gameName = "Vera Game";
 
 	public static int DEFAULT_PORT = 25000;
 
@@ -33,7 +32,7 @@ public class NetworkController : MonoBehaviour {
 		return connected;
 	}
 
-	public void StartServer()
+	public void StartServer(string gameName)
 	{
 		Network.InitializeServer(32, DEFAULT_PORT, !Network.HavePublicAddress());
 		MasterServer.RegisterHost(typeName, gameName);

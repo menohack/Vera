@@ -8,6 +8,7 @@ public class TitleScreen : MonoBehaviour {
 	public Texture2D titleScreen, singleplayerScreen, multiplayerScreen, infoScreen, controlScreen;
 	public Texture2D arrowLeft, arrowRight, multiplayerTexture, singleplayerTexture, quitTexture;
 	public Texture2D infoButton, controlsButton;
+	public Texture2D joinButton, hostButton, gameNameTexture, gameNameBackground;
 
 	bool loading = false;
 
@@ -18,6 +19,7 @@ public class TitleScreen : MonoBehaviour {
 	public Font font;
 
 	string ipFieldString = "Server IP";
+	string gameName = "";
 
 	public Texture2D cursorTexture;
 
@@ -37,6 +39,23 @@ public class TitleScreen : MonoBehaviour {
 		ScrollRight,
 		Multiplayer
 	}
+
+	/// <summary>
+	/// The state of the multiplayer menu.
+	/// </summary>
+	enum MultiplayerState
+	{
+		JoinHost,
+		Join,
+		Host,
+		Joined,
+		Hosting
+	}
+
+	/// <summary>
+	/// The current state of the multiplayer menu.
+	/// </summary>
+	MultiplayerState multiplayerState = MultiplayerState.JoinHost;
 
 	/// <summary>
 	/// The current state of the title screen.
@@ -255,7 +274,40 @@ public class TitleScreen : MonoBehaviour {
 		}
 
 
+		if (multiplayerState == MultiplayerState.JoinHost)
+		{
+			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2 - hostButton.width / 2, Screen.height / 2 - hostButton.height, hostButton.width, hostButton.height), hostButton, labelStyle))
+				multiplayerState = MultiplayerState.Host;
 
+			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2 - joinButton.width / 2, Screen.height / 2 + joinButton.height, joinButton.width, joinButton.height), joinButton, labelStyle))
+				multiplayerState = MultiplayerState.Join;
+		}
+		else if (multiplayerState == MultiplayerState.Host)
+		{
+			float textHeight = 100f;
+			//Game Name
+			GUI.DrawTexture(new Rect(screenOffset + Screen.width + Screen.width / 2 - gameNameTexture.width / 2, Screen.height / 2 - gameNameTexture.height - gameNameBackground.height/2, gameNameTexture.width, gameNameTexture.height), gameNameTexture);
+			GUI.DrawTexture(new Rect(screenOffset + Screen.width + Screen.width / 2 - gameNameBackground.width / 2, Screen.height / 2 - gameNameBackground.height / 2, gameNameBackground.width, gameNameBackground.height), gameNameBackground);
+			gameName = GUI.TextField(new Rect(screenOffset + Screen.width + Screen.width / 2 - gameNameBackground.width / 2, Screen.height / 2 - textHeight/2, gameNameBackground.width, textHeight), gameName, labelStyle);
+			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2 - hostButton.width / 2, Screen.height / 2 + gameNameBackground.height / 2, hostButton.width, hostButton.height), hostButton, labelStyle))
+			{
+				nc.StartServer(gameName);
+				multiplayerState = MultiplayerState.Hosting;
+			}
+		}
+		else if (multiplayerState == MultiplayerState.Join)
+		{
+		}
+		else if (multiplayerState == MultiplayerState.Hosting)
+		{
+			
+		}
+		else if (multiplayerState == MultiplayerState.Joined)
+		{
+		}
+		else
+			throw new UnityException("Invalid multiplayer menu state");
+		/*
 		if (nc != null && !nc.Connected() && !Network.isClient && !Network.isServer)
 		{
 			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width/2, 100, 250, 100), "Start Server"))
@@ -279,5 +331,6 @@ public class TitleScreen : MonoBehaviour {
 				GUI.EndScrollView();
 			}
 		}
+		 * */
 	}
 }
