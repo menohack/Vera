@@ -19,7 +19,63 @@ public class TitleScreen : MonoBehaviour {
 
 	public Texture2D cursorTexture;
 
+	/// <summary>
+	/// The position from which to compute the mouse offset.
+	/// </summary>
 	Vector3 mouseStart;
+
+	/// <summary>
+	/// The state of the title screen. Left is singleplayer and right is multiplayer.
+	/// </summary>
+	enum ScreenState
+	{
+		Singleplayer,
+		ScrollLeft,
+		Title,
+		ScrollRight,
+		Multiplayer
+	}
+
+	/// <summary>
+	/// The current state of the title screen.
+	/// </summary>
+	ScreenState state = ScreenState.Title;
+
+	/// <summary>
+	/// The previous state of the title screen, used to scroll properly.
+	/// </summary>
+	ScreenState previousState = ScreenState.Title;
+
+	/// <summary>
+	/// The time that scrolling started.
+	/// </summary>
+	DateTime scrollStart;
+
+	/// <summary>
+	/// The speed that the screen moves onces swiped.
+	/// </summary>
+	public float swipeSpeed = 1000f;
+
+	/// <summary>
+	/// The offset of the title screen in pixels.
+	/// </summary>
+	float screenOffset = 0f;
+
+	/// <summary>
+	/// Whether the mouse needs to be moved back to the center of the screen to prevent
+	/// moving past the title screen when swiping back to it.
+	/// </summary>
+	bool swipeReset = false;
+
+	/// <summary>
+	/// The mouse position ratio at which to transition to another screen.
+	/// </summary>
+	const float SCREEN_TRANSITION_RATIO = 0.5f;
+
+	/// <summary>
+	/// The mouse position ratio that resets the swipe mechanism.
+	/// </summary>
+	const float SCREEN_RESET_RATIO = 0.1f;
 
 	void Start()
 	{
@@ -31,7 +87,6 @@ public class TitleScreen : MonoBehaviour {
 		nc = FindObjectOfType<NetworkController>();
 
 		mouseStart = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
-		scrollLength = TimeSpan.FromMilliseconds(scrollLengthMillis);
 	}
 
 	void Update()
@@ -42,6 +97,9 @@ public class TitleScreen : MonoBehaviour {
 			Application.Quit();
 	}
 
+	/// <summary>
+	/// Starts the game.
+	/// </summary>
 	[RPC]
 	public void StartGame()
 	{
@@ -49,65 +107,113 @@ public class TitleScreen : MonoBehaviour {
 		Application.LoadLevel("Level1");
 	}
 
-	const int MAX_SCREEN_OFFSET = 600;
-	const float SCREEN_MOVE_SCALE = 2f;
-
+	/// <summary>
+	/// A cubic spline.
+	/// </summary>
+	/// <param name="t">The parameter between [-1,1].</param>
+	/// <returns>The spline evaluated at t.</returns>
 	float Spline(float t)
 	{
-		return t * t * t * Screen.width;
+		return t * t * t;
 	}
 
-	enum ScreenState
+	/// <summary>
+	/// Computes the offset of the title screen based on the position of the mouse. The design
+	/// of the title screen is simple enough not to warrant a full class implementing the State pattern.
+	/// </summary>
+	/// <param name="t">The mouse screen position between [-1,1].</param>
+	/// <returns>The offset in pixels of the title screen.</returns>
+	float ComputeScreenOffset(float t)
 	{
-		Singleplayer,
-		ScrollLeft,
-		Title,
-		ScrollRight,
-		Multiplayer
+		if (state == ScreenState.Title)
+		{
+			if (swipeReset)
+			{
+				if (t < SCREEN_RESET_RATIO && t > -SCREEN_RESET_RATIO)
+					swipeReset = false;
+				else
+					return 0f;
+			}
+			
+			previousState = ScreenState.Title;	
+			if (t > SCREEN_TRANSITION_RATIO && !swipeReset)
+			{
+				state = ScreenState.ScrollLeft;
+				scrollStart = DateTime.Now;
+			}
+			else if (t < -SCREEN_TRANSITION_RATIO && !swipeReset)
+			{
+				state = ScreenState.ScrollRight;
+				scrollStart = DateTime.Now;
+			}
+			return Screen.width * Mathf.Clamp(Spline(t), -1.0f, 1.0f);
+		}
+		else if (state == ScreenState.Singleplayer)
+		{
+			if (t < -SCREEN_TRANSITION_RATIO)
+			{
+				state = ScreenState.ScrollRight;
+				previousState = ScreenState.Singleplayer;
+				scrollStart = DateTime.Now;
+			}
+			return Screen.width * Mathf.Clamp(Spline(t), -1.0f, 0f) + Screen.width;
+		}
+		else if (state == ScreenState.ScrollRight)
+		{
+			float swipeOffset = (float)((DateTime.Now - scrollStart).TotalSeconds) * -swipeSpeed;
+			if (swipeOffset + screenOffset < 0 && previousState == ScreenState.Singleplayer)
+			{
+				swipeReset = true;
+				state = ScreenState.Title;
+				return 0f;
+			}
+			else if (swipeOffset + screenOffset < -Screen.width && previousState == ScreenState.Title)
+			{
+				state = ScreenState.Multiplayer;
+				return -Screen.width;
+			}
+			else
+				return swipeOffset + screenOffset;
+		}
+		else if (state == ScreenState.ScrollLeft)
+		{
+			float swipeOffset = (float)((DateTime.Now - scrollStart).TotalSeconds) * swipeSpeed;
+			if (swipeOffset + screenOffset > 0f && previousState == ScreenState.Multiplayer)
+			{
+				swipeReset = true;
+				state = ScreenState.Title;
+				return 0f;
+			}
+			else if (swipeOffset + screenOffset > Screen.width && previousState == ScreenState.Title)
+			{
+				state = ScreenState.Singleplayer;
+				return Screen.width;
+			}
+			else
+				return swipeOffset + screenOffset;
+			 
+		}
+		else if (state == ScreenState.Multiplayer)
+		{
+			if (t > SCREEN_TRANSITION_RATIO)
+			{
+				state = ScreenState.ScrollLeft;
+				previousState = ScreenState.Multiplayer;
+				scrollStart = DateTime.Now;
+			}
+			return Screen.width * Mathf.Clamp(Spline(t), 0f, 1.0f) - Screen.width;
+		}
+		else
+			throw new UnityException("Invalid screen state");
 	}
-
-	ScreenState state = ScreenState.Title;
-	DateTime scrollStart;
-	public float scrollLengthMillis = 250f;
-	TimeSpan scrollLength;
-
-	public float swipeSpeed = 1000f;
-
-	float swipeT;
-
-	float ComputeAutoScreenOffset(float t)
-	{
-		return t;
-	}
-
-	float screenOffset = 0f;
 
 	void OnGUI()
 	{
-	
 		float mouseDelta = mouseStart.x - Input.mousePosition.x;
-		float t = mouseDelta / (Screen.width / 4.0f);
-		
-		if (state == ScreenState.ScrollLeft)
-		{
-			float temp = (float)((DateTime.Now - scrollStart).TotalMilliseconds) / scrollLengthMillis;
-			if (temp > 1.0f)
-			{
-				state = ScreenState.Singleplayer;
-				screenOffset = -Screen.width;
-			}
-			else
-				;
-		}
-		else
-		{
-			if (t > 1.0f)
-			{
-				state = ScreenState.ScrollLeft;
-			}
-			else
-				screenOffset = Mathf.Clamp(Spline(t), -1.0f, 1.0f);
-		}
+		float t = mouseDelta / (Screen.width / 2.0f);
+
+		screenOffset = ComputeScreenOffset(t);
+		Debug.Log(screenOffset);
 
 		GUI.DrawTexture(new Rect(screenOffset, 0, Screen.width, Screen.height), texture, ScaleMode.ScaleAndCrop);
 		GUI.DrawTexture(new Rect(screenOffset - Screen.width, 0, Screen.width, Screen.height), singleplayerScreen, ScaleMode.ScaleAndCrop);
