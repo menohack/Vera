@@ -6,6 +6,7 @@ using System;
 public class TitleScreen : MonoBehaviour {
 
 	public Texture2D titleScreen, singleplayerScreen, multiplayerScreen, infoScreen, controlScreen;
+	public Texture2D arrowLeft, arrowRight, multiplayerTexture, singleplayerTexture, quitTexture;
 
 	bool loading = false, controls = false, info = false;
 
@@ -213,11 +214,20 @@ public class TitleScreen : MonoBehaviour {
 		float t = mouseDelta / (Screen.width / 2.0f);
 
 		screenOffset = ComputeScreenOffset(t);
-		Debug.Log(screenOffset);
 
+		//Screens
 		GUI.DrawTexture(new Rect(screenOffset, 0, Screen.width, Screen.height), texture, ScaleMode.ScaleAndCrop);
 		GUI.DrawTexture(new Rect(screenOffset - Screen.width, 0, Screen.width, Screen.height), singleplayerScreen, ScaleMode.ScaleAndCrop);
 		GUI.DrawTexture(new Rect(screenOffset + Screen.width, 0, Screen.width, Screen.height), multiplayerScreen, ScaleMode.ScaleAndCrop);
+
+		//Arrows
+		GUI.DrawTexture(new Rect(screenOffset, Screen.height / 2 + singleplayerTexture.height, arrowLeft.width, arrowLeft.height), arrowLeft);
+		GUI.DrawTexture(new Rect(screenOffset + Screen.width - arrowRight.width, Screen.height / 2 + multiplayerTexture.height, arrowRight.width, arrowRight.height), arrowRight);
+
+		//Singleplayer/multiplayer labels
+		GUI.DrawTexture(new Rect(screenOffset, Screen.height / 2, singleplayerTexture.width, singleplayerTexture.height), singleplayerTexture);
+		GUI.DrawTexture(new Rect(screenOffset + Screen.width - multiplayerTexture.width, Screen.height / 2, multiplayerTexture.width, multiplayerTexture.height), multiplayerTexture);
+
 		GUIStyle labelStyle = new GUIStyle();
 		labelStyle.font = font;
 		labelStyle.fontStyle = FontStyle.Bold;
@@ -236,19 +246,8 @@ public class TitleScreen : MonoBehaviour {
 				else
 					StartGame();
 			}
-			if (!controls && GUI.Button(new Rect(screenOffset + Screen.width / 2 - 150, Screen.height * 0.9f, 100, 40), "Controls", labelStyle))
-			{
-				controls = true;
-				info = false;
-				texture = controlScreen;
-			}
-			if (!info && GUI.Button(new Rect(screenOffset + Screen.width / 2 + 50, Screen.height * 0.9f, 100, 40), "Info", labelStyle))
-			{
-				info = true;
-				controls = false;
-				texture = infoScreen;
-			}
-			if (GUI.Button(new Rect(screenOffset + Screen.width / 2 - 50, Screen.height * 0.9f + 40, 100, 40), "Quit", labelStyle))
+			
+			if (GUI.Button(new Rect(screenOffset + Screen.width / 2 - quitTexture.width/2, Screen.height - quitTexture.height, quitTexture.width, quitTexture.height), quitTexture, labelStyle))
 				Application.Quit();
 		}
 
@@ -256,19 +255,19 @@ public class TitleScreen : MonoBehaviour {
 
 		if (nc != null && !nc.Connected() && !Network.isClient && !Network.isServer)
 		{
-			if (GUI.Button(new Rect(screenOffset + Screen.width + 100, 100, 250, 100), "Start Server"))
+			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width/2, 100, 250, 100), "Start Server"))
 				nc.StartServer();
 
-			if (GUI.Button(new Rect(screenOffset + Screen.width + 100, 250, 250, 100), "Refresh Hosts"))
+			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2, 250, 250, 100), "Refresh Hosts"))
 				nc.RefreshHostList();
 
-			ipFieldString = GUI.TextField(new Rect(screenOffset + Screen.width + 100, 400, 250, 50), ipFieldString);
-			if (GUI.Button(new Rect(screenOffset + Screen.width + 350, 400, 80, 50), "Connect"))
+			ipFieldString = GUI.TextField(new Rect(screenOffset + Screen.width + Screen.width / 2, 400, 250, 50), ipFieldString);
+			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2 + 250, 400, 80, 50), "Connect"))
  				nc.JoinServer(ipFieldString);
 
 			if (nc.hostList != null)
 			{
-				GUI.BeginScrollView(new Rect(screenOffset + Screen.width + 400, 100, 300, 400), Vector2.zero, new Rect(0, 0, 300, 300));
+				GUI.BeginScrollView(new Rect(screenOffset + Screen.width + Screen.width/2 + 400, 100, 300, 400), Vector2.zero, new Rect(0, 0, 300, 300));
 				for (int i = 0; i < nc.hostList.Length; i++)
 				{
 					if (GUI.Button(new Rect(0, 110 * i, 300, 100), nc.hostList[i].gameName))
