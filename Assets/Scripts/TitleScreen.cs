@@ -21,6 +21,8 @@ public class TitleScreen : MonoBehaviour {
 	string ipFieldString = "Server IP";
 	string gameName = "";
 
+	const int MIN_GAME_NAME_LENGTH = 3;
+
 	public Texture2D cursorTexture;
 
 	/// <summary>
@@ -94,6 +96,19 @@ public class TitleScreen : MonoBehaviour {
 	const float SCREEN_TRANSITION_RATIO = 0.5f;
 
 	/// <summary>
+	/// The number of players in the game.
+	/// </summary>
+	int numPlayers = 1;
+
+	DateTime lastPlayerCountRPC;
+	TimeSpan playerCountRPCFrequency;
+	double playerCountRPCFrequencyMillis = 500f;
+
+	DateTime lastHostRefresh;
+	TimeSpan hostRefreshFrequency;
+	float hostRefreshFrequencyMillis = 2000f;
+
+	/// <summary>
 	/// The mouse position ratio that resets the swipe mechanism.
 	/// </summary>
 	const float SCREEN_RESET_RATIO = 0.1f;
@@ -108,6 +123,8 @@ public class TitleScreen : MonoBehaviour {
 		nc = FindObjectOfType<NetworkController>();
 
 		mouseStart = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
+		playerCountRPCFrequency = TimeSpan.FromMilliseconds(playerCountRPCFrequencyMillis);
+		hostRefreshFrequency = TimeSpan.FromMilliseconds(hostRefreshFrequencyMillis);
 	}
 
 	void Update()
@@ -116,6 +133,12 @@ public class TitleScreen : MonoBehaviour {
 
 		if (Input.GetKey(KeyCode.Escape))
 			Application.Quit();
+
+		if (Network.isServer && multiplayerState == MultiplayerState.Hosting && (lastPlayerCountRPC == null || DateTime.Now - lastPlayerCountRPC > playerCountRPCFrequency))
+		{
+			networkView.RPC("SetNumberOfPlayers", RPCMode.OthersBuffered, Network.connections.Length + 1);
+			lastPlayerCountRPC = DateTime.Now;
+		}
 	}
 
 	/// <summary>
@@ -126,6 +149,12 @@ public class TitleScreen : MonoBehaviour {
 	{
 		loading = true;
 		Application.LoadLevel("Level1");
+	}
+
+	[RPC]
+	public void SetNumberOfPlayers(int numPlayers)
+	{
+		this.numPlayers = numPlayers;
 	}
 
 	/// <summary>
@@ -289,7 +318,7 @@ public class TitleScreen : MonoBehaviour {
 			GUI.DrawTexture(new Rect(screenOffset + Screen.width + Screen.width / 2 - gameNameTexture.width / 2, Screen.height / 2 - gameNameTexture.height - gameNameBackground.height/2, gameNameTexture.width, gameNameTexture.height), gameNameTexture);
 			GUI.DrawTexture(new Rect(screenOffset + Screen.width + Screen.width / 2 - gameNameBackground.width / 2, Screen.height / 2 - gameNameBackground.height / 2, gameNameBackground.width, gameNameBackground.height), gameNameBackground);
 			gameName = GUI.TextField(new Rect(screenOffset + Screen.width + Screen.width / 2 - gameNameBackground.width / 2, Screen.height / 2 - textHeight/2, gameNameBackground.width, textHeight), gameName, labelStyle);
-			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2 - hostButton.width / 2, Screen.height / 2 + gameNameBackground.height / 2, hostButton.width, hostButton.height), hostButton, labelStyle))
+			if (gameName.Length >= MIN_GAME_NAME_LENGTH && GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2 - hostButton.width / 2, Screen.height / 2 + gameNameBackground.height / 2, hostButton.width, hostButton.height), hostButton, labelStyle))
 			{
 				nc.StartServer(gameName);
 				multiplayerState = MultiplayerState.Hosting;
@@ -297,40 +326,43 @@ public class TitleScreen : MonoBehaviour {
 		}
 		else if (multiplayerState == MultiplayerState.Join)
 		{
-		}
-		else if (multiplayerState == MultiplayerState.Hosting)
-		{
-			
-		}
-		else if (multiplayerState == MultiplayerState.Joined)
-		{
-		}
-		else
-			throw new UnityException("Invalid multiplayer menu state");
-		/*
-		if (nc != null && !nc.Connected() && !Network.isClient && !Network.isServer)
-		{
-			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width/2, 100, 250, 100), "Start Server"))
-				nc.StartServer();
-
-			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2, 250, 250, 100), "Refresh Hosts"))
+			if (lastHostRefresh == null || DateTime.Now - lastHostRefresh > hostRefreshFrequency)
+			{
 				nc.RefreshHostList();
-
-			ipFieldString = GUI.TextField(new Rect(screenOffset + Screen.width + Screen.width / 2, 400, 250, 50), ipFieldString);
-			if (GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2 + 250, 400, 80, 50), "Connect"))
- 				nc.JoinServer(ipFieldString);
+				lastHostRefresh = DateTime.Now;
+			}
 
 			if (nc.hostList != null)
 			{
-				GUI.BeginScrollView(new Rect(screenOffset + Screen.width + Screen.width/2 + 400, 100, 300, 400), Vector2.zero, new Rect(0, 0, 300, 300));
+				GUI.Label(new Rect(screenOffset + Screen.width + Screen.width / 2 + 400, 0, 300, 100), nc.hostList.Length + " Games", labelStyle);
+				GUI.BeginScrollView(new Rect(screenOffset + Screen.width + Screen.width / 2 + 400, 100, 300, 400), Vector2.zero, new Rect(0, 0, 300, 300));
 				for (int i = 0; i < nc.hostList.Length; i++)
 				{
 					if (GUI.Button(new Rect(0, 110 * i, 300, 100), nc.hostList[i].gameName))
+					{
 						nc.JoinServer(nc.hostList[i]);
+						multiplayerState = MultiplayerState.Joined;
+					}
 				}
 				GUI.EndScrollView();
 			}
 		}
-		 * */
+		else if (multiplayerState == MultiplayerState.Hosting)
+		{
+			float labelWidth = 200f;
+			float labelHeight = 100f;
+			GUI.DrawTexture(new Rect(screenOffset + Screen.width + Screen.width / 2 - gameNameBackground.width / 2, Screen.height / 2 - gameNameBackground.height / 2, gameNameBackground.width, gameNameBackground.height), gameNameBackground);
+			GUI.Label(new Rect(screenOffset + Screen.width + Screen.width / 2 - labelWidth / 2, Screen.height / 2 - labelHeight / 2, labelWidth, labelHeight), (Network.connections.Length + 1) + " Players", labelStyle);
+		}
+		else if (multiplayerState == MultiplayerState.Joined)
+		{
+			float labelWidth = 200f;
+			float labelHeight = 100f;
+			GUI.DrawTexture(new Rect(screenOffset + Screen.width + Screen.width / 2 - gameNameBackground.width / 2, Screen.height / 2 - gameNameBackground.height / 2, gameNameBackground.width, gameNameBackground.height), gameNameBackground);
+			GUI.Label(new Rect(screenOffset + Screen.width + Screen.width / 2 - labelWidth / 2, Screen.height / 2 - labelHeight / 2, labelWidth, labelHeight), numPlayers + " Players", labelStyle);
+			GUI.Label(new Rect(screenOffset + Screen.width + Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Waiting for server", labelStyle);
+		}
+		else
+			throw new UnityException("Invalid multiplayer menu state");
 	}
 }
