@@ -213,7 +213,8 @@ public class TitleScreen : MonoBehaviour {
 		float mouseDelta = mouseStart.x - Input.mousePosition.x;
 		float t = mouseDelta / (Screen.width / 2.0f);
 
-		screenOffset = ComputeScreenOffset(t);
+		if (!loading)
+			screenOffset = ComputeScreenOffset(t);
 
 		//Screens
 		GUI.DrawTexture(new Rect(screenOffset, 0, Screen.width, Screen.height), texture, ScaleMode.ScaleAndCrop);
@@ -239,13 +240,10 @@ public class TitleScreen : MonoBehaviour {
 
 		if (!loading)
 		{
-			if ((!nc.Connected() || Network.isServer) && GUI.Button(new Rect(screenOffset + Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game", labelStyle))
-			{
-				if (Network.isServer)
-					networkView.RPC("StartGame", RPCMode.AllBuffered);
-				else
-					StartGame();
-			}
+			if (Network.peerType == NetworkPeerType.Server && GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game", labelStyle))
+				networkView.RPC("StartGame", RPCMode.AllBuffered);
+			if (Network.peerType == NetworkPeerType.Disconnected && GUI.Button(new Rect(screenOffset + -Screen.width + Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game", labelStyle))
+				StartGame();
 			
 			if (GUI.Button(new Rect(screenOffset + Screen.width / 2 - quitTexture.width/2, Screen.height - quitTexture.height, quitTexture.width, quitTexture.height), quitTexture, labelStyle))
 				Application.Quit();
