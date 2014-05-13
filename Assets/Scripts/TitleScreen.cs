@@ -8,7 +8,8 @@ public class TitleScreen : MonoBehaviour {
 	public Texture2D titleScreen, singleplayerScreen, multiplayerScreen, infoScreen, controlScreen;
 	public Texture2D arrowLeft, arrowRight, multiplayerTexture, singleplayerTexture, quitTexture;
 	public Texture2D infoButton, controlsButton;
-	public Texture2D joinButton, hostButton, gameNameTexture, gameNameBackground, startButton;
+	public Texture2D joinButton, hostButton, gameNameTexture, gameNameBackground, startButton, waitingTexture;
+	public Texture2D serverListTexture;
 
 	bool loading = false;
 
@@ -113,6 +114,11 @@ public class TitleScreen : MonoBehaviour {
 	/// </summary>
 	const float SCREEN_RESET_RATIO = 0.1f;
 
+	/// <summary>
+	/// The scroll position of the list of servers.
+	/// </summary>
+	Vector2 serverListScrollPosition;
+
 	void Start()
 	{
 		texture = titleScreen;
@@ -125,6 +131,7 @@ public class TitleScreen : MonoBehaviour {
 		mouseStart = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
 		playerCountRPCFrequency = TimeSpan.FromMilliseconds(playerCountRPCFrequencyMillis);
 		hostRefreshFrequency = TimeSpan.FromMilliseconds(hostRefreshFrequencyMillis);
+		serverListScrollPosition = Vector2.zero;
 	}
 
 	void Update()
@@ -334,11 +341,12 @@ public class TitleScreen : MonoBehaviour {
 
 			if (nc.hostList != null)
 			{
-				GUI.Label(new Rect(screenOffset + Screen.width + Screen.width / 2 + 400, 0, 300, 100), nc.hostList.Length + " Games", labelStyle);
-				GUI.BeginScrollView(new Rect(screenOffset + Screen.width + Screen.width / 2 + 400, 100, 300, 400), Vector2.zero, new Rect(0, 0, 300, 300));
+				GUI.Label(new Rect(screenOffset + Screen.width + Screen.width / 2 - 150, Screen.height/2 + serverListTexture.height/2, 300, 100), nc.hostList.Length + " Games", labelStyle);
+				GUI.DrawTexture(new Rect(screenOffset + Screen.width + Screen.width / 2 - serverListTexture.width / 2, Screen.height / 2 - serverListTexture.height / 2, serverListTexture.width, serverListTexture.height), serverListTexture);
+				serverListScrollPosition = GUI.BeginScrollView(new Rect(screenOffset + Screen.width + Screen.width / 2 - serverListTexture.width / 2, Screen.height / 2 - serverListTexture.height / 2, serverListTexture.width, serverListTexture.height), serverListScrollPosition, new Rect(0, 0, serverListTexture.width, serverListTexture.height));
 				for (int i = 0; i < nc.hostList.Length; i++)
 				{
-					if (GUI.Button(new Rect(0, 110 * i, 300, 100), nc.hostList[i].gameName))
+					if (GUI.Button(new Rect(50, 50 + i * ((serverListTexture.height - 100) / 6), serverListTexture.width - 100, (serverListTexture.height - 100) / 6), nc.hostList[i].gameName, labelStyle))
 					{
 						nc.JoinServer(nc.hostList[i]);
 						multiplayerState = MultiplayerState.Joined;
@@ -360,7 +368,7 @@ public class TitleScreen : MonoBehaviour {
 			float labelHeight = 100f;
 			GUI.DrawTexture(new Rect(screenOffset + Screen.width + Screen.width / 2 - gameNameBackground.width / 2, Screen.height / 2 - gameNameBackground.height / 2, gameNameBackground.width, gameNameBackground.height), gameNameBackground);
 			GUI.Label(new Rect(screenOffset + Screen.width + Screen.width / 2 - labelWidth / 2, Screen.height / 2 - labelHeight / 2, labelWidth, labelHeight), numPlayers + " Players", labelStyle);
-			GUI.Label(new Rect(screenOffset + Screen.width + Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Waiting for server", labelStyle);
+			GUI.DrawTexture(new Rect(screenOffset + Screen.width + Screen.width / 2 - waitingTexture.width/2, Screen.height - waitingTexture.height, waitingTexture.width, waitingTexture.height), waitingTexture);
 		}
 		else
 			throw new UnityException("Invalid multiplayer menu state");
