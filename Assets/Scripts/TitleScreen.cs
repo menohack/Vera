@@ -8,7 +8,7 @@ public class TitleScreen : MonoBehaviour {
 	public Texture2D titleScreen, singleplayerScreen, multiplayerScreen, infoScreen, controlScreen;
 	public Texture2D arrowLeft, arrowRight, multiplayerTexture, singleplayerTexture, quitTexture;
 	public Texture2D infoButton, controlsButton;
-	public Texture2D joinButton, hostButton, gameNameTexture, gameNameBackground;
+	public Texture2D joinButton, hostButton, gameNameTexture, gameNameBackground, startButton;
 
 	bool loading = false;
 
@@ -289,9 +289,9 @@ public class TitleScreen : MonoBehaviour {
 
 		if (!loading)
 		{
-			if (Network.peerType == NetworkPeerType.Server && GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game", labelStyle))
+			if (Network.peerType == NetworkPeerType.Server && GUI.Button(new Rect(screenOffset + Screen.width + Screen.width / 2 - startButton.width/2, Screen.height - startButton.height, startButton.width, startButton.height), startButton, labelStyle))
 				networkView.RPC("StartGame", RPCMode.AllBuffered);
-			if (Network.peerType == NetworkPeerType.Disconnected && GUI.Button(new Rect(screenOffset + -Screen.width + Screen.width / 2 - 50, Screen.height * 0.9f, 100, 40), "Start Game", labelStyle))
+			if (Network.peerType == NetworkPeerType.Disconnected && GUI.Button(new Rect(screenOffset + -Screen.width + Screen.width / 2 - startButton.width/2, Screen.height - startButton.height, startButton.width, startButton.height), startButton, labelStyle))
 				StartGame();
 
 			if (GUI.Button(new Rect(screenOffset + Screen.width / 2 - infoButton.width / 2, Screen.height - quitTexture.height - controlsButton.height - infoButton.height, infoButton.width, infoButton.height), infoButton, labelStyle))
