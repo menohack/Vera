@@ -74,10 +74,7 @@ public class EnemyMelee : MonoBehaviour {
 		else
 			Debug.Log("EnemyMelee can't find Player");
 		if (seeker)
-		{
-			Debug.Log("Setting seeker target to " + target);
 			seeker.target = target;
-		}
 		lastTargetSearch = DateTime.Now;
 	}
 
@@ -85,7 +82,7 @@ public class EnemyMelee : MonoBehaviour {
 		if (target == null || lastTargetSearch == null || DateTime.Now - lastTargetSearch > targetSearchFrequency)
 			FindTarget();
 
-		if (target != null)
+		if (target != null && !Menu.Paused())
 		{
 			float distFromPlayer = Vector3.Distance(target.position, this.gameObject.transform.position);
 			//when far away and has not moved enough, start the idle counter

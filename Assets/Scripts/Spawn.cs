@@ -58,11 +58,22 @@ public class Spawn : MonoBehaviour
 	/// </summary>
 	GameObject currentPlayer;
 
+	/// <summary>
+	/// The mesh of the water for getting its height.
+	/// </summary>
+	public MeshFilter waterFilter;
+
+	/// <summary>
+	/// The height of the water so we don't spawn wolves underwater.
+	/// </summary>
+	float waterHeight;
+
 	void Awake()
 	{
 		if (instance == null)
 		{
 			instance = this;
+			waterHeight = waterFilter.transform.position.y;
 			SpawnPlayer();
 		}
 		else
@@ -171,16 +182,12 @@ public class Spawn : MonoBehaviour
 				float distance = Random.Range(minRadius, maxRadius);
 				z = distance / Mathf.Sin(Mathf.Deg2Rad * angle);
 				x = distance / Mathf.Cos(Mathf.Deg2Rad * angle);
-				y = terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z)); //water level 16.3
-			} while (float.IsInfinity(x) || float.IsInfinity(z) || float.IsNaN(x) || float.IsNaN(z) || (y < 16.3) );
+				y = terrain.SampleHeight(new Vector3(position.x + x, 0, position.z + z));
+			} while (float.IsInfinity(x) || float.IsInfinity(z) || float.IsNaN(x) || float.IsNaN(z) || y < waterHeight);
 
 			Vector3 result = new Vector3(position.x + x, y, position.z + z);
 
-			GameObject spawn;
-			if (Network.connections.Length > 0)
-				spawn = Network.Instantiate(wolf, result, wolf.transform.rotation, 0) as GameObject;
-			else
-				spawn = Instantiate(wolf, result, wolf.transform.rotation) as GameObject;
+			GameObject spawn = Utility.InstantiateHelper(wolf, result, wolf.transform.rotation);
 			spawn.name = "Wolf";
 		}
 	}

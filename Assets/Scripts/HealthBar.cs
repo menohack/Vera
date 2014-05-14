@@ -15,12 +15,16 @@ public class HealthBar : MonoBehaviour {
 	
 	void OnGUI()
 	{
+		//If the player is dead don't draw the health bar
+		if (!Spawn.GetCurrentPlayer().GetComponent<Player>().Alive())
+			return;
+
 		Bounds bounds;
 		CharacterController charController = gameObject.GetComponent<CharacterController>() as CharacterController;
 		if (charController != null) 
-				bounds = charController.bounds;
+			bounds = charController.bounds;
 		else
-				bounds = transform.collider.bounds;
+			bounds = transform.collider.bounds;
 		Vector2 position = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0f, bounds.size.y * 1.25f, 0f));
 		position += new Vector2(-healthBarFront.width/2.0f, healthBarFront.height);
 

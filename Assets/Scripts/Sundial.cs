@@ -49,11 +49,6 @@ public class Sundial : MonoBehaviour
 	public Texture2D promptBackground;
 
 	/// <summary>
-	/// The color of the day prompt font.
-	/// </summary>
-	public Color fontColor = Color.black;
-
-	/// <summary>
 	/// The spawn GameObject.
 	/// </summary>
 	public Spawn spawn;
@@ -87,6 +82,10 @@ public class Sundial : MonoBehaviour
 	/// Whether dusk events have been invoked for today.
 	/// </summary>
 	bool invokedDuskEvents = false;
+
+
+	public Color dayFogColor, nightFogColor;
+	public Color dayAmbientColor, nightAmbientColor;
 
 	void Start()
 	{
@@ -129,6 +128,13 @@ public class Sundial : MonoBehaviour
 			if (duskListener != null)
 				duskListener.Invoke();
 		}
+
+		//Lerp the fog and ambient light
+		//GetProgress:		0		.25		.5		.75		1
+		//t:				.5		0		.5		1		0.5
+		float t = Mathf.PingPong(Mathf.Abs(0.5f - 2f * GetProgress()), 1.0f);
+		RenderSettings.fogColor = Color.Lerp(dayFogColor, nightFogColor, t);
+		RenderSettings.ambientLight = Color.Lerp(dayAmbientColor, nightAmbientColor, t);
 	}
 
 	void SetSkyboxInterpolation()
