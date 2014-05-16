@@ -6,7 +6,7 @@ using System;
 public class TitleScreen : MonoBehaviour {
 
 	public Texture2D titleScreen, singleplayerScreen, multiplayerScreen, infoScreen, controlScreen;
-	public Texture2D arrowLeft, arrowRight, multiplayerTexture, singleplayerTexture, quitTexture;
+	public Texture2D quitTexture;
 	public Texture2D infoButton, controlsButton;
 	public Texture2D joinButton, hostButton, gameNameTexture, gameNameBackground, startButton, waitingTexture;
 	public Texture2D serverListTexture;
@@ -278,12 +278,12 @@ public class TitleScreen : MonoBehaviour {
 		GUI.DrawTexture(new Rect(screenOffset + Screen.width, 0, Screen.width, Screen.height), multiplayerScreen, ScaleMode.ScaleAndCrop);
 
 		//Arrows
-		GUI.DrawTexture(new Rect(screenOffset, Screen.height / 2 + singleplayerTexture.height, arrowLeft.width, arrowLeft.height), arrowLeft);
-		GUI.DrawTexture(new Rect(screenOffset + Screen.width - arrowRight.width, Screen.height / 2 + multiplayerTexture.height, arrowRight.width, arrowRight.height), arrowRight);
+		//GUI.DrawTexture(new Rect(screenOffset, Screen.height / 2 + singleplayerTexture.height, arrowLeft.width, arrowLeft.height), arrowLeft);
+		//GUI.DrawTexture(new Rect(screenOffset + Screen.width - arrowRight.width, Screen.height / 2 + multiplayerTexture.height, arrowRight.width, arrowRight.height), arrowRight);
 
 		//Singleplayer/multiplayer labels
-		GUI.DrawTexture(new Rect(screenOffset, Screen.height / 2, singleplayerTexture.width, singleplayerTexture.height), singleplayerTexture);
-		GUI.DrawTexture(new Rect(screenOffset + Screen.width - multiplayerTexture.width, Screen.height / 2, multiplayerTexture.width, multiplayerTexture.height), multiplayerTexture);
+		//GUI.DrawTexture(new Rect(screenOffset, Screen.height / 2, singleplayerTexture.width, singleplayerTexture.height), singleplayerTexture);
+		//GUI.DrawTexture(new Rect(screenOffset + Screen.width - multiplayerTexture.width, Screen.height / 2, multiplayerTexture.width, multiplayerTexture.height), multiplayerTexture);
 
 		GUIStyle labelStyle = new GUIStyle();
 		labelStyle.font = font;
