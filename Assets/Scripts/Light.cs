@@ -14,14 +14,15 @@ public class Light : MonoBehaviour {
 
 	void SetLightColors(float t)
 	{
+		Debug.Log("Derp");
 		if (t < .25)
-			light.color = Color.Lerp(sunriseColor, sunriseColor, t * 4f);
+			light.color = Color.Lerp(sunriseColor, dayColor, t * 4f);
 		else if (t < .5)
-			light.color = Color.Lerp(dayColor, dayColor, (t - .25f) * 4f);
+			light.color = Color.Lerp(dayColor, sunsetColor, (t - .25f) * 4f);
 		else if (t < .75)
-			light.color = Color.Lerp(sunsetColor, sunsetColor, (t - .5f) * 4f);
+			light.color = Color.Lerp(sunsetColor, nightColor, (t - .5f) * 4f);
 		else
-			light.color = Color.Lerp(nightColor, nightColor, (t - .75f) * 4f);
+			light.color = Color.Lerp(nightColor, sunriseColor, (t - .75f) * 4f);
 	}
 
 	void Update ()
