@@ -114,7 +114,7 @@ public class Menu : MonoBehaviour {
 		}
 	}
 
-	public static void StartGame()
+	public static void NewGame()
 	{
 		Time.timeScale = 1f;
 		gameOver = false;
@@ -141,7 +141,7 @@ public class Menu : MonoBehaviour {
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button(newGame, buttonStyle, GUILayout.MaxWidth(newGame.width)))
-				StartGame();
+				NewGame();
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
@@ -181,7 +181,7 @@ public class Menu : MonoBehaviour {
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button(newGame, buttonStyle, GUILayout.MaxWidth(newGame.width)))
-				StartGame();
+				NewGame();
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();

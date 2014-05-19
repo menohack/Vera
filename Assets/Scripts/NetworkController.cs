@@ -101,4 +101,14 @@ public class NetworkController : MonoBehaviour {
 
 		//We should delete other player's RPCs and objects here
 	}
+
+	/// <summary>
+	/// Enable the message queue once a level is loaded.
+	/// </summary>
+	/// <param name="level">The level.</param>
+	void OnLevelWasLoaded(int level)
+	{
+		Network.SetSendingEnabled(0, true);
+		Network.isMessageQueueRunning = true;
+	}
 }

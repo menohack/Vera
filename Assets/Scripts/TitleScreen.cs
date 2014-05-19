@@ -155,6 +155,8 @@ public class TitleScreen : MonoBehaviour {
 	public void StartGame()
 	{
 		loading = true;
+		Network.SetSendingEnabled(0, false);
+		Network.isMessageQueueRunning = false;
 		Application.LoadLevel("Level1");
 	}
 
