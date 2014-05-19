@@ -184,6 +184,7 @@ public class TitleScreen : MonoBehaviour {
 	{
 		if (state == ScreenState.Title)
 		{
+			
 			if (swipeReset)
 			{
 				if (t < SCREEN_RESET_RATIO && t > -SCREEN_RESET_RATIO)
@@ -203,7 +204,7 @@ public class TitleScreen : MonoBehaviour {
 				state = ScreenState.ScrollRight;
 				scrollStart = DateTime.Now;
 			}
-			return Screen.width * Mathf.Clamp(Spline(t), -1.0f, 1.0f);
+			return t;
 		}
 		else if (state == ScreenState.Singleplayer)
 		{
@@ -273,9 +274,9 @@ public class TitleScreen : MonoBehaviour {
 			screenOffset = ComputeScreenOffset(t);
 
 		//Screens
-		GUI.DrawTexture(new Rect(screenOffset, 0, Screen.width, Screen.height), texture, ScaleMode.ScaleAndCrop);
-		GUI.DrawTexture(new Rect(screenOffset - Screen.width, 0, Screen.width, Screen.height), singleplayerScreen, ScaleMode.ScaleAndCrop);
-		GUI.DrawTexture(new Rect(screenOffset + Screen.width, 0, Screen.width, Screen.height), multiplayerScreen, ScaleMode.ScaleAndCrop);
+		GUI.DrawTexture(new Rect(screenOffset, 0, Screen.width, Screen.height), texture, ScaleMode.StretchToFill);
+		GUI.DrawTexture(new Rect(screenOffset - Screen.width, 0, Screen.width, Screen.height), singleplayerScreen, ScaleMode.StretchToFill);
+		GUI.DrawTexture(new Rect(screenOffset + Screen.width, 0, Screen.width, Screen.height), multiplayerScreen, ScaleMode.StretchToFill);
 
 		//Arrows
 		//GUI.DrawTexture(new Rect(screenOffset, Screen.height / 2 + singleplayerTexture.height, arrowLeft.width, arrowLeft.height), arrowLeft);
